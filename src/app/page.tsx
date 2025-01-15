@@ -22,7 +22,11 @@ export default function Home() {
               Raúl
             </Link>
           </li>
-          
+          <li>
+            <Link className="hover:underline" href="/daniel">
+              Daniel
+            </Link>
+          </li>
         </ol>
       </main>
     </>
