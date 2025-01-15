@@ -1,4 +1,5 @@
 import Breadcrumb from "@/components/Breadcrumb";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -9,6 +10,11 @@ export default function Home() {
           Este es el contenido principal de tu página. Aquí puedes agregar
           cualquier cosa que desees mostrar al usuario.
         </p>
+        <ol className="list-decimal m-4">
+          <li>
+            <Link href="/david">David</Link>
+          </li>
+        </ol>
       </main>
     </>
   );
