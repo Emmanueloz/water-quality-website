@@ -3,22 +3,71 @@ import Link from "next/link";
 export default function JuegosPage() {
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1>Raul</h1>
-        <ul>
+      <div>
+      <main className="flex-1 p-4">
+          <h2 className="text-2xl font-bold mb-4">Juegos</h2>
+          <p>
+          <ul className="space-y-2">
           <li>
-            <Link href="/raul/juegos/warzone">Warzone</Link>
+            <a
+              href="#"
+              className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
+            >
+              Warzone
+            </a>
           </li>
           <li>
-            <Link href="/raul/juegos/ajedrez">Ajedrez</Link>
+            <a
+              href="#"
+              className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
+            >
+              GTA V
+            </a>
           </li>
           <li>
-            <Link href="/raul/juegos/fornite">Fornite</Link>
+            <a
+              href="#"
+              className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
+            >
+              Minecraft
+            </a>
           </li>
           <li>
-            <Link href="/raul/juegos/uno">Uno</Link>
+            <a
+              href="#"
+              className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
+            >
+              Fornite
+            </a>
           </li>
-        </ul>
+          <li>
+            <a
+              href="#"
+              className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
+            >
+              Red dead redemtion 2
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
+            >
+              Cuphead
+            </a>
+          </li>
+          <li>
+            <a href="#" className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200">
+              Gear of War(saga)
+            </a>
+          </li>
+          
+          </ul>
+          </p>
+      </main>
       </div>
+
+      
     );
   }
+

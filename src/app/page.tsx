@@ -17,6 +17,12 @@ export default function Home() {
               Angel
             </Link>
           </li>
+          <li>
+            <Link className="hover:underline" href="/raul">
+              Raúl
+            </Link>
+          </li>
+          
         </ol>
       </main>
     </>

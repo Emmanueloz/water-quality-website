@@ -1,30 +1,40 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-export default function MateriasPage() {
+interface Materia {
+    tag: string;
+    nombre: string;
+}
 
+const materias: Materia[] = [
+    { tag: "matematicas", nombre: "Matemáticas para ingeniería II" },
+    { tag: "BD", nombre: "Administración de bases de datos" },
+    { tag: "DW", nombre: "Desarrollo web profesional" },
+    { tag: "POT", nombre: "Planeación y organización del trabajo" },
+    { tag: "SDA", nombre: "Seguridad en el desarrollo de aplicaciones" },
+    { tag: "ingles", nombre: "Inglés VII" }
+];
+
+const Page = () => {
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-        <h1>Raul</h1>
-        <ul>
-          <li>
-            <Link href="/raul/materias/matematicas">Matemáticas para ingeniería II</Link>
-          </li>
-          <li>
-            <Link href="/raul/materias/administracion">Administración de bases de datos</Link>
-          </li>
-          <li>
-            <Link href="/raul/materias/desarrollo">Desarrollo web profesional</Link>
-          </li>
-          <li>
-            <Link href="/raul/materias/planeamiento">Planeamiento y organización del trabajo</Link>
-          </li>
-          <li>
-            <Link href="/raul/materias/seguridad">Seguridad en el desarrollo de aplicaciones</Link>
-          </li>
-          <li>
-            <Link href="/raul/materias/diseño">Diseño web profesional</Link>
-          </li>
-        </ul>
-      </div>
+        <div>
+            <main className="flex-1 p-4">
+                <h2 className="text-2xl font-bold mb-4">Materias</h2>
+                <ul className="space-y-2">
+                    {materias.map((materia, index) => (
+                        <li key={materia.tag}>
+                            <Link
+                                href={`materias/${materia.tag}`}
+                                className={`block py-2 px-4 rounded transition-colors
+                                    ${index === 0 ? 'bg-cyan-100 hover:bg-cyan-200' : 'hover:bg-gray-200'}`}
+                            >
+                                {materia.nombre}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+            </main>
+        </div>
     );
-  }
+}
+
+export default Page;
