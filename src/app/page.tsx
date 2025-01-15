@@ -1,3 +1,5 @@
+import Breadcrumb from "@/components/Breadcrumb";
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -20,19 +22,6 @@ export default function Home() {
       </header>
 
       {/* Breadcrumbs */}
-      <nav className="bg-gray-100 py-3">
-        <div className="container mx-auto">
-          <ol className="flex items-center space-x-2 text-sm">
-            <li>
-              <a href="#" className="text-cyan-700 hover:underline">
-                Inicio
-              </a>
-            </li>
-            <li>/</li>
-            <li>Página Actual</li>
-          </ol>
-        </div>
-      </nav>
 
       {/* Layout */}
       <div className="flex flex-1 container mx-auto py-6">
