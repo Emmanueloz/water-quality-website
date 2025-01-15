@@ -44,17 +44,22 @@ export default function Home() {
                 href="#"
                 className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
               >
-                Dashboard
+                Josue
               </a>
             </li>
             <li>
               <a href="#" className="block py-2 px-4 hover:bg-gray-200 rounded">
-                Configuración
+                Angel
               </a>
             </li>
             <li>
               <a href="#" className="block py-2 px-4 hover:bg-gray-200 rounded">
-                Ayuda
+                David
+              </a>
+            </li>
+            <li>
+              <a href="#" className="block py-2 px-4 hover:bg-gray-200 rounded">
+                Raul
               </a>
             </li>
           </ul>
