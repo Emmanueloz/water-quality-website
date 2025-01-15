@@ -1,4 +1,3 @@
-import Breadcrumb from "@/components/Breadcrumb";
 import Link from "next/link";
 
 export default function Home() {
@@ -6,13 +5,17 @@ export default function Home() {
     <>
       <main className="flex-1 p-4">
         <h2 className="text-2xl font-bold mb-4">Bienvenido</h2>
-        <p>
-          Este es el contenido principal de tu página. Aquí puedes agregar
-          cualquier cosa que desees mostrar al usuario.
-        </p>
+        <p>Integrantes del equipo:</p>
         <ol className="list-decimal m-4">
+          <li className="text-decoration-line-through">
+            <Link className="hover:underline" href="/david">
+              David
+            </Link>
+          </li>
           <li>
-            <Link href="/david">David</Link>
+            <Link className="hover:underline" href="/angel">
+              Angel
+            </Link>
           </li>
         </ol>
       </main>
