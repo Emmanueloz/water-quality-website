@@ -5,17 +5,17 @@ import { usePathname } from "next/navigation";
 export default function Breadcrumb() {
   const pathname = usePathname();
 
-  const pathParts =
-    pathname.split("/").filter(Boolean).length > 0
-      ? pathname.split("/").filter(Boolean)
-      : ["Inicio"];
-
+  const pathParts = pathname.split("/").filter(Boolean);
   console.log(pathParts);
 
   return (
     <nav className="bg-gray-100 py-3">
       <div className="container mx-auto">
         <ol className="flex items-center space-x-2 text-sm">
+          <Link href="/" className="text-cyan-700 hover:underline">
+            Inicio
+          </Link>
+          <span>/</span>
           {pathParts.map((pathname, index) => (
             <li key={index}>
               <Link
