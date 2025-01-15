@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Breadcrumb from "@/components/Breadcrumb";
+import HamburgerMenu from "@/components/HamburgerMenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,36 +47,8 @@ export default function RootLayout({
             </div>
           </header>
           <Breadcrumb />
-          <div className="flex flex-1 container mx-auto py-6">
-            {/* Sidebar */}
-            <aside className="w-1/4 bg-gray-50 p-4 border-r">
-              <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
-                  >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block py-2 px-4 hover:bg-gray-200 rounded"
-                  >
-                    Configuración
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="block py-2 px-4 hover:bg-gray-200 rounded"
-                  >
-                    Ayuda
-                  </a>
-                </li>
-              </ul>
-            </aside>
+          <div className="flex flex-1 container">
+            <HamburgerMenu />
 
             {/* Main Content */}
 
