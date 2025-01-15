@@ -1,14 +1,12 @@
-import Materias from "@/app/components/materias";
+import Materias from "@/components/materias";
 
 type Props = {
   params: {
-    tag: string
-  }
-}
+    tag: string;
+  };
+};
 
 export default async function MateriaPage({ params }: Props) {
   const { tag } = await params;
-  return (
-    <Materias tag={tag} />
-  )
+  return <Materias tag={tag} />;
 }

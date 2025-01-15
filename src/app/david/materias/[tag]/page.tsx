@@ -1,4 +1,4 @@
-import Materias from "@/app/components/materias";
+import Materias from "@/components/materias";
 
 type Props = {
   params: {
