@@ -3,7 +3,7 @@ const Page = () => {
     return (
         <div>
             <main className="flex-1 p-4">
-            <h2 className="text-2xl font-bold mb-4">Ángel</h2>
+            <h2 className="text-2xl font-bold mb-4">Ángel Alfredo Ruiz López</h2>
             <p>
             <ul className="space-y-2">
             <li>

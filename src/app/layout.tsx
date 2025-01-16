@@ -37,7 +37,7 @@ export default function RootLayout({
             <div className="flex flex-col w-full">
               <Navbar />
               <Breadcrumb />
-              <main className="flex-1">{children}</main>
+              {children}
             </div>
           </div>
 
