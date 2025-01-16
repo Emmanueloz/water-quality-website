@@ -10,6 +10,8 @@ export default function HamburgerMenu({
 
   return (
     <div className="relative md:bg-gray-50">
+      <div className="flex flex-col justify-center h-16 bg-cyan-500"></div>
+
       <button
         className="absolute top-5 left-4 md:hidden z-50 "
         onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
