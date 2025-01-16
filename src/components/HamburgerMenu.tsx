@@ -1,5 +1,69 @@
 "use client";
 import { useState } from "react"; // import state
+import Sidebar, { MenuItem } from "./Sidebar";
+
+const menuItems:MenuItem[] = [
+  {
+    name: "Integrantes",
+    subItems: [
+      {
+        name: "David",
+        link: "/david"
+      },
+      {
+        name: "Ángel",
+        link: "/angel"
+      },
+      {
+        name: "Raúl",
+        link: "/raul"
+      }, 
+      {
+        name: "Daniel",
+        link: "/daniel"
+      }
+    ]
+  },
+  {
+    name: "Materias",
+    subItems: [
+      {
+        name: "Materia 1",
+        link: "/materias"
+      },
+      {
+        name: "Materia 2",
+        link: "/materias"
+      }
+    ]
+  },
+  {
+    name: "Juegos",
+    subItems: [
+      {
+        name: "Halo Infinite",
+        link: "/juegos"
+      },
+      {
+        name: "Call of Duty",
+        link: "/juegos"
+      }
+    ]
+  },
+  {
+    name: "Proyectos",
+    subItems: [
+      {
+        name: "Proyecto 1",
+        link: "/proyectos"
+      },
+      {
+        name: "Proyecto 2",
+        link: "/proyectos"
+      }
+    ]
+  }
+];
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
@@ -45,20 +109,7 @@ export default function HamburgerMenu({}) {
             </svg>
           </button>
         </div>
-        <ul className="p-4 space-y-2">
-          {/* Lista de elementos*/}
-          <ul>
-            <li>
-              <a href="#">Dashboard</a>
-            </li>
-            <li>
-              <a href="#">Configuración</a>
-            </li>
-            <li>
-              <a href="#">Ayuda</a>
-            </li>
-          </ul>
-        </ul>
+        <Sidebar menuItems={menuItems} />
       </aside>
 
       {isNavOpen && (
