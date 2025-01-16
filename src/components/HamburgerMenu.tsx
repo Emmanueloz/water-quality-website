@@ -9,27 +9,25 @@ export default function HamburgerMenu({
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
 
   return (
-    <div className="relative">
-      <div className="flex flex-col justify-center h-16 bg-cyan-500">
-        <button
-          className="md:hidden z-50"
-          onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
+    <div className="relative md:bg-gray-50">
+      <button
+        className="absolute top-5 left-4 md:hidden z-50 "
+        onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24px"
+          viewBox="0 -960 960 960"
+          width="24px"
+          fill="#4b5563"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-            fill="#4b5563"
-          >
-            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
-          </svg>
-        </button>
-      </div>
+          <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+        </svg>
+      </button>
 
       <aside
-        className={`md:static md:w-60 md:flex md:translate-x-0 md:shadow-none 
-        fixed top-0 left-0 h-full  w-3/4 max-w-xs bg-gray-50 shadow-lg transform transition-transform duration-500 ease-in-out z-50 md:z-0 ${
+        className={`md:static md:w-40 lg:w-60 md:flex bg-gray-50 md:translate-x-0 md:shadow-none 
+        fixed top-0 left-0 h-full md:h-auto w-3/4 max-w-xs  shadow-lg transform transition-transform duration-500 ease-in-out z-50 md:z-auto ${
           isNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

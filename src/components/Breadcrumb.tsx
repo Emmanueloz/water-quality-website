@@ -11,7 +11,7 @@ export default function Breadcrumb() {
   return (
     <nav className="bg-gray-100 py-3">
       <div className="container mx-auto">
-        <ol className="flex items-center space-x-2 text-sm">
+        <ol className="flex items-center pl-2 space-x-2 text-sm">
           <Link href="/" className="text-cyan-700 hover:underline">
             Inicio
           </Link>
