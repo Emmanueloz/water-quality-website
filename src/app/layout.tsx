@@ -30,29 +30,28 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex flex-col min-h-screen">
-          <header className="bg-cyan-500 text-white py-4">
-            <div className="container mx-auto flex justify-between items-center">
-              <h1 className="text-2xl font-bold">Mi Sitio</h1>
-              <nav className="space-x-4">
-                <a href="#" className="hover:underline">
-                  Inicio
-                </a>
-                <a href="#" className="hover:underline">
-                  Acerca de
-                </a>
-                <a href="#" className="hover:underline">
-                  Contacto
-                </a>
-              </nav>
-            </div>
-          </header>
-          <Breadcrumb />
-          <div className="flex flex-1 container">
+          <div className="flex flex-1">
             <HamburgerMenu />
-
-            {/* Main Content */}
-
-            {children}
+            <div className="flex flex-col w-full">
+              <header className="bg-cyan-500 text-white py-4">
+                <div className="container mx-auto flex justify-between items-center px-4">
+                  <h1 className="text-2xl font-bold">Mi Sitio</h1>
+                  <nav className="hidden md:flex space-x-4">
+                    <a href="#" className="hover:underline">
+                      Inicio
+                    </a>
+                    <a href="#" className="hover:underline">
+                      Acerca de
+                    </a>
+                    <a href="#" className="hover:underline">
+                      Contacto
+                    </a>
+                  </nav>
+                </div>
+              </header>
+              <Breadcrumb />
+              <main className="flex-1">{children}</main>
+            </div>
           </div>
 
           {/* Footer */}
