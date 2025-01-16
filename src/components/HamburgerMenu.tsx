@@ -1,11 +1,7 @@
 "use client";
 import { useState } from "react"; // import state
 
-export default function HamburgerMenu({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
 
   return (
@@ -49,10 +45,22 @@ export default function HamburgerMenu({
             </svg>
           </button>
         </div>
-        <ul className="p-4 space-y-2">{children}</ul>
+        <ul className="p-4 space-y-2">
+          {/* Lista de elementos*/}
+          <ul>
+            <li>
+              <a href="#">Dashboard</a>
+            </li>
+            <li>
+              <a href="#">Configuración</a>
+            </li>
+            <li>
+              <a href="#">Ayuda</a>
+            </li>
+          </ul>
+        </ul>
       </aside>
 
-      {/* Fondo oscuro detrás del menú (solo para pantallas pequeñas) */}
       {isNavOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
