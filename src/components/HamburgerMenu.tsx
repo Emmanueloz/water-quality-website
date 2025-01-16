@@ -2,67 +2,67 @@
 import { useState } from "react"; // import state
 import Sidebar, { MenuItem } from "./Sidebar";
 
-const menuItems:MenuItem[] = [
+const menuItems: MenuItem[] = [
   {
     name: "Integrantes",
     subItems: [
       {
         name: "David",
-        link: "/david"
+        link: "/david",
       },
       {
         name: "Ángel",
-        link: "/angel"
+        link: "/angel",
       },
       {
         name: "Raúl",
-        link: "/raul"
-      }, 
+        link: "/raul",
+      },
       {
         name: "Daniel",
-        link: "/daniel"
-      }
-    ]
+        link: "/daniel",
+      },
+    ],
   },
   {
     name: "Materias",
     subItems: [
       {
         name: "Materia 1",
-        link: "/materias"
+        link: "/materias",
       },
       {
         name: "Materia 2",
-        link: "/materias"
-      }
-    ]
+        link: "/materias",
+      },
+    ],
   },
   {
     name: "Juegos",
     subItems: [
       {
         name: "Halo Infinite",
-        link: "/juegos"
+        link: "/juegos",
       },
       {
         name: "Call of Duty",
-        link: "/juegos"
-      }
-    ]
+        link: "/juegos",
+      },
+    ],
   },
   {
     name: "Proyectos",
     subItems: [
       {
         name: "Proyecto 1",
-        link: "/proyectos"
+        link: "/proyectos",
       },
       {
         name: "Proyecto 2",
-        link: "/proyectos"
-      }
-    ]
-  }
+        link: "/proyectos",
+      },
+    ],
+  },
 ];
 
 export default function HamburgerMenu({}) {
@@ -70,10 +70,8 @@ export default function HamburgerMenu({}) {
 
   return (
     <div className="relative md:bg-gray-50">
-      <div className="flex flex-col justify-center h-16 bg-cyan-500"></div>
-
       <button
-        className="absolute top-5 left-4 md:hidden z-50 "
+        className="absolute top-5 left-4 z-50 "
         onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
       >
         <svg
@@ -88,12 +86,12 @@ export default function HamburgerMenu({}) {
       </button>
 
       <aside
-        className={`md:static md:w-40 lg:w-60 md:flex bg-gray-50 md:translate-x-0 md:shadow-none 
-        fixed top-0 left-0 h-full md:h-auto w-3/4 max-w-xs  shadow-lg transform transition-transform duration-500 ease-in-out z-50 md:z-auto ${
+        className={` bg-gray-50 
+        fixed top-0 left-0 h-full  w-3/4 max-w-xs  shadow-lg transform transition-transform duration-500 ease-in-out z-50  ${
           isNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="md:hidden h-16 py-4 px-4 flex justify-end items-center bg-cyan-500">
+        <div className="h-16 py-4 px-4 flex justify-end items-center bg-cyan-500">
           <button
             className="text-gray-600 text-2xl"
             onClick={() => setIsNavOpen(false)}
@@ -114,7 +112,7 @@ export default function HamburgerMenu({}) {
 
       {isNavOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-10"
           onClick={() => setIsNavOpen(false)}
         ></div>
       )}
