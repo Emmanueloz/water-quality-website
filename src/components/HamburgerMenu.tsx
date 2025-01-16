@@ -1,60 +1,55 @@
 "use client";
 import { useState } from "react"; // import state
 
-export default function HamburgerMenu() {
+export default function HamburgerMenu({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
 
   return (
     <div className="relative">
-      {/* Botón para abrir/cerrar el menú (oculto en pantallas md o más grandes) */}
-      <button
-        className="space-y-2 md:hidden z-50"
-        onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
-      >
-        <span className="block h-0.5 w-8 bg-gray-600 transition-transform duration-300"></span>
-        <span className="block h-0.5 w-8 bg-gray-600 transition-transform duration-300"></span>
-        <span className="block h-0.5 w-8 bg-gray-600 transition-transform duration-300"></span>
-      </button>
+      <div className="flex flex-col justify-center h-16 bg-cyan-500">
+        <button
+          className="md:hidden z-50"
+          onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#4b5563"
+          >
+            <path d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z" />
+          </svg>
+        </button>
+      </div>
 
-      {/* Menú lateral (comportamiento adaptable según el tamaño de pantalla) */}
       <aside
-        className={`md:static md:w-auto md:flex md:translate-x-0 md:shadow-none 
-        fixed top-0 left-0 h-full w-3/4 max-w-xs bg-gray-50 shadow-lg transform transition-transform duration-500 ease-in-out z-50 ${
+        className={`md:static md:w-60 md:flex md:translate-x-0 md:shadow-none 
+        fixed top-0 left-0 h-full  w-3/4 max-w-xs bg-gray-50 shadow-lg transform transition-transform duration-500 ease-in-out z-50 md:z-0 ${
           isNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <button
-          className="absolute top-4 right-4 text-gray-600 md:hidden"
-          onClick={() => setIsNavOpen(false)}
-        >
-          ✕
-        </button>
-        <ul>
-          <li>
-            <a
-              href="#"
-              className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200 md:bg-transparent"
+        <div className="md:hidden h-16 py-4 px-4 flex justify-end items-center bg-cyan-500">
+          <button
+            className="text-gray-600 text-2xl"
+            onClick={() => setIsNavOpen(false)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24px"
+              viewBox="0 -960 960 960"
+              width="24px"
+              fill="#4b5563"
             >
-              Dashboard
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="block py-2 px-4 hover:bg-gray-200 rounded md:bg-transparent"
-            >
-              Configuración
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="block py-2 px-4 hover:bg-gray-200 rounded md:bg-transparent"
-            >
-              Ayuda
-            </a>
-          </li>
-        </ul>
+              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+            </svg>
+          </button>
+        </div>
+        <ul className="p-4 space-y-2">{children}</ul>
       </aside>
 
       {/* Fondo oscuro detrás del menú (solo para pantallas pequeñas) */}
