@@ -4,9 +4,9 @@ import { usePathname } from "next/navigation";
 
 export default function Breadcrumb() {
   const pathname = usePathname();
+  console.log(pathname);
 
   const pathParts = pathname.split("/").filter(Boolean);
-  console.log(pathParts);
 
   return (
     <nav className="bg-gray-100 py-3">
