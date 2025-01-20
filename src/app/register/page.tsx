@@ -1,11 +1,11 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // Importa Link de Next.js para la redirección
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -15,14 +15,20 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
 
-    if (!user.trim() || !password.trim()) {
+    if (!user.trim() || !password.trim() || !confirmPassword.trim()) {
       setError('Por favor, complete todos los campos.');
       setIsLoading(false);
       return;
     }
 
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,9 +39,9 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        router.push('/');
+        router.push('/login');
       } else {
-        setError(data.message || 'Error al iniciar sesión');
+        setError(data.message || 'Error al registrar el usuario');
       }
     } catch (err) {
       setError('Error de conexión con el servidor.');
@@ -53,14 +59,14 @@ export default function LoginPage() {
       minHeight: '50vh',
       padding: '10px',
     }}>
-      <h1 style={{ marginBottom: '20px', fontSize: '24px' }}>Iniciar Sesión</h1>
+      <h1 style={{ marginBottom: '20px', fontSize: '24px' }}>Registro de Usuario</h1>
       <form
         onSubmit={handleSubmit}
         style={{
           display: 'flex',
           flexDirection: 'column',
           width: '400px',
-          gap: '20px', // Ajustamos el espacio entre los elementos
+          gap: '20px',
           border: '3px solid #ddd',
           padding: '30px',
           borderRadius: '15px',
@@ -95,6 +101,22 @@ export default function LoginPage() {
             borderRadius: '15px',
           }}
         />
+
+        <label htmlFor="confirmPassword" style={{ fontWeight: 'bold' }}>Confirmar Contraseña:</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          name="confirmPassword"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          style={{
+            padding: '10px',
+            border: '1px solid #ccc',
+            borderRadius: '15px',
+          }}
+        />
+
         <button
           type="submit"
           disabled={isLoading}
@@ -108,7 +130,7 @@ export default function LoginPage() {
             fontWeight: 'bold',
           }}
         >
-          {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+          {isLoading ? 'Registrando...' : 'Registrar Usuario'}
         </button>
       </form>
 
@@ -121,14 +143,6 @@ export default function LoginPage() {
           {error}
         </p>
       )}
-
-      {/* Link hacia la página de registro */}
-      <div style={{ marginTop: '20px' }}>
-        <span>¿No tienes cuenta? </span>
-        <Link href="/register" style={{ color: '#007BFF', fontWeight: 'bold' }}>
-          Regístrate aquí
-        </Link>
-      </div>
     </div>
   );
 }

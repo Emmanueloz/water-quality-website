@@ -4,7 +4,6 @@ const Page = () => {
         <div>
             <main className="flex-1 p-4">
             <h2 className="text-2xl font-bold mb-4">Raúl de Jesús Nájera Jiménez</h2>
-            <p>
             <ul className="space-y-2">
             <li>
                 <Link href='/raul/materias' className="block py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200">
@@ -22,7 +21,6 @@ const Page = () => {
             </Link>
             </li>
           </ul>
-            </p>
         </main>
         </div>
     );
