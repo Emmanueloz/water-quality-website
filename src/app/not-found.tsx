@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function NotFoundPage() {
   return (
     <main className="flex flex-col h-full justify-center items-center">
