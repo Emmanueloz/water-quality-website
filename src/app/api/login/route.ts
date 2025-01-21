@@ -1,11 +1,11 @@
-// app/api/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { LoginRequestBody, Usuario } from "../../tipos/tipos";
 
-const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta_super_segura"; // Clave secreta JWT
+// Clave secreta para el JWT
+const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta_super_segura";
 
 export async function POST(req: NextRequest) {
   const { Usuario, Contraseña }: LoginRequestBody = await req.json();
@@ -17,14 +17,14 @@ export async function POST(req: NextRequest) {
   let connection;
 
   try {
-    connection = await db(); // Conexión a la base de datos
+    connection = await db();
 
     // Buscar usuario en la base de datos
     const [rows] = await connection.execute(
       `SELECT u.id, u.Usuario, u.Contraseña, r.Rol AS rol 
-      FROM Usuarios u 
-      JOIN Rol r ON u.Roles = r.id 
-      WHERE u.Usuario = ?`,
+       FROM Usuarios u 
+       JOIN Rol r ON u.Roles = r.id 
+       WHERE u.Usuario = ?`,
       [Usuario]
     );
 
@@ -46,10 +46,10 @@ export async function POST(req: NextRequest) {
     const token = jwt.sign(
       { id: user.id, Usuario: user.Usuario, rol: user.rol },
       JWT_SECRET,
-      { expiresIn: "2h" } // Token válido por 2 horas
+      { expiresIn: "2h" }
     );
 
-    // Establecer el token en las cookies
+    // Establecer la cookie del token
     const response = NextResponse.json({
       message: "Inicio de sesión exitoso",
       token,
@@ -60,7 +60,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    response.cookies.set('auth_token', token, { httpOnly: true, path: '/' });  // Establecer cookie con el token
+    response.cookies.set('auth_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Solo segura en producción
+      sameSite: 'strict', // Evitar ataques CSRF
+      path: '/', // Hacer la cookie accesible en toda la app
+    });
 
     return response;
   } catch (error: unknown) {
@@ -68,7 +73,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
   } finally {
     if (connection) {
-      await connection.end(); // Cerrar la conexión
+      await connection.end(); // Cerrar conexión
     }
   }
 }

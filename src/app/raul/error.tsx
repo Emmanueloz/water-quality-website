@@ -6,7 +6,7 @@ export default function ErrorPage(params:any) {
     return (
       <main className="flex flex-col items-center justify-center min-h-[70vh] bg-gray-100 text-gray-800 font-sans">
         <h1 className="text-4xl font-bold text-teal-500 mb-4">
-          Error 404
+          Error 500
         </h1>
         <p className="text-lg mb-6">
           ¡Ups! Algo salió mal en el servidor.
