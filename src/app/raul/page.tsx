@@ -1,5 +1,8 @@
 import Link from 'next/link'
+import { NextResponse } from 'next/server';
 const Page = () => {
+  return NextResponse.json({},{status:500})
+
     return (
         <div>
             <main className="flex-1 p-4">

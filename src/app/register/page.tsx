@@ -51,28 +51,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '50vh',
-      padding: '10px',
-    }}>
-      <h1 style={{ marginBottom: '20px', fontSize: '24px' }}>Registro de Usuario</h1>
+    <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
+      <h1 className="mb-5 text-2xl font-bold">Registro de Usuario</h1>
       <form
         onSubmit={handleSubmit}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '400px',
-          gap: '20px',
-          border: '3px solid #ddd',
-          padding: '30px',
-          borderRadius: '15px',
-        }}
+        className="flex flex-col w-full max-w-md gap-5 border-2 border-gray-300 p-6 rounded-lg"
       >
-        <label htmlFor="user" style={{ fontWeight: 'bold' }}>Usuario:</label>
+        <label htmlFor="user" className="font-bold">
+          Usuario:
+        </label>
         <input
           type="text"
           id="user"
@@ -80,14 +67,12 @@ export default function RegisterPage() {
           value={user}
           onChange={(e) => setUser(e.target.value)}
           required
-          style={{
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '15px',
-          }}
+          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <label htmlFor="password" style={{ fontWeight: 'bold' }}>Contraseña:</label>
+        <label htmlFor="password" className="font-bold">
+          Contraseña:
+        </label>
         <input
           type="password"
           id="password"
@@ -95,14 +80,12 @@ export default function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '15px',
-          }}
+          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <label htmlFor="confirmPassword" style={{ fontWeight: 'bold' }}>Confirmar Contraseña:</label>
+        <label htmlFor="confirmPassword" className="font-bold">
+          Confirmar Contraseña:
+        </label>
         <input
           type="password"
           id="confirmPassword"
@@ -110,36 +93,22 @@ export default function RegisterPage() {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          style={{
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '15px',
-          }}
+          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         <button
           type="submit"
           disabled={isLoading}
-          style={{
-            padding: '6px',
-            backgroundColor: isLoading ? '#aaa' : '#007BFF',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '15px',
-            cursor: isLoading ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-          }}
+          className={`p-3 rounded-lg font-bold text-white ${
+            isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+          }`}
         >
           {isLoading ? 'Registrando...' : 'Registrar Usuario'}
         </button>
       </form>
 
       {error && (
-        <p style={{
-          color: 'red',
-          marginTop: '15px',
-          fontWeight: 'bold',
-        }}>
+        <p className="text-red-600 mt-4 font-bold">
           {error}
         </p>
       )}

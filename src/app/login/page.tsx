@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link'; // Importa Link de Next.js para la redirección
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [user, setUser] = useState('');
@@ -45,28 +45,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '50vh',
-      padding: '10px',
-    }}>
-      <h1 style={{ marginBottom: '20px', fontSize: '24px' }}>Iniciar Sesión</h1>
+    <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
+      <h1 className="text-2xl font-bold mb-6">Iniciar Sesión</h1>
       <form
         onSubmit={handleSubmit}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '400px',
-          gap: '20px', // Ajustamos el espacio entre los elementos
-          border: '3px solid #ddd',
-          padding: '30px',
-          borderRadius: '15px',
-        }}
+        className="flex flex-col w-full max-w-md gap-6 border-2 border-gray-300 p-6 rounded-lg"
       >
-        <label htmlFor="user" style={{ fontWeight: 'bold' }}>Usuario:</label>
+        <label htmlFor="user" className="font-semibold">
+          Usuario:
+        </label>
         <input
           type="text"
           id="user"
@@ -74,14 +61,12 @@ export default function LoginPage() {
           value={user}
           onChange={(e) => setUser(e.target.value)}
           required
-          style={{
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '15px',
-          }}
+          className="p-3 border border-gray-300 rounded-lg"
         />
 
-        <label htmlFor="password" style={{ fontWeight: 'bold' }}>Contraseña:</label>
+        <label htmlFor="password" className="font-semibold">
+          Contraseña:
+        </label>
         <input
           type="password"
           id="password"
@@ -89,43 +74,29 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '15px',
-          }}
+          className="p-3 border border-gray-300 rounded-lg"
         />
+
         <button
           type="submit"
           disabled={isLoading}
-          style={{
-            padding: '6px',
-            backgroundColor: isLoading ? '#aaa' : '#007BFF',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '15px',
-            cursor: isLoading ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-          }}
+          className={`p-3 text-white font-bold rounded-lg ${
+            isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+          }`}
         >
           {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
         </button>
       </form>
 
       {error && (
-        <p style={{
-          color: 'red',
-          marginTop: '15px',
-          fontWeight: 'bold',
-        }}>
+        <p className="text-red-500 font-semibold mt-4">
           {error}
         </p>
       )}
 
-      {/* Link hacia la página de registro */}
-      <div style={{ marginTop: '20px' }}>
+      <div className="mt-6">
         <span>¿No tienes cuenta? </span>
-        <Link href="/register" style={{ color: '#007BFF', fontWeight: 'bold' }}>
+        <Link href="/register" className="text-blue-500 font-semibold hover:underline">
           Regístrate aquí
         </Link>
       </div>
