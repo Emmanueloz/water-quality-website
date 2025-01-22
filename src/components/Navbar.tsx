@@ -63,7 +63,7 @@ export default function Navbar() {
           {isAuthenticated && (
             <button
               onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+              className="bg-red-500 hover:bg-red-600 text-white font-bold  px-2 rounded"
             >
               Cerrar Sesión
             </button>
