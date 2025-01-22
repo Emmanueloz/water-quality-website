@@ -1,4 +1,7 @@
 "use client";
+
+import Link from "next/link";
+
 export default function ErrorPage({
   error,
   reset,
@@ -17,12 +20,12 @@ export default function ErrorPage({
         Lo sentimos, ocurrió un error en el servidor. Por favor, inténtalo mas
         tarde.
       </p>
-      <button
+      <Link
         className="mt-8 py-2 px-4 bg-cyan-100 rounded hover:bg-cyan-200"
-        onClick={() => reset()}
+        href="/"
       >
-        Recargar
-      </button>
+        Regresar
+      </Link>
     </main>
   );
 }
