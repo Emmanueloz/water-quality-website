@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Cookies from 'js-cookie'; // Importamos js-cookie
+import Cookies from 'js-cookie';
 
 export default function LoginPage() {
   const [user, setUser] = useState('');
@@ -34,7 +34,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Guardar el token en las cookies con js-cookie
+
         Cookies.set('auth_token', data.token, { expires: 1, path: '/' }); // El token dura 1 día
 
         // Redirigir al usuario a la página principal
