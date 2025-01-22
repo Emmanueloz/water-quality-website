@@ -1,4 +1,6 @@
 export default function Home() {
+  throw new Error("Error");
+
   return (
 <main className="flex-1 p-4">
   <h2 className="text-2xl font-bold mb-4">Josué Daniel Sánchez Hernández</h2>
