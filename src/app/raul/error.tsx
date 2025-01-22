@@ -1,7 +1,7 @@
 "use client"
-export default function ErrorPage(params:any) {
+export default function ErrorPage({ error, reset}: { error: Error; reset: () => void;}) {
 
-  console.log(params);
+  console.log("ErrorPage", error.message);
   
     return (
       <main className="flex flex-col items-center justify-center min-h-[70vh] bg-gray-100 text-gray-800 font-sans">

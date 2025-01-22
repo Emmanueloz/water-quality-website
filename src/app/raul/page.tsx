@@ -1,7 +1,6 @@
 import Link from 'next/link'
-import { NextResponse } from 'next/server';
 const Page = () => {
-  return NextResponse.json({},{status:500})
+  throw new Error("Erroren la pagina de Raul");
 
     return (
         <div>

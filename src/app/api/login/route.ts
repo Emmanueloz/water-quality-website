@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { LoginRequestBody, Usuario } from "../../tipos/tipos";
+import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 
 // Clave secreta para el JWT
 const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta_super_segura";

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 import bcrypt from "bcryptjs"; // Para encriptar la contraseña
-import { LoginRequestBody, Usuario } from "../../tipos/tipos"; // Usando los tipos (si usas TypeScript)
+import { LoginRequestBody, Usuario } from "../../../tipos/tipos"; // Usando los tipos (si usas TypeScript)
 import { ResultSetHeader } from "mysql2"; // Importar el tipo adecuado
 
 const saltRounds = 10; // Número de rondas de 'salting' para hacer la encriptación más segura
