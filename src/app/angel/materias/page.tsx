@@ -17,7 +17,7 @@ const materias: Materia[] = [
 const Page = () => {
     return (
         <div>
-            <main className="flex-1 p-4">
+            <main className="flex-1 ">
                 <h2 className="text-2xl font-bold mb-4">Materias</h2>
                 <ul className="space-y-2">
                     {materias.map((materia, index) => (

@@ -1,4 +1,5 @@
 const Page = () => {
+  throw new Error("Not implemented");
     return (
         <div>
             <main className="flex-1 p-4">

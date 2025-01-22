@@ -28,12 +28,28 @@ const menuItems: MenuItem[] = [
     name: "Materias",
     subItems: [
       {
-        name: "Materia 1",
-        link: "/materias",
+        name: "Matemáticas para ingeniería II",
+        link: "/angel/materias/matematicas",
       },
       {
-        name: "Materia 2",
-        link: "/materias",
+        name: "Administración de bases de datos",
+        link: "/angel/materias/BD",
+      },
+      {
+        name: "Desarrollo web profesional",
+        link: "/angel/materias/DW",
+      },
+      {
+        name: "Planeación y organización del trabajo",
+        link: "/angel/materias/POT",
+      },
+      {
+        name: "Seguridad en el desarrollo de aplicaciones",
+        link: "/angel/materias/SDA",
+      },
+      {
+        name: "Inglés VII",
+        link: "/angel/materias/ingles",
       },
     ],
   },
