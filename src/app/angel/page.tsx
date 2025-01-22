@@ -2,7 +2,7 @@ import Link from 'next/link'
 const Page = () => {
     return (
         <div>
-            <main className="flex-1 p-4">
+            <main className="flex-1 p-4 bg-white shadow-md rounded-lg mt-6 max-w-sm mx-auto">
             <h2 className="text-2xl font-bold mb-4">Ángel Alfredo Ruiz López</h2>
             <p>
             <ul className="space-y-2">
