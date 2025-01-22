@@ -69,9 +69,9 @@ export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
 
   return (
-    <div className="relative md:bg-gray-50">
+    <div className="relative md:static md:bg-gray-50">
       <button
-        className="absolute top-5 left-4 z-50 "
+        className="absolute top-5 left-4 z-50 md:hidden"
         onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
       >
         <svg
@@ -86,14 +86,14 @@ export default function HamburgerMenu({}) {
       </button>
 
       <aside
-        className={` bg-gray-50 
+        className={`md:static md:w-60 md:translate-x-0 md:shadow-none  bg-gray-50 
         fixed top-0 left-0 h-full  w-3/4 max-w-xs  shadow-lg transform transition-transform duration-500 ease-in-out z-50  ${
           isNavOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="h-16 py-4 px-4 flex justify-end items-center bg-cyan-500">
           <button
-            className="text-gray-600 text-2xl"
+            className="text-gray-600 text-2xl md:hidden"
             onClick={() => setIsNavOpen(false)}
           >
             <svg
