@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { AuthProvider } from "@/context/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,16 +33,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex flex-col min-h-screen">
-          <div className="flex flex-1">
-            <HamburgerMenu />
-            <div className="flex flex-col w-full">
-              <Navbar />
-              <Breadcrumb />
-              {children}
+          <AuthProvider>
+            <div className="flex flex-1">
+              <HamburgerMenu />
+              <div className="flex flex-col w-full">
+                <Navbar />
+                <Breadcrumb />
+                {children}
+              </div>
             </div>
-          </div>
 
-          <Footer />
+            <Footer />
+          </AuthProvider>
         </div>
       </body>
     </html>

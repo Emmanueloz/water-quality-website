@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react"; // import state
+import { useContext, useState } from "react"; // import state
 import Sidebar, { MenuItem } from "./Sidebar";
+import { AuthContext } from "@/context/AuthProvider";
 
 const menuItems: MenuItem[] = [
   {
@@ -83,9 +84,14 @@ const menuItems: MenuItem[] = [
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
+  const { isAuthenticated, setIsAuthenticated }: any = useContext(AuthContext);
 
   return (
-    <div className="relative md:static md:bg-gray-50">
+    <div
+      className={`relative md:static md:bg-gray-50 ${
+        !isAuthenticated ? "hidden" : ""
+      }`}
+    >
       <button
         className="absolute top-5 left-4 z-50 md:hidden"
         onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
