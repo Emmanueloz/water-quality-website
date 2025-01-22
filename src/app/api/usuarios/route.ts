@@ -1,7 +1,7 @@
 // app/api/usuarios/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../lib/db";  // Asumimos que db es tu función para la conexión
-import { Usuario } from "../../tipos/tipos";  // Tipos para los datos
+import { Usuario } from "../../../tipos/tipos";  // Tipos para los datos
 
 export async function GET(req: NextRequest) {
   let connection;
