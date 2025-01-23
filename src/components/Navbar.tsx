@@ -61,6 +61,11 @@ export default function Navbar() {
             Contacto
           </a>
           {isAuthenticated && (
+            <a href="#" className="ml-4 hover:underline">
+              Bienvenido {userName}
+            </a>
+          )}
+          {isAuthenticated && (
             <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
