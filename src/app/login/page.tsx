@@ -1,32 +1,35 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Cookies from 'js-cookie';
+"use client";
+import { useContext, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Cookies from "js-cookie";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function LoginPage() {
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const { isAuthenticated, setIsAuthenticated }: any = useContext(AuthContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     if (!user.trim() || !password.trim()) {
-      setError('Por favor, complete todos los campos.');
+      setError("Por favor, complete todos los campos.");
       setIsLoading(false);
       return;
     }
 
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
+      const response = await fetch("/api/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ Usuario: user, Contraseña: password }),
       });
@@ -34,16 +37,16 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-
-        Cookies.set('auth_token', data.token, { expires: 1, path: '/' }); // El token dura 1 día
+        Cookies.set("auth_token", data.token, { expires: 1, path: "/" }); // El token dura 1 día
 
         // Redirigir al usuario a la página principal
-        router.push('/');
+        setIsAuthenticated(!isAuthenticated);
+        router.push("/");
       } else {
-        setError(data.message || 'Error al iniciar sesión');
+        setError(data.message || "Error al iniciar sesión");
       }
     } catch (err) {
-      setError('Error de conexión con el servidor.');
+      setError("Error de conexión con el servidor.");
     } finally {
       setIsLoading(false);
     }
@@ -86,22 +89,23 @@ export default function LoginPage() {
           type="submit"
           disabled={isLoading}
           className={`p-3 text-white font-bold rounded-lg ${
-            isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+            isLoading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
           }`}
         >
-          {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+          {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
         </button>
       </form>
 
-      {error && (
-        <p className="text-red-500 font-semibold mt-4">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-red-500 font-semibold mt-4">{error}</p>}
 
       <div className="mt-6">
         <span>¿No tienes cuenta? </span>
-        <Link href="/register" className="text-blue-500 font-semibold hover:underline">
+        <Link
+          href="/register"
+          className="text-blue-500 font-semibold hover:underline"
+        >
           Regístrate aquí
         </Link>
       </div>

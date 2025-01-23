@@ -1,6 +1,6 @@
 import Link from 'next/link'
 const Page = () => {
-  throw new Error("Erroren la pagina de Raul");
+  //throw new Error("Erroren la pagina de Raul");
 
     return (
         <div>
