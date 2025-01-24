@@ -2,6 +2,8 @@
 
 import { db } from "@/lib/db";
 import { IMateria } from "@/tipos/materia";
+import { IUnidades } from "@/tipos/unidades";
+import { ResultSetHeader } from "mysql2";
 
 export const addMateria = async (materia: IMateria) => {
   const connection = await db();
@@ -11,11 +13,25 @@ export const addMateria = async (materia: IMateria) => {
     [materia.nombre, materia.maestro, materia.id_usuario]
   );
 
+  const [rows] = qResult as [ResultSetHeader, any];
+
+  const materiaId = rows.insertId;
+  for (const unidad of materia.unidades || []) {
+    await addUnidad({ ...unidad, id_materia: materiaId });
+  }
+};
+
+const addUnidad = async (unidad: IUnidades) => {
+  const connection = await db();
+
+  const qResult = await connection.execute(
+    "INSERT INTO unidades (nombre, horas_totales, id_materia) VALUES (?, ?, ?)",
+    [unidad.nombre, unidad.horas_totales, unidad.id_materia]
+  );
+
   const [rows] = qResult;
   console.log(rows);
 };
-
-const addUnidad = () => {};
 
 export const getMaterias = async (id_usuario: number) => {
   const connection = await db();
