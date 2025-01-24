@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import FormMaterias from "@/components/FormMaterias";
 import { getMaterias } from "@/app/materias/actions";
+import Link from "next/link";
 
 export default async function MateriasPage() {
   const result = await cookies();
@@ -38,8 +39,7 @@ export default async function MateriasPage() {
                 <td>{materia.nombre}</td>
                 <td>{materia.maestro}</td>
                 <td>
-                  <button>Editar</button>
-                  <button>Eliminar</button>
+                  <Link href={`/materias/${materia.id}`}>Detalles</Link>
                 </td>
               </tr>
             ))}
