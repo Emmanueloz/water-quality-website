@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { IUnidades } from "@/tipos/unidades";
 import { IMateria } from "@/tipos/materia";
 
+import { addMateria } from "@/app/materias/actions";
+
 export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
   console.log(id_usuario);
 
@@ -19,7 +21,7 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
       id_usuario,
     };
 
-    console.log(data);
+    await addMateria(data);
   };
 
   const idGenerate = () => Math.floor(Math.random() * 1000);
