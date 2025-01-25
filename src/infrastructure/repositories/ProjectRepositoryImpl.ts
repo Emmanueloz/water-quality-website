@@ -87,7 +87,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     async deleteProject(projectId: number): Promise<void> {
         await this.pool.execute(
             `DELETE FROM projects
-       WHERE id = ? AND id_user = ?`,
+       WHERE id = ?`,
             [projectId]
         );
     }
