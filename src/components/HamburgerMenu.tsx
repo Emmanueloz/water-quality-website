@@ -84,7 +84,18 @@ const menuItems: MenuItem[] = [
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
-  const { isAuthenticated, setIsAuthenticated }: any = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, projects } = useContext(AuthContext);
+  const subItemsForProjects = projects.map((project) => ({
+    name: project.name,
+    link: `/proyectos/${project.id}`,
+  }));
+  const menuItems = [
+    {
+      name: "Proyectos",
+      link: "/proyectos",
+      subItems: subItemsForProjects,
+    },
+  ]
 
   return (
     <div

@@ -1,24 +1,25 @@
 "use client";
 import { createContext, useState, ReactNode } from "react";
-import { UserProfile } from "@/tipos/tipos";
+import { Project, UserProfile } from "@/tipos/tipos";
 
-// Definir el tipo del contexto
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   userProfile: UserProfile | null;
   setUserProfile: (userProfile: UserProfile | null) => void;
+  projects: Project[] ;
+  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
 }
 
-// Crear el contexto con un valor por defecto tipado
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
+  setIsAuthenticated: () => { },
   userProfile: null,
-  setUserProfile: () => {},
+  setUserProfile: () => { },
+  projects: [],
+  setProjects: () => { },
 });
 
-// Definir el tipo de las props del provider
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -26,9 +27,11 @@ interface AuthProviderProps {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userProfile, setUserProfile }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userProfile, setUserProfile, projects, setProjects }}>
       {children}
     </AuthContext.Provider>
   );
