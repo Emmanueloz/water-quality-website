@@ -74,8 +74,6 @@ export const getMateria = async (id: number, id_usuario: number) => {
     return null;
   }
 
-  console.log(rows);
-
   const materia = rows[0]
     ? {
         id: rows[0].materia_id,

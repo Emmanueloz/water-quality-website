@@ -1,5 +1,7 @@
 import { getMateria } from "@/app/materias/actions";
 import Materias from "@/components/materias";
+import { getUserToken } from "@/utils/getUserToken";
+import { notFound } from "next/navigation";
 
 export default async function DetallesPage({
   params,
@@ -8,7 +10,13 @@ export default async function DetallesPage({
 }) {
   const id = (await params).id;
 
-  const materia = await getMateria(parseInt(id), 1);
+  const user = await getUserToken();
+
+  const materia = await getMateria(parseInt(id), user.id);
+
+  if (!materia) {
+    return notFound();
+  }
 
   return (
     <div>
