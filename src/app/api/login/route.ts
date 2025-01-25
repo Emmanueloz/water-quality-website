@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   let connection;
 
   try {
-    connection = await db();
+    connection = db.getPool();
 
     // Buscar usuario en la base de datos
     const [rows] = await connection.execute(
@@ -71,9 +71,5 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     console.error(error);
     return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
-  } finally {
-    if (connection) {
-      await connection.end(); // Cerrar conexión
-    }
   }
 }

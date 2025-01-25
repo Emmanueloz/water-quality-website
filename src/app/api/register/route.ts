@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
   try {
     // Conexión a la base de datos
-    connection = await db();
+    connection = db.getPool();
 
     // Verificar si el usuario ya existe en la base de datos
     const [existingUserRows] = await connection.execute(
@@ -59,10 +59,5 @@ export async function POST(req: NextRequest) {
 
     // En caso de error, devolver mensaje genérico
     return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
-  } finally {
-    // Cerrar la conexión a la base de datos
-    if (connection) {
-      await connection.end();
-    }
   }
 }

@@ -1,14 +1,34 @@
 "use client";
-import { createContext, useState } from "react";
+import { createContext, useState, ReactNode } from "react";
+import { UserProfile } from "@/tipos/tipos";
 
-const AuthContext = createContext({});
+// Definir el tipo del contexto
+interface AuthContextType {
+  isAuthenticated: boolean;
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  userProfile: UserProfile | null;
+  setUserProfile: (userProfile: UserProfile | null) => void;
+}
 
-const AuthProvider = ({ children }: { children: any }) => {
+// Crear el contexto con un valor por defecto tipado
+const AuthContext = createContext<AuthContextType>({
+  isAuthenticated: false,
+  setIsAuthenticated: () => {},
+  userProfile: null,
+  setUserProfile: () => {},
+});
+
+// Definir el tipo de las props del provider
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setUserName] = useState(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userName, setUserName }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userProfile, setUserProfile }}>
       {children}
     </AuthContext.Provider>
   );
