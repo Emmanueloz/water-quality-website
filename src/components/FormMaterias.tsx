@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { IUnidades } from "@/tipos/unidades";
 import { IMateria } from "@/tipos/materia";
 
-import { addMateria } from "@/app/materias/actions";
+import { MateriaContext } from "@/context/MateriaContext";
 
 export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
   console.log(id_usuario);
+
+  const { createMateria } = useContext(MateriaContext);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,7 +23,7 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
       id_usuario,
     };
 
-    await addMateria(data);
+    await createMateria(data);
   };
 
   const idGenerate = () => Math.floor(Math.random() * 1000);
