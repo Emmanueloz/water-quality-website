@@ -84,30 +84,47 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
   }, [listUnidades]);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-[50vh] p-4">
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        <label htmlFor="nombre">
-          <span>Nombre</span>
-          <input type="text" name="nombre" id="nombre" />
-        </label>
-        <label htmlFor="maestro">
-          <span>Maestro</span>
-          <input type="text" name="maestro" id="maestro" />
-        </label>
-        <label htmlFor="unidades">
-          <span>Unidades</span>
-          <button type="button" onClick={handleAddUnidad}>
-            Agregar Unidad
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      <label htmlFor="nombre" className="flex flex-col ">
+        <span className="font-semibold">Nombre</span>
+        <input
+          className="border-cyan-400 border rounded-lg p-1 outline-none"
+          type="text"
+          name="nombre"
+          id="nombre"
+        />
+      </label>
+      <label htmlFor="maestro" className="flex flex-col ">
+        <span className="font-semibold">Maestro</span>
+        <input
+          className="border-cyan-400 border rounded-lg p-1 outline-none"
+          type="text"
+          name="maestro"
+          id="maestro"
+        />
+      </label>
+      <label htmlFor="unidades" className="flex flex-col ">
+        <div className="flex justify-between mb-1">
+          <span className="font-semibold">Unidades</span>
+          <button
+            className="p-1 bg-cyan-400 w-10 text-white rounded-lg"
+            type="button"
+            onClick={handleAddUnidad}
+          >
+            +
           </button>
+        </div>
 
+        <ul className="flex flex-col gap-2">
           {listUnidades.map((u, i) => (
-            <div key={i}>
+            <div key={i} className="flex gap-4">
               <input
                 type="text"
                 name="unidades"
                 id="unidades"
                 placeholder="Nombre de la unidad"
                 value={u.nombre}
+                className="border-cyan-400 border rounded-lg p-1 outline-none flex-grow "
                 onChange={(e) => handleNameUnidad(u.id ?? i, e.target.value)}
               />
               <input
@@ -116,6 +133,7 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
                 id="horas_totales"
                 placeholder="Horas de la unidad"
                 value={u.horas_totales}
+                className="border-cyan-400 border rounded-lg p-1 outline-none "
                 onChange={(e) =>
                   handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
                 }
@@ -125,17 +143,30 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
                 onClick={() => handleRemoveUnidad(u.id ?? i)}
                 className={`${
                   listUnidades.length === 1
-                    ? "disabled pointer-events-none text-red-400"
+                    ? "disabled pointer-events-none  bg-red-200 "
                     : ""
-                } text-red-600`}
+                } bg-red-600 p-1 w-10 text-white rounded-lg`}
               >
-                Eliminar Unidad
+                -
               </button>
             </div>
           ))}
-        </label>
-        <button type="submit">Agregar</button>
-      </form>
-    </main>
+        </ul>
+      </label>
+      <div className="flex  gap-4">
+        <button
+          className="p-2 rounded-lg bg-gray-400 hover:bg-gray-300 "
+          type="reset"
+        >
+          Limpiar
+        </button>
+        <button
+          className="p-2 rounded-lg bg-cyan-500 hover:bg-cyan-300"
+          type="submit"
+        >
+          Agregar
+        </button>
+      </div>
+    </form>
   );
 }

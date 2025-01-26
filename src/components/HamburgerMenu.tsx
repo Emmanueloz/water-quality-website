@@ -29,6 +29,10 @@ const menuItems: MenuItem[] = [
     name: "Materias",
     subItems: [
       {
+        name: "Mis Materias",
+        link: "/materias/",
+      },
+      {
         name: "Matemáticas para ingeniería II",
         link: "/angel/materias/matematicas",
       },
