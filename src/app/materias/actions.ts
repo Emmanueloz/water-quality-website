@@ -95,3 +95,18 @@ export const getMateria = async (id: number, id_usuario: number) => {
 
   return materia as IMateria;
 };
+
+export const deleteMateria = async (materia: IMateria) => {
+  const connection = await db();
+
+  const qResult = await connection.execute(
+    `
+    DELETE FROM materias WHERE materias.id = ? AND materias.id_usuario = ?
+    `,
+    [materia.id, materia.id_usuario]
+  );
+
+  const [rows] = qResult as [any[], any];
+
+  console.log(rows);
+};

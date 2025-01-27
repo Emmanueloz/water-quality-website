@@ -1,6 +1,7 @@
 import { getMateria } from "@/app/materias/actions";
 import Materias from "@/components/materias";
 import { getUserToken } from "@/utils/getUserToken";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function DetallesPage({
@@ -19,9 +20,20 @@ export default async function DetallesPage({
   }
 
   return (
-    <div>
-      <h1>Materias {id}</h1>
+    <main className="p-4">
+      <h1 className="text-xl font-semibold">Detalles de la materia</h1>
+      <div className="p-2 flex justify-around">
+        <Link
+          className="p-2 border border-cyan-500 text-cyan-500 rounded-lg hover:bg-cyan-500 hover:text-white transition-colors duration-300  "
+          href={`/materias/${materia.id}/edit`}
+        >
+          Editar
+        </Link>
+        <button className="p-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors duration-300">
+          Eliminar
+        </button>
+      </div>
       {materia && <Materias materia={materia} tag={null} />}
-    </div>
+    </main>
   );
 }
