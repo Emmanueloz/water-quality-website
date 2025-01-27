@@ -5,28 +5,11 @@ import { IUnidades } from "@/tipos/unidades";
 import { IMateria } from "@/tipos/materia";
 
 import { MateriaContext } from "@/context/MateriaContext";
+import { idGenerate } from "@/utils/idGenerate";
+import { MateriaValidator } from "@/utils/materiasValidator";
 
 export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
-  console.log(id_usuario);
-
   const { createMateria } = useContext(MateriaContext);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    console.log(formData);
-
-    const data: IMateria = {
-      nombre: formData.get("nombre") as string,
-      maestro: formData.get("maestro") as string,
-      unidades: listUnidades,
-      id_usuario,
-    };
-
-    await createMateria(data);
-  };
-
-  const idGenerate = () => Math.floor(Math.random() * 1000);
 
   const [listUnidades, setListUnidades] = useState([
     {
@@ -36,6 +19,57 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
       id_materia: 1,
     },
   ] as IUnidades[]);
+
+  const [formError, setFormError] = useState({
+    nombre: "",
+    maestro: "",
+    unidades: [],
+  } as {
+    nombre: string;
+    maestro: string;
+    unidades: string[];
+  });
+
+  const formValidate = (data: IMateria) => {
+    const materiaValidator = new MateriaValidator(data);
+
+    console.log(materiaValidator.validate());
+
+    setFormError({
+      nombre: materiaValidator.getNameError(),
+      maestro: materiaValidator.getTeacherError(),
+      unidades: materiaValidator.getUnitsError(),
+    });
+
+    return materiaValidator.validate();
+  };
+
+  useEffect(() => {
+    console.log(formError);
+  }, [formError]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const data: IMateria = {
+      nombre: formData.get("nombre") as string,
+      maestro: formData.get("maestro") as string,
+      unidades: listUnidades,
+      id_usuario,
+    };
+
+    const isError = formValidate(data);
+
+    console.log(isError);
+
+    if (isError) {
+      return;
+    }
+
+    await createMateria(data);
+  };
 
   const handleAddUnidad = () => {
     setListUnidades([
@@ -79,10 +113,6 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
     );
   };
 
-  useEffect(() => {
-    console.log(listUnidades);
-  }, [listUnidades]);
-
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <label htmlFor="nombre" className="flex flex-col ">
@@ -92,7 +122,11 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
           type="text"
           name="nombre"
           id="nombre"
+          maxLength={80}
         />
+        {formError.nombre && (
+          <span className="text-red-500 text-sm">{formError.nombre}</span>
+        )}
       </label>
       <label htmlFor="maestro" className="flex flex-col ">
         <span className="font-semibold">Maestro</span>
@@ -101,7 +135,11 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
           type="text"
           name="maestro"
           id="maestro"
+          maxLength={80}
         />
+        {formError.maestro && (
+          <span className="text-red-500 text-sm">{formError.maestro}</span>
+        )}
       </label>
       <label htmlFor="unidades" className="flex flex-col ">
         <div className="flex justify-between mb-1">
@@ -117,39 +155,48 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
 
         <ul className="flex flex-col gap-2">
           {listUnidades.map((u, i) => (
-            <div key={i} className="flex gap-4">
-              <input
-                type="text"
-                name="unidades"
-                id="unidades"
-                placeholder="Nombre de la unidad"
-                value={u.nombre}
-                className="border-cyan-400 border rounded-lg p-1 outline-none flex-grow "
-                onChange={(e) => handleNameUnidad(u.id ?? i, e.target.value)}
-              />
-              <input
-                type="number"
-                name="horas_totales"
-                id="horas_totales"
-                placeholder="Horas de la unidad"
-                value={u.horas_totales}
-                className="border-cyan-400 border rounded-lg p-1 outline-none w-20"
-                onChange={(e) =>
-                  handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
-                }
-              />
-              <button
-                type="button"
-                onClick={() => handleRemoveUnidad(u.id ?? i)}
-                className={`${
-                  listUnidades.length === 1
-                    ? "disabled pointer-events-none  bg-red-200 "
-                    : ""
-                } bg-red-600 p-1 w-10 text-white rounded-lg`}
-              >
-                -
-              </button>
-            </div>
+            <li key={i}>
+              <div className="flex gap-4">
+                <input
+                  type="text"
+                  name="unidades"
+                  id="unidades"
+                  placeholder="Nombre de la unidad"
+                  value={u.nombre}
+                  maxLength={80}
+                  className="border-cyan-400 border rounded-lg p-1 outline-none flex-grow "
+                  onChange={(e) => handleNameUnidad(u.id ?? i, e.target.value)}
+                />
+                <input
+                  type="number"
+                  name="horas_totales"
+                  id="horas_totales"
+                  placeholder="Horas de la unidad"
+                  value={u.horas_totales}
+                  min={1}
+                  className="border-cyan-400 border rounded-lg p-1 outline-none w-20"
+                  onChange={(e) =>
+                    handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveUnidad(u.id ?? i)}
+                  className={`${
+                    listUnidades.length === 1
+                      ? "disabled pointer-events-none  bg-red-200 "
+                      : ""
+                  } bg-red-600 p-1 w-10 text-white rounded-lg`}
+                >
+                  -
+                </button>
+              </div>
+              {formError.unidades[i] && (
+                <span className="text-red-500 text-sm">
+                  {formError.unidades[i]}
+                </span>
+              )}
+            </li>
           ))}
         </ul>
       </label>
