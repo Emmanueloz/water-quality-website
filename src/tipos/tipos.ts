@@ -9,4 +9,18 @@ export interface LoginRequestBody {
     Contraseña: string;
     rol: string;
   }
-  
+export interface UserProfile{
+  id: number;
+  userName: string;
+  rol: string;
+}
+
+export interface Project{
+  id?: number;
+  name: string;
+  description: string;
+  category: string;
+  status: string;
+  technologies: string;
+  idUser?: number;
+}
