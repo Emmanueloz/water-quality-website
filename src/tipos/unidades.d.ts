@@ -4,5 +4,3 @@ interface IUnidades {
   horas_totales: number;
   id_materia: number;
 }
-
-export type { IUnidades };

@@ -1,6 +1,5 @@
 "use client";
 
-import { IMateria } from "@/tipos/materia";
 import { ButtonDialog } from "./ButtonDialog";
 import { deleteMateria } from "@/app/materias/actions";
 import { redirect } from "next/navigation";

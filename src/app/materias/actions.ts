@@ -1,8 +1,6 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { IMateria } from "@/tipos/materia";
-import { IUnidades } from "@/tipos/unidades";
 import { ResultSetHeader } from "mysql2";
 
 export const addMateria = async (materia: IMateria) => {
@@ -33,19 +31,49 @@ const addUnidad = async (unidad: IUnidades) => {
   console.log(rows);
 };
 
-export const getMaterias = async (id_usuario: number) => {
+export const getMaterias = async ({
+  id_usuario,
+  page,
+  pageSize,
+}: IGetMateriasInput): Promise<IGetMateriasOutput> => {
   const connection = await db();
 
+  // Validación de parámetros
+  if (page < 1 || pageSize < 1) {
+    throw new Error(
+      "El número de página y el tamaño de página deben ser mayores a 0."
+    );
+  }
+
+  const offset = (page - 1) * pageSize;
+
+  // Consulta paginada para obtener los resultados
   const qResult = await connection.execute(
     `
-    SELECT * FROM materias WHERE id_usuario = ?
+    SELECT * 
+    FROM materias 
+    WHERE id_usuario = ?
+    LIMIT ? OFFSET ?
+    `,
+    [id_usuario, pageSize, offset]
+  );
+
+  const [materias] = qResult as [IMateria[], any];
+
+  // Consulta para contar el total de registros
+  const [totalResult] = await connection.execute(
+    `
+    SELECT COUNT(*) as total
+    FROM materias 
+    WHERE id_usuario = ?
     `,
     [id_usuario]
   );
 
-  const [materias] = qResult;
+  const total = (totalResult as { total: number }[])[0].total;
+  const totalPages = Math.ceil(total / pageSize);
 
-  return materias as IMateria[];
+  return { materias, total, totalPages };
 };
 
 export const getMateria = async (id: number, id_usuario: number) => {

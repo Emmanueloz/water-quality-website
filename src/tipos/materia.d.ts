@@ -1,5 +1,3 @@
-import { IUnidades } from "./unidades";
-
 interface IMateria {
   id?: number;
   nombre: string;
@@ -7,5 +5,3 @@ interface IMateria {
   id_usuario: number;
   unidades?: IUnidades[];
 }
-
-export type { IMateria };

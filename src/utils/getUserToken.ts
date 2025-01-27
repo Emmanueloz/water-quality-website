@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { IUserToken } from "@/tipos/user";
 
 export async function getUserToken(): Promise<IUserToken> {
   const result = await cookies();

@@ -5,5 +5,3 @@ interface IUserToken {
   iat: number;
   exp: number;
 }
-
-export type { IUserToken };

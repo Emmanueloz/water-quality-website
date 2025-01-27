@@ -1,6 +1,5 @@
 import { getMateria } from "@/app/materias/actions";
 import { ButtonDeleteMateria } from "@/components/ButtonDeleteMateria";
-import { ButtonDialog } from "@/components/ButtonDialog";
 import Materias from "@/components/materias";
 import { getUserToken } from "@/utils/getUserToken";
 import Link from "next/link";

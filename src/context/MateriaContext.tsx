@@ -1,6 +1,5 @@
 "use client";
 import { getMaterias, addMateria } from "@/app/materias/actions";
-import { IMateria } from "@/tipos/materia";
 import { createContext, useState } from "react";
 
 const MateriaContext = createContext(
@@ -15,8 +14,12 @@ const MateriaProvider = ({ children }: { children: any }) => {
   const [listMaterias, setListMaterias] = useState([] as IMateria[]);
 
   const getListMaterias = async (id_usuario: number) => {
-    const listMaterias = await getMaterias(id_usuario);
-    setListMaterias(listMaterias);
+    const { materias } = await getMaterias({
+      id_usuario,
+      page: 1,
+      pageSize: 10,
+    });
+    setListMaterias(materias);
   };
 
   const createMateria = async (materia: IMateria) => {

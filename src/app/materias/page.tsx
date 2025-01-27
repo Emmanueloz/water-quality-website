@@ -8,8 +8,6 @@ import { MateriaProvider } from "@/context/MateriaContext";
 export default async function MateriasPage() {
   const user = await getUserToken();
 
-  const materias = await getMaterias(user.id);
-
   return (
     <main>
       <MateriaProvider>
