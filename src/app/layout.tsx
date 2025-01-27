@@ -6,6 +6,8 @@ import HamburgerMenu from "@/components/HamburgerMenu";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthProvider";
+import { MateriaProvider } from "@/context/MateriaContext";
+import { RootProvider } from "@/context/RootProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex flex-col min-h-screen">
-          <AuthProvider>
+          <RootProvider>
             <div className="flex flex-1">
               <HamburgerMenu />
               <div className="flex flex-col w-full">
@@ -42,9 +44,8 @@ export default function RootLayout({
                 {children}
               </div>
             </div>
-
             <Footer />
-          </AuthProvider>
+          </RootProvider>
         </div>
       </body>
     </html>

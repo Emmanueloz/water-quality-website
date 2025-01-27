@@ -1,14 +1,10 @@
 "use client";
 import { MateriaContext } from "@/context/MateriaContext";
 import Link from "next/link";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 export default function TableMateria({ id_usuario }: { id_usuario: number }) {
-  const { getListMaterias, listMaterias } = useContext(MateriaContext);
-
-  useEffect(() => {
-    getListMaterias(id_usuario);
-  }, [id_usuario]);
+  const { listMaterias } = useContext(MateriaContext);
 
   const classNames = {
     table: "items-center bg-transparent w-full border-collapse table-fixed",

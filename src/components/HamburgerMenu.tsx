@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from "react"; // import state
 import Sidebar, { MenuItem } from "./Sidebar";
 import { AuthContext } from "@/context/AuthProvider";
+import { MateriaContext } from "@/context/MateriaContext";
 
 const menuItems: MenuItem[] = [
   {
@@ -91,6 +92,8 @@ export default function HamburgerMenu({}) {
   const { isAuthenticated, projects, setProjects, userProfile } =
     useContext(AuthContext);
 
+  const { listMaterias, getListMaterias } = useContext(MateriaContext);
+
   const getAllProjectsPerUser = async () => {
     const response = await fetch(`/api/proyectos?userId=${userProfile?.id}`);
     const data = await response.json();
@@ -105,6 +108,7 @@ export default function HamburgerMenu({}) {
   useEffect(() => {
     if (userProfile?.id) {
       getAllProjectsPerUser();
+      getListMaterias(userProfile.id);
     }
   }, [userProfile]);
 
@@ -112,11 +116,22 @@ export default function HamburgerMenu({}) {
     name: project.name,
     link: `/proyectos/${project.id}`,
   }));
+
+  const subItemsForMaterias = listMaterias.map((materia) => ({
+    name: materia.nombre,
+    link: `/materias/${materia.id}`,
+  }));
+
   const menuItems = [
     {
       name: "Proyectos",
       link: "/proyectos",
       subItems: subItemsForProjects,
+    },
+    {
+      name: "Materias",
+      link: "/materias",
+      subItems: subItemsForMaterias,
     },
   ];
 
