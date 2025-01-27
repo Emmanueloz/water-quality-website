@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { ResultSetHeader } from "mysql2";
 
 export const addMateria = async (materia: IMateria) => {
-  const connection = await db();
+  const connection = await db.getPool();
 
   const qResult = await connection.execute(
     "INSERT INTO materias (nombre, maestro, id_usuario) VALUES (?, ?, ?)",
@@ -20,7 +20,7 @@ export const addMateria = async (materia: IMateria) => {
 };
 
 const addUnidad = async (unidad: IUnidades) => {
-  const connection = await db();
+  const connection = await db.getPool();
 
   const qResult = await connection.execute(
     "INSERT INTO unidades (nombre, horas_totales, id_materia) VALUES (?, ?, ?)",
@@ -36,7 +36,7 @@ export const getMaterias = async ({
   page,
   pageSize,
 }: IGetMateriasInput): Promise<IGetMateriasOutput> => {
-  const connection = await db();
+  const connection = await db.getPool();
 
   // Validación de parámetros
   if (page < 1 || pageSize < 1) {
@@ -77,7 +77,7 @@ export const getMaterias = async ({
 };
 
 export const getMateria = async (id: number, id_usuario: number) => {
-  const connection = await db();
+  const connection = await db.getPool();
 
   const qResult = await connection.execute(
     `
@@ -127,7 +127,7 @@ export const getMateria = async (id: number, id_usuario: number) => {
 };
 
 export const deleteMateria = async (materia: IMateria) => {
-  const connection = await db();
+  const connection = await db.getPool();
 
   const qResult = await connection.execute(
     `
