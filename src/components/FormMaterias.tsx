@@ -44,10 +44,6 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
     return materiaValidator.validate();
   };
 
-  useEffect(() => {
-    console.log(formError);
-  }, [formError]);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -111,6 +107,17 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
         return u;
       })
     );
+  };
+
+  const handleFormReset = () => {
+    setListUnidades([
+      {
+        id: idGenerate(),
+        nombre: "",
+        horas_totales: 10,
+        id_materia: 1,
+      },
+    ]);
   };
 
   return (
@@ -185,8 +192,8 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
                   className={`${
                     listUnidades.length === 1
                       ? "disabled pointer-events-none  bg-red-200 "
-                      : ""
-                  } bg-red-600 p-1 w-10 text-white rounded-lg`}
+                      : "bg-red-600"
+                  }  p-1 w-10 text-white rounded-lg`}
                 >
                   -
                 </button>
@@ -204,6 +211,7 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
         <button
           className="p-2 rounded-lg bg-gray-400 hover:bg-gray-300 "
           type="reset"
+          onClick={handleFormReset}
         >
           Limpiar
         </button>
