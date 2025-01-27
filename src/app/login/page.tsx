@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
@@ -12,24 +12,8 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const {
-    isAuthenticated,
-    setIsAuthenticated,
-    setUserProfile,
-    setProjects,
-    userProfile,
-  } = useContext(AuthContext);
-
-  const getAllProjectsPerUser = async () => {
-    const response = await fetch(`/api/proyectos?userId=${userProfile?.id}`);
-    const data = await response.json();
-    if (response.ok) {
-      console.log("Proyectos obtenidos:", data);
-      setProjects(data.data);
-    } else {
-      console.error("Error al obtener los proyectos:", data.message);
-    }
-  };
+  const { isAuthenticated, setIsAuthenticated, setUserProfile } =
+    useContext(AuthContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +41,7 @@ export default function LoginPage() {
         Cookies.set("auth_token", data.token, { expires: 1, path: "/" }); // El token dura 1 día
 
         // Redirigir al usuario a la página principal
-        setIsAuthenticated(!isAuthenticated);
+        setIsAuthenticated(true);
         setUserProfile({
           id: data.usuario.id,
           userName: data.usuario.Usuario,
@@ -75,12 +59,6 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (userProfile?.id) {
-      getAllProjectsPerUser();
-    }
-  }, [userProfile]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">

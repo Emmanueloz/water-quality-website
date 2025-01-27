@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useState } from "react"; // import state
+import { useContext, useEffect, useState } from "react"; // import state
 import Sidebar, { MenuItem } from "./Sidebar";
 import { AuthContext } from "@/context/AuthProvider";
 
@@ -88,7 +88,26 @@ const menuItems: MenuItem[] = [
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
-  const { isAuthenticated, setIsAuthenticated, projects } = useContext(AuthContext);
+  const { isAuthenticated, projects, setProjects, userProfile } =
+    useContext(AuthContext);
+
+  const getAllProjectsPerUser = async () => {
+    const response = await fetch(`/api/proyectos?userId=${userProfile?.id}`);
+    const data = await response.json();
+    if (response.ok) {
+      console.log("Proyectos obtenidos:", data);
+      setProjects(data.data);
+    } else {
+      console.error("Error al obtener los proyectos:", data.message);
+    }
+  };
+
+  useEffect(() => {
+    if (userProfile?.id) {
+      getAllProjectsPerUser();
+    }
+  }, [userProfile]);
+
   const subItemsForProjects = projects.map((project) => ({
     name: project.name,
     link: `/proyectos/${project.id}`,
@@ -99,7 +118,7 @@ export default function HamburgerMenu({}) {
       link: "/proyectos",
       subItems: subItemsForProjects,
     },
-  ]
+  ];
 
   return (
     <div

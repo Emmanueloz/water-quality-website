@@ -50,11 +50,13 @@ export default function Navbar() {
     }
   };
 
-  /*
   useEffect(() => {
-    checkSession(); // Verificar la sesión al cargar el componente
+    if (!isAuthenticated) {
+      // Verificar la sesión al cargar el componente
+      checkSession();
+    }
   }, []);
-*/
+
   return (
     <header className="bg-cyan-500 text-white py-4">
       <div className="container mx-auto flex justify-between items-center px-4">
