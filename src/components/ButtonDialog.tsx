@@ -60,8 +60,8 @@ function ButtonDialog({
           <article className="flex flex-col gap-2 md:flex-row-reverse">
             <button
               onClick={() => {
-                handleAccept();
                 setOpenDialog(false);
+                handleAccept();
               }}
               className={`p-2  rounded-lg bg-${accentColor} text-white transition-colors duration-300`}
             >

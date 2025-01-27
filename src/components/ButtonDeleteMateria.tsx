@@ -2,10 +2,14 @@
 
 import { IMateria } from "@/tipos/materia";
 import { ButtonDialog } from "./ButtonDialog";
+import { deleteMateria } from "@/app/materias/actions";
+import { redirect } from "next/navigation";
 
 function ButtonDeleteMateria({ materia }: { materia: IMateria }) {
-  const handledDelete = () => {
+  const handledDelete = async () => {
     console.log(`Eliminar ${materia.id}`);
+    await deleteMateria(materia);
+    redirect("/materias/");
   };
 
   return (
