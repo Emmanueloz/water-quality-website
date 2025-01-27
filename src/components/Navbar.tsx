@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { AuthContext } from "@/context/AuthProvider";
+import { useContext, useEffect, useState } from "react";
 
 export default function Navbar() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, setIsAuthenticated }: any = useContext(AuthContext);
 
   // Verificar la sesión al cargar la página
   const checkSession = async () => {
     try {
-      const response = await fetch('/api/session');
+      const response = await fetch("/api/session");
       const data = await response.json();
       setIsAuthenticated(data.isAuthenticated);
     } catch (error) {
@@ -20,15 +21,15 @@ export default function Navbar() {
   // Llamar a la función de cierre de sesión
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include",
       });
 
       if (response.ok) {
         console.log("Sesión cerrada exitosamente");
         setIsAuthenticated(false); // Actualizar estado local
-        window.location.href = '/'; // Redirigir si es necesario
+        window.location.href = "/"; // Redirigir si es necesario
       } else {
         const errorData = await response.json();
         console.error("Error al cerrar sesión:", errorData.message);
