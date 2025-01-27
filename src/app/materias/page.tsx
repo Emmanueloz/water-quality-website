@@ -13,12 +13,12 @@ export default async function MateriasPage() {
   return (
     <main>
       <MateriaProvider>
-        <section className="md:flex md:justify-between pt-10 px-4 gap-1">
-          <article className="md:w-1/2 lg:w-1/3">
+        <section className="flex flex-col lg:flex-row lg:justify-between  pt-2 px-4 gap-1">
+          <article className=" lg:w-1/2 xl:w-2/5">
             <h2 className="text-xl font-semibold">Crear materia</h2>
             <FormMaterias id_usuario={user.id} />
           </article>
-          <article className="md:w-1/2 lg:w-2/3">
+          <article className="lg:w-1/2">
             <h2 className="text-xl font-semibold">Lista materias</h2>
             <TableMateria id_usuario={user.id} />
           </article>

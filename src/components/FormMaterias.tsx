@@ -133,7 +133,7 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
                 id="horas_totales"
                 placeholder="Horas de la unidad"
                 value={u.horas_totales}
-                className="border-cyan-400 border rounded-lg p-1 outline-none "
+                className="border-cyan-400 border rounded-lg p-1 outline-none w-20"
                 onChange={(e) =>
                   handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
                 }
