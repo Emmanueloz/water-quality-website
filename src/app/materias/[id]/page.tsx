@@ -1,4 +1,6 @@
 import { getMateria } from "@/app/materias/actions";
+import { ButtonDeleteMateria } from "@/components/ButtonDeleteMateria";
+import { ButtonDialog } from "@/components/ButtonDialog";
 import Materias from "@/components/materias";
 import { getUserToken } from "@/utils/getUserToken";
 import Link from "next/link";
@@ -29,9 +31,7 @@ export default async function DetallesPage({
         >
           Editar
         </Link>
-        <button className="p-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors duration-300">
-          Eliminar
-        </button>
+        <ButtonDeleteMateria materia={materia} />
       </div>
       {materia && <Materias materia={materia} tag={null} />}
     </main>
