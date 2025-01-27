@@ -57,6 +57,7 @@ export const getMateria = async (id: number, id_usuario: number) => {
       materias.id AS materia_id,
       materias.nombre AS materia_nombre,
       materias.maestro AS materia_maestro,
+      materias.id_usuario as id_usuario,
       GROUP_CONCAT(unidades.id ORDER BY unidades.id) AS unidades_ids,
       GROUP_CONCAT(unidades.nombre ORDER BY unidades.id) AS unidades_nombres,
       GROUP_CONCAT(unidades.horas_totales ORDER BY unidades.id) AS unidades_horas_totales
@@ -79,6 +80,7 @@ export const getMateria = async (id: number, id_usuario: number) => {
         id: rows[0].materia_id,
         nombre: rows[0].materia_nombre,
         maestro: rows[0].materia_maestro,
+        id_usuario: rows[0].id_usuario,
         unidades: rows[0].unidades_ids
           ? rows[0].unidades_ids
               .split(",")
