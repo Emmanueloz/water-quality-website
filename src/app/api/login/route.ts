@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { generarToken } from "../../../lib/jwt";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
-
-// Clave secreta para el JWT
-const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta_super_segura";
 
 export async function POST(req: NextRequest) {
   const { Usuario, Contraseña }: LoginRequestBody = await req.json();
@@ -43,10 +40,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Generar un token JWT
-    const token = jwt.sign(
+    const token = generarToken(
       { id: user.id, Usuario: user.Usuario, rol: user.rol },
-      JWT_SECRET,
-      { expiresIn: "2h" }
+      "2h"
     );
 
     // Establecer la cookie del token
@@ -60,11 +56,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    response.cookies.set('auth_token', token, {
+    response.cookies.set("auth_token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Solo segura en producción
-      sameSite: 'strict', // Evitar ataques CSRF
-      path: '/', // Hacer la cookie accesible en toda la app
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
     });
 
     return response;
