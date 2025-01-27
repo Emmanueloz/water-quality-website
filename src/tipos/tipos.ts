@@ -1,21 +1,16 @@
 export interface LoginRequestBody {
-    Usuario: string;
-    Contraseña: string;
-  }
-  
-  export interface Usuario {
-    id: number;
-    Usuario: string;
-    Contraseña: string;
-    rol: string;
-  }
-export interface UserProfile{
+  Usuario: string;
+  Contraseña: string;
+}
+
+export interface Usuario {
   id: number;
-  userName: string;
+  Usuario: string;
+  Contraseña: string;
   rol: string;
 }
 
-export interface Project{
+export interface Project {
   id?: number;
   name: string;
   description: string;

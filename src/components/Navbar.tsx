@@ -4,7 +4,8 @@ import { AuthContext } from "@/context/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 
 export default function Navbar() {
-  const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } =
+    useContext(AuthContext);
 
   // Verificar la sesión al cargar la página
   const checkSession = async () => {
@@ -13,7 +14,13 @@ export default function Navbar() {
       const data = await response.json();
       const user = data.user;
       setIsAuthenticated(data.isAuthenticated);
-      setUserProfile({ id : user?.id, userName: user?.userName, rol: user?.rol });
+      setUserProfile({
+        id: user?.id,
+        userName: user?.userName,
+        rol: user?.rol,
+        exp: user?.exp,
+        iat: user?.iat,
+      });
     } catch (error) {
       console.error("Error verificando la sesión:", error);
       setIsAuthenticated(false);
@@ -43,10 +50,11 @@ export default function Navbar() {
     }
   };
 
+  /*
   useEffect(() => {
     checkSession(); // Verificar la sesión al cargar el componente
   }, []);
-
+*/
   return (
     <header className="bg-cyan-500 text-white py-4">
       <div className="container mx-auto flex justify-between items-center px-4">

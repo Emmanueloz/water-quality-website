@@ -1,23 +1,23 @@
 "use client";
 import { createContext, useState, ReactNode } from "react";
-import { Project, UserProfile } from "@/tipos/tipos";
+import { Project } from "@/tipos/tipos";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   userProfile: UserProfile | null;
   setUserProfile: (userProfile: UserProfile | null) => void;
-  projects: Project[] ;
+  projects: Project[];
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  setIsAuthenticated: () => { },
+  setIsAuthenticated: () => {},
   userProfile: null,
-  setUserProfile: () => { },
+  setUserProfile: () => {},
   projects: [],
-  setProjects: () => { },
+  setProjects: () => {},
 });
 
 interface AuthProviderProps {
@@ -29,9 +29,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
 
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userProfile, setUserProfile, projects, setProjects }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        setIsAuthenticated,
+        userProfile,
+        setUserProfile,
+        projects,
+        setProjects,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,7 +1,7 @@
-interface IUserToken {
+interface UserProfile {
   id: number;
-  email: string;
-  role: string;
+  userName: string;
+  rol: string;
   iat: number;
   exp: number;
 }
