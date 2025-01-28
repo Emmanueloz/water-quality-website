@@ -109,13 +109,31 @@ export const getMateria = async (id: number, id_usuario: number) => {
 };
 
 export const deleteMateria = async (materia: IMateria) => {
-  const connection = await db.getPool();
+  const connection = db.getPool();
 
   const qResult = await connection.execute(
     `
     DELETE FROM materias WHERE materias.id = ? AND materias.id_usuario = ?
     `,
     [materia.id, materia.id_usuario]
+  );
+
+  const [rows] = qResult as [any[], any];
+
+  console.log(rows);
+};
+
+export const updateMateria = async (materia: IMateria) => {
+  const connection = db.getPool();
+
+  const qResult = await connection.execute(
+    `
+    UPDATE materias 
+    SET nombre = ?,
+        maestro=?
+    WHERE materias.id = ? AND materias.id_usuario = ?
+    `,
+    [materia.nombre, materia.maestro, materia.id, materia.id_usuario]
   );
 
   const [rows] = qResult as [any[], any];
