@@ -25,6 +25,8 @@ export default function FormMaterias({
     }
   );
 
+  const [isEditUnidades, setIsEditUnidades] = useState(false);
+
   const [listUnidades, setListUnidades] = useState([
     {
       id: idGenerate(),
@@ -153,6 +155,14 @@ export default function FormMaterias({
     ]);
   };
 
+  useEffect(() => {
+    console.log(materia);
+
+    if (materia == undefined) {
+      setIsEditUnidades(true);
+    }
+  }, []);
+
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <label htmlFor="nombre" className="flex flex-col ">
@@ -185,65 +195,83 @@ export default function FormMaterias({
           <span className="text-red-500 text-sm">{formError.maestro}</span>
         )}
       </label>
-      <label htmlFor="unidades" className="flex flex-col ">
-        <div className="flex justify-between mb-1">
-          <span className="font-semibold">Unidades</span>
-          <button
-            className="p-1 bg-cyan-400 w-10 text-white rounded-lg"
-            type="button"
-            onClick={handleAddUnidad}
-          >
-            +
-          </button>
-        </div>
 
-        <ul className="flex flex-col gap-2">
-          {listUnidades.map((u, i) => (
-            <li key={i}>
-              <div className="flex gap-4">
-                <input
-                  type="text"
-                  name="unidades"
-                  id="unidades"
-                  placeholder="Nombre de la unidad"
-                  value={u.nombre}
-                  maxLength={80}
-                  className="border-cyan-400 border rounded-lg p-1 outline-none flex-grow "
-                  onChange={(e) => handleNameUnidad(u.id ?? i, e.target.value)}
-                />
-                <input
-                  type="number"
-                  name="horas_totales"
-                  id="horas_totales"
-                  placeholder="Horas de la unidad"
-                  value={u.horas_totales}
-                  min={1}
-                  className="border-cyan-400 border rounded-lg p-1 outline-none w-20"
-                  onChange={(e) =>
-                    handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
-                  }
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveUnidad(u.id ?? i)}
-                  className={`${
-                    listUnidades.length === 1
-                      ? "disabled pointer-events-none  bg-red-200 "
-                      : "bg-red-600"
-                  }  p-1 w-10 text-white rounded-lg`}
-                >
-                  -
-                </button>
-              </div>
-              {formError.unidades[i] && (
-                <span className="text-red-500 text-sm">
-                  {formError.unidades[i]}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      </label>
+      {materia && (
+        <label htmlFor="editUnidades" className="">
+          <input
+            type="checkbox"
+            name="editUnidades"
+            id="editUnidades"
+            onChange={(e) => setIsEditUnidades(!isEditUnidades)}
+          />
+          <span>Editar unidades</span>
+        </label>
+      )}
+
+      {isEditUnidades && (
+        <label htmlFor="unidades" className="flex flex-col ">
+          <div className="flex justify-between mb-1">
+            <span className="font-semibold">Unidades</span>
+            <button
+              className="p-1 bg-cyan-400 w-10 text-white rounded-lg"
+              type="button"
+              onClick={handleAddUnidad}
+            >
+              +
+            </button>
+          </div>
+
+          <ul className="flex flex-col gap-2">
+            {listUnidades.map((u, i) => (
+              <li key={i}>
+                <div className="flex gap-4">
+                  <input
+                    type="text"
+                    name="unidades"
+                    id="unidades"
+                    placeholder="Nombre de la unidad"
+                    value={u.nombre}
+                    maxLength={80}
+                    className="border-cyan-400 border rounded-lg p-1 outline-none flex-grow "
+                    onChange={(e) =>
+                      handleNameUnidad(u.id ?? i, e.target.value)
+                    }
+                  />
+                  <input
+                    type="number"
+                    name="horas_totales"
+                    id="horas_totales"
+                    placeholder="Horas de la unidad"
+                    value={u.horas_totales}
+                    min={1}
+                    className="border-cyan-400 border rounded-lg p-1 outline-none w-20"
+                    onChange={(e) =>
+                      handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveUnidad(u.id ?? i)}
+                    className={`${
+                      listUnidades.length === 1
+                        ? "disabled pointer-events-none  bg-red-200 "
+                        : "bg-red-600"
+                    }  p-1 w-10 text-white rounded-lg`}
+                  >
+                    -
+                  </button>
+                </div>
+                {formError.unidades[i] && (
+                  <span className="text-red-500 text-sm">
+                    {formError.unidades[i]}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </label>
+      )}
+
       <div className="flex  gap-4">
         <button
           className="p-2 rounded-lg bg-gray-400 hover:bg-gray-300 "
