@@ -156,10 +156,10 @@ export default function FormMaterias({
   };
 
   useEffect(() => {
-    console.log(materia);
-
-    if (materia == undefined) {
+    if (materia === undefined) {
       setIsEditUnidades(true);
+    } else {
+      setListUnidades(materia?.unidades || []);
     }
   }, []);
 
