@@ -1,15 +1,29 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { IUnidades } from "@/tipos/unidades";
-import { IMateria } from "@/tipos/materia";
 
 import { MateriaContext } from "@/context/MateriaContext";
 import { idGenerate } from "@/utils/idGenerate";
 import { MateriaValidator } from "@/utils/materiasValidator";
+import { date } from "zod";
 
-export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
+export default function FormMaterias({
+  id_usuario,
+  materia,
+}: {
+  id_usuario: number;
+  materia?: IMateria | null;
+}) {
   const { createMateria } = useContext(MateriaContext);
+
+  const [materiaForm, setMateriaForm] = useState<IMateria>(
+    materia ?? {
+      id: 0,
+      nombre: "",
+      maestro: "",
+      id_usuario,
+    }
+  );
 
   const [listUnidades, setListUnidades] = useState([
     {
@@ -44,14 +58,30 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
     return materiaValidator.validate();
   };
 
+  const handledNameMateria = (value: string) => {
+    setMateriaForm({
+      id: materiaForm.id,
+      nombre: value,
+      maestro: materiaForm.maestro,
+      id_usuario: materiaForm.id_usuario,
+    });
+  };
+
+  const handledMaestroMateria = (value: string) => {
+    setMateriaForm({
+      id: materiaForm.id,
+      nombre: materiaForm.nombre,
+      maestro: value,
+      id_usuario: materiaForm.id_usuario,
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-
     const data: IMateria = {
-      nombre: formData.get("nombre") as string,
-      maestro: formData.get("maestro") as string,
+      nombre: materiaForm.nombre,
+      maestro: materiaForm.maestro,
       unidades: listUnidades,
       id_usuario,
     };
@@ -64,7 +94,10 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
       return;
     }
 
-    await createMateria(data);
+    if (materia) {
+    } else {
+      await createMateria(data);
+    }
   };
 
   const handleAddUnidad = () => {
@@ -130,6 +163,8 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
           name="nombre"
           id="nombre"
           maxLength={80}
+          value={materiaForm.nombre}
+          onChange={(e) => handledNameMateria(e.target.value)}
         />
         {formError.nombre && (
           <span className="text-red-500 text-sm">{formError.nombre}</span>
@@ -143,6 +178,8 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
           name="maestro"
           id="maestro"
           maxLength={80}
+          value={materiaForm.maestro}
+          onChange={(e) => handledMaestroMateria(e.target.value)}
         />
         {formError.maestro && (
           <span className="text-red-500 text-sm">{formError.maestro}</span>
@@ -219,7 +256,7 @@ export default function FormMaterias({ id_usuario }: { id_usuario: number }) {
           className="p-2 rounded-lg bg-cyan-500 hover:bg-cyan-300"
           type="submit"
         >
-          Agregar
+          {materia ? "Editar" : "Agregar"}
         </button>
       </div>
     </form>
