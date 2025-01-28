@@ -1,13 +1,15 @@
 "use client";
 
 import { ButtonDialog } from "./ButtonDialog";
-import { deleteMateria } from "@/app/materias/actions";
+import { MateriaContext } from "@/context/MateriaContext";
 import { redirect } from "next/navigation";
+import { useContext } from "react";
 
 function ButtonDeleteMateria({ materia }: { materia: IMateria }) {
+  const { delMateria } = useContext(MateriaContext);
   const handledDelete = async () => {
     console.log(`Eliminar ${materia.id}`);
-    await deleteMateria(materia);
+    await delMateria(materia);
     redirect("/materias/");
   };
 

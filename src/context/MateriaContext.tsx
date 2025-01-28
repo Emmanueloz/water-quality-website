@@ -1,5 +1,5 @@
 "use client";
-import { getMaterias, addMateria } from "@/app/materias/actions";
+import { getMaterias, addMateria, deleteMateria } from "@/app/materias/actions";
 import { createContext, useState } from "react";
 
 const MateriaContext = createContext(
@@ -7,6 +7,7 @@ const MateriaContext = createContext(
     listMaterias: IMateria[];
     getListMaterias: (id_usuario: number) => Promise<void>;
     createMateria: (materia: IMateria) => Promise<void>;
+    delMateria: (materia: IMateria) => Promise<void>;
   }
 );
 
@@ -23,9 +24,14 @@ const MateriaProvider = ({ children }: { children: any }) => {
     getListMaterias(materia.id_usuario);
   };
 
+  const delMateria = async (materia: IMateria) => {
+    await deleteMateria(materia);
+    getListMaterias(materia.id_usuario);
+  };
+
   return (
     <MateriaContext.Provider
-      value={{ listMaterias, getListMaterias, createMateria }}
+      value={{ listMaterias, getListMaterias, createMateria, delMateria }}
     >
       {children}
     </MateriaContext.Provider>
