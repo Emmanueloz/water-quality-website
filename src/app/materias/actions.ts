@@ -31,49 +31,44 @@ const addUnidad = async (unidad: IUnidades) => {
   console.log(rows);
 };
 
-export const getMaterias = async ({
-  id_usuario,
-  page,
-  pageSize,
-}: IGetMateriasInput): Promise<IGetMateriasOutput> => {
+export const getMaterias = async (id_usuario: number) => {
   const connection = await db.getPool();
 
-  // Validación de parámetros
-  if (page < 1 || pageSize < 1) {
-    throw new Error(
-      "El número de página y el tamaño de página deben ser mayores a 0."
-    );
-  }
-
-  const offset = (page - 1) * pageSize;
-
-  // Consulta paginada para obtener los resultados
   const qResult = await connection.execute(
     `
-    SELECT * 
-    FROM materias 
-    WHERE id_usuario = ?
-    LIMIT ? OFFSET ?
-    `,
-    [id_usuario, pageSize, offset]
-  );
-
-  const [materias] = qResult as [IMateria[], any];
-
-  // Consulta para contar el total de registros
-  const [totalResult] = await connection.execute(
-    `
-    SELECT COUNT(*) as total
-    FROM materias 
-    WHERE id_usuario = ?
+    SELECT 
+      materias.id AS materia_id,
+      materias.nombre AS materia_nombre,
+      materias.maestro AS materia_maestro,
+      GROUP_CONCAT(unidades.id ORDER BY unidades.id) AS unidades_ids,
+      GROUP_CONCAT(unidades.nombre ORDER BY unidades.id) AS unidades_nombres,
+      GROUP_CONCAT(unidades.horas_totales ORDER BY unidades.id) AS unidades_horas_totales
+    FROM materias
+    LEFT JOIN unidades ON unidades.id_materia = materias.id
+    WHERE materias.id_usuario = ?
+    GROUP BY materias.id;
     `,
     [id_usuario]
   );
 
-  const total = (totalResult as { total: number }[])[0].total;
-  const totalPages = Math.ceil(total / pageSize);
+  const [rows] = qResult as any[];
 
-  return { materias, total, totalPages };
+  const materias = rows.map((row: any) => ({
+    id: row.materia_id,
+    nombre: row.materia_nombre,
+    maestro: row.materia_maestro,
+    unidades: row.unidades_ids
+      ? row.unidades_ids.split(",").map((id: any, index: any) => ({
+          id: Number(id),
+          nombre: row.unidades_nombres.split(",")[index],
+          horas_totales: parseFloat(
+            row.unidades_horas_totales.split(",")[index]
+          ),
+        }))
+      : [],
+  }));
+
+  return materias as IMateria[];
 };
 
 export const getMateria = async (id: number, id_usuario: number) => {

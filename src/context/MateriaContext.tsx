@@ -14,11 +14,7 @@ const MateriaProvider = ({ children }: { children: any }) => {
   const [listMaterias, setListMaterias] = useState([] as IMateria[]);
 
   const getListMaterias = async (id_usuario: number) => {
-    const { materias } = await getMaterias({
-      id_usuario,
-      page: 1,
-      pageSize: 10,
-    });
+    const materias = await getMaterias(id_usuario);
     setListMaterias(materias);
   };
 
