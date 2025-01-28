@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const [rows] = await connection.execute(
       `SELECT u.id, u.Usuario, u.Contraseña, r.Rol AS rol 
        FROM Usuarios u 
-       JOIN Rol r ON u.Roles = r.id 
+       JOIN Rol r ON u.Rol = r.id 
        WHERE u.Usuario = ?`,
       [Usuario]
     );

@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     // Insertar el nuevo usuario en la base de datos con el rol de "usuario"
     const [result] = await connection.execute<ResultSetHeader>(
-      `INSERT INTO Usuarios (Usuario, Contraseña, Roles) VALUES (?, ?, ?)`,
+      `INSERT INTO Usuarios (Usuario, Contraseña, Rol) VALUES (?, ?, ?)`,
       [Usuario, hashedPassword, userRoleId]
     );
 
