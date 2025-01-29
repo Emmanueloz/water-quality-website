@@ -12,7 +12,8 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const { isAuthenticated, setIsAuthenticated }: any = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, setUserProfile } =
+    useContext(AuthContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +41,14 @@ export default function LoginPage() {
         Cookies.set("auth_token", data.token, { expires: 1, path: "/" }); // El token dura 1 día
 
         // Redirigir al usuario a la página principal
-        setIsAuthenticated(!isAuthenticated);
+        setIsAuthenticated(true);
+        setUserProfile({
+          id: data.usuario.id,
+          userName: data.usuario.Usuario,
+          rol: data.usuario.rol,
+          exp: data.usuario.exp,
+          iat: data.usuario.iat,
+        });
         router.push("/");
       } else {
         setError(data.message || "Error al iniciar sesión");

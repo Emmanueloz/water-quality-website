@@ -13,7 +13,6 @@ const Page = () => {
         <div>
             <main className="flex-1 p-4">
             <h2 className="text-2xl font-bold mb-4">Proyectos</h2>
-            <p>
             <ul className="space-y-2">
             {proyectos.map((proyecto, index) => (
               <li key={proyecto.name}>
@@ -27,7 +26,6 @@ const Page = () => {
               </li>
             ))}
           </ul>
-            </p>
         </main>
         </div>
     );

@@ -1,0 +1,142 @@
+"use server";
+
+import { db } from "@/lib/db";
+import { ResultSetHeader } from "mysql2";
+
+export const addMateria = async (materia: IMateria) => {
+  const connection = await db.getPool();
+
+  const qResult = await connection.execute(
+    "INSERT INTO materias (nombre, maestro, id_usuario) VALUES (?, ?, ?)",
+    [materia.nombre, materia.maestro, materia.id_usuario]
+  );
+
+  const [rows] = qResult as [ResultSetHeader, any];
+
+  const materiaId = rows.insertId;
+  for (const unidad of materia.unidades || []) {
+    await addUnidad({ ...unidad, id_materia: materiaId });
+  }
+};
+
+const addUnidad = async (unidad: IUnidades) => {
+  const connection = await db.getPool();
+
+  const qResult = await connection.execute(
+    "INSERT INTO unidades (nombre, horas_totales, id_materia) VALUES (?, ?, ?)",
+    [unidad.nombre, unidad.horas_totales, unidad.id_materia]
+  );
+
+  const [rows] = qResult;
+  console.log(rows);
+};
+
+export const getMaterias = async ({
+  id_usuario,
+  page,
+  pageSize,
+}: IGetMateriasInput): Promise<IGetMateriasOutput> => {
+  const connection = await db.getPool();
+
+  // Validación de parámetros
+  if (page < 1 || pageSize < 1) {
+    throw new Error(
+      "El número de página y el tamaño de página deben ser mayores a 0."
+    );
+  }
+
+  const offset = (page - 1) * pageSize;
+
+  // Consulta paginada para obtener los resultados
+  const qResult = await connection.execute(
+    `
+    SELECT * 
+    FROM materias 
+    WHERE id_usuario = ?
+    LIMIT ? OFFSET ?
+    `,
+    [id_usuario, pageSize, offset]
+  );
+
+  const [materias] = qResult as [IMateria[], any];
+
+  // Consulta para contar el total de registros
+  const [totalResult] = await connection.execute(
+    `
+    SELECT COUNT(*) as total
+    FROM materias 
+    WHERE id_usuario = ?
+    `,
+    [id_usuario]
+  );
+
+  const total = (totalResult as { total: number }[])[0].total;
+  const totalPages = Math.ceil(total / pageSize);
+
+  return { materias, total, totalPages };
+};
+
+export const getMateria = async (id: number, id_usuario: number) => {
+  const connection = await db.getPool();
+
+  const qResult = await connection.execute(
+    `
+    SELECT 
+      materias.id AS materia_id,
+      materias.nombre AS materia_nombre,
+      materias.maestro AS materia_maestro,
+      materias.id_usuario as id_usuario,
+      GROUP_CONCAT(unidades.id ORDER BY unidades.id) AS unidades_ids,
+      GROUP_CONCAT(unidades.nombre ORDER BY unidades.id) AS unidades_nombres,
+      GROUP_CONCAT(unidades.horas_totales ORDER BY unidades.id) AS unidades_horas_totales
+    FROM materias
+    LEFT JOIN unidades ON unidades.id_materia = materias.id
+    WHERE materias.id = ? AND materias.id_usuario = ?
+    GROUP BY materias.id;
+    `,
+    [id, id_usuario]
+  );
+
+  const [rows] = qResult as [any[], any];
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const materia = rows[0]
+    ? {
+        id: rows[0].materia_id,
+        nombre: rows[0].materia_nombre,
+        maestro: rows[0].materia_maestro,
+        id_usuario: rows[0].id_usuario,
+        unidades: rows[0].unidades_ids
+          ? rows[0].unidades_ids
+              .split(",")
+              .map((id: string, index: number) => ({
+                id: parseInt(id),
+                nombre: rows[0].unidades_nombres.split(",")[index],
+                horas_totales: parseInt(
+                  rows[0].unidades_horas_totales.split(",")[index]
+                ),
+              }))
+          : [],
+      }
+    : null;
+
+  return materia as IMateria;
+};
+
+export const deleteMateria = async (materia: IMateria) => {
+  const connection = await db.getPool();
+
+  const qResult = await connection.execute(
+    `
+    DELETE FROM materias WHERE materias.id = ? AND materias.id_usuario = ?
+    `,
+    [materia.id, materia.id_usuario]
+  );
+
+  const [rows] = qResult as [any[], any];
+
+  console.log(rows);
+};

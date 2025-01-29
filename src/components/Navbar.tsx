@@ -4,14 +4,23 @@ import { AuthContext } from "@/context/AuthProvider";
 import { useContext, useEffect, useState } from "react";
 
 export default function Navbar() {
-  const { isAuthenticated, setIsAuthenticated }: any = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } =
+    useContext(AuthContext);
 
   // Verificar la sesión al cargar la página
   const checkSession = async () => {
     try {
       const response = await fetch("/api/session");
       const data = await response.json();
+      const user = data.user;
       setIsAuthenticated(data.isAuthenticated);
+      setUserProfile({
+        id: user?.id,
+        userName: user?.userName,
+        rol: user?.rol,
+        exp: user?.exp,
+        iat: user?.iat,
+      });
     } catch (error) {
       console.error("Error verificando la sesión:", error);
       setIsAuthenticated(false);
@@ -42,7 +51,10 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    checkSession(); // Verificar la sesión al cargar el componente
+    if (!isAuthenticated) {
+      // Verificar la sesión al cargar el componente
+      checkSession();
+    }
   }, []);
 
   return (
@@ -61,6 +73,11 @@ export default function Navbar() {
           <a href="#" className="hover:underline">
             Contacto
           </a>
+          {isAuthenticated && (
+            <a href="#" className="ml-4 hover:underline">
+              Bienvenido {userProfile?.userName}
+            </a>
+          )}
           {isAuthenticated && (
             <button
               onClick={handleLogout}

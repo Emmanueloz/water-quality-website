@@ -1,7 +1,8 @@
 "use client";
-import { useContext, useState } from "react"; // import state
+import { useContext, useEffect, useState } from "react"; // import state
 import Sidebar, { MenuItem } from "./Sidebar";
 import { AuthContext } from "@/context/AuthProvider";
+import { MateriaContext } from "@/context/MateriaContext";
 
 const menuItems: MenuItem[] = [
   {
@@ -28,6 +29,10 @@ const menuItems: MenuItem[] = [
   {
     name: "Materias",
     subItems: [
+      {
+        name: "Mis Materias",
+        link: "/materias/",
+      },
       {
         name: "Matemáticas para ingeniería II",
         link: "/angel/materias/matematicas",
@@ -84,7 +89,51 @@ const menuItems: MenuItem[] = [
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
-  const { isAuthenticated, setIsAuthenticated }: any = useContext(AuthContext);
+  const { isAuthenticated, projects, setProjects, userProfile } =
+    useContext(AuthContext);
+
+  const { listMaterias, getListMaterias } = useContext(MateriaContext);
+
+  const getAllProjectsPerUser = async () => {
+    const response = await fetch(`/api/proyectos?userId=${userProfile?.id}`);
+    const data = await response.json();
+    if (response.ok) {
+      console.log("Proyectos obtenidos:", data);
+      setProjects(data.data);
+    } else {
+      console.error("Error al obtener los proyectos:", data.message);
+    }
+  };
+
+  useEffect(() => {
+    if (userProfile?.id) {
+      getAllProjectsPerUser();
+      getListMaterias(userProfile.id);
+    }
+  }, [userProfile]);
+
+  const subItemsForProjects = projects.map((project) => ({
+    name: project.name,
+    link: `/proyectos/${project.id}`,
+  }));
+
+  const subItemsForMaterias = listMaterias.map((materia) => ({
+    name: materia.nombre,
+    link: `/materias/${materia.id}`,
+  }));
+
+  const menuItems = [
+    {
+      name: "Proyectos",
+      link: "/proyectos",
+      subItems: subItemsForProjects,
+    },
+    {
+      name: "Materias",
+      link: "/materias",
+      subItems: subItemsForMaterias,
+    },
+  ];
 
   return (
     <div
