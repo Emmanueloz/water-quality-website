@@ -6,6 +6,7 @@ import { MateriaContext } from "@/context/MateriaContext";
 import { idGenerate } from "@/utils/idGenerate";
 import { MateriaValidator } from "@/utils/materiasValidator";
 import { date } from "zod";
+import { redirect } from "next/navigation";
 
 export default function FormMaterias({
   id_usuario,
@@ -14,7 +15,7 @@ export default function FormMaterias({
   id_usuario: number;
   materia?: IMateria | null;
 }) {
-  const { createMateria } = useContext(MateriaContext);
+  const { createMateria, editMateria } = useContext(MateriaContext);
 
   const [materiaForm, setMateriaForm] = useState<IMateria>(
     materia ?? {
@@ -81,11 +82,12 @@ export default function FormMaterias({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data: IMateria = {
+    const data = {
+      id: materiaForm.id,
       nombre: materiaForm.nombre,
       maestro: materiaForm.maestro,
+      id_usuario: materiaForm.id_usuario,
       unidades: listUnidades,
-      id_usuario,
     };
 
     const isError = formValidate(data);
@@ -96,8 +98,14 @@ export default function FormMaterias({
       return;
     }
 
+    console.log(data);
     if (materia) {
+      console.log("editar");
+      await editMateria(data, isEditUnidades);
+      redirect("/materias");
     } else {
+      console.log("crear");
+
       await createMateria(data);
     }
   };
@@ -161,7 +169,7 @@ export default function FormMaterias({
     } else {
       setListUnidades(materia?.unidades || []);
     }
-  }, []);
+  }, [isEditUnidades]);
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

@@ -1,6 +1,3 @@
-import { IMateria } from "@/tipos/materia";
-import { IUnidades } from "@/tipos/unidades";
-
 class MateriaValidator {
   private materia: IMateria;
   constructor(materia: IMateria) {
@@ -35,7 +32,7 @@ class MateriaValidator {
     return (
       !!this.materia.unidades &&
       this.materia.unidades.some(
-        (u) =>
+        (u: IUnidades) =>
           this.unitNameIsEmpty(u) ||
           this.unitHoursValid(u) ||
           this.unitNameIsShort(u) ||

@@ -13,8 +13,13 @@ export const addMateria = async (materia: IMateria) => {
 
   const [rows] = qResult as [ResultSetHeader, any];
 
+  console.log(rows);
+  console.log(materia);
+
   const materiaId = rows.insertId;
   for (const unidad of materia.unidades || []) {
+    console.log(unidad);
+
     await addUnidad({ ...unidad, id_materia: materiaId });
   }
 };
