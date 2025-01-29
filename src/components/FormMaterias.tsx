@@ -101,7 +101,7 @@ export default function FormMaterias({
     console.log(data);
     if (materia) {
       console.log("editar");
-      await editMateria(data, isEditUnidades);
+      await editMateria(data, materia, isEditUnidades);
       redirect("/materias");
     } else {
       console.log("crear");

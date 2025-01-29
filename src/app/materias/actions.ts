@@ -145,3 +145,13 @@ export const updateMateria = async (materia: IMateria) => {
 
   console.log(rows);
 };
+
+export const updateUnidades = async (
+  materia: IMateria,
+  oldMateria: IMateria
+) => {
+  //const connection = db.getPool();
+
+  const newListUnidades = materia.unidades;
+  const oldListUnidades = oldMateria.unidades;
+};

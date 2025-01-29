@@ -4,6 +4,7 @@ import {
   addMateria,
   deleteMateria,
   updateMateria,
+  updateUnidades,
 } from "@/app/materias/actions";
 import { createContext, useState } from "react";
 
@@ -13,7 +14,11 @@ const MateriaContext = createContext(
     getListMaterias: (id_usuario: number) => Promise<void>;
     createMateria: (materia: IMateria) => Promise<void>;
     delMateria: (materia: IMateria) => Promise<void>;
-    editMateria: (materia: IMateria, isEditUnidades: boolean) => Promise<void>;
+    editMateria: (
+      materia: IMateria,
+      oldMateria: IMateria,
+      isEditUnidades: boolean
+    ) => Promise<void>;
   }
 );
 
@@ -35,10 +40,15 @@ const MateriaProvider = ({ children }: { children: any }) => {
     getListMaterias(materia.id_usuario);
   };
 
-  const editMateria = async (materia: IMateria, isEditUnidades: boolean) => {
+  const editMateria = async (
+    materia: IMateria,
+    oldMateria: IMateria,
+    isEditUnidades: boolean
+  ) => {
     await updateMateria(materia);
     if (isEditUnidades) {
       console.log("Editar Materias");
+      await updateUnidades(materia, oldMateria);
     }
     getListMaterias(materia.id_usuario);
   };

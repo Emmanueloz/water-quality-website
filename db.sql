@@ -29,3 +29,23 @@ CREATE TABLE projects (
     id_user INT NOT NULL,
     FOREIGN KEY (id_user) REFERENCES Usuarios(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `materias` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) NOT NULL,
+  `maestro` varchar(100) NOT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `materias_Usuarios_FK` (`id_usuario`),
+  CONSTRAINT `materias_Usuarios_FK` FOREIGN KEY (`id_usuario`) REFERENCES `Usuarios` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `unidades` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) NOT NULL,
+  `horas_totales` decimal(5,2) NOT NULL,
+  `id_materia` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `unidades_ibfk_1` (`id_materia`),
+  CONSTRAINT `unidades_ibfk_1` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
