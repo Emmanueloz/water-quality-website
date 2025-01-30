@@ -1,149 +1,161 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "../../../lib/db";
-import jwt from "jsonwebtoken";
-import { ResultSetHeader } from "mysql2";
+import { z } from "zod";
+import { GameService } from "@/services/GameService";
+import { GameRepositoryImpl } from "@/infrastructure/repositories/GameRepositorylmpl";
+import { Game } from "@/domain/models/Game";
+import {
+    createGameSchema,
+    updateGameSchema,
+    validateData
+} from "@/schemas/validations";
 
+const gameRepository = new GameRepositoryImpl();
+const gameService = new GameService(gameRepository);
 
-// CREATE: Registrar un nuevo juego
-export async function POST(req: NextRequest) {
-  let requestBody;
-  try {
-    requestBody = await req.json();
-  } catch (error) {
-    return NextResponse.json({ message: "Error en el formato del JSON" }, { status: 400 });
-  }
+const userIdSchema = z.number().int().positive();
 
-  const { nombre, descripcion } = requestBody;
-
-  if (!nombre || !descripcion) {
-    return NextResponse.json({ message: "Nombre y descripción son requeridos" }, { status: 400 });
-  }
-
-  if (!user) {
-    return NextResponse.json({ message: "Token inválido o expirado" }, { status: 401 });
-  }
-
-  let connection;
-  try {
-    connection = await db();
-    if (!connection) {
-      throw new Error("No se pudo conectar a la base de datos");
-    }
-
-    const [result] = await connection.execute<ResultSetHeader>(
-      `INSERT INTO Juegos (nombre, descripcion, user_id) VALUES (?, ?, ?)`,
-      [nombre, descripcion, user.id]
-    );
-
-    return NextResponse.json({
-      message: "Juego registrado exitosamente",
-      juego: { id: result.insertId, nombre, descripcion, user_id: user.id },
-    });
-  } catch (error: unknown) {
-    console.error("Error al registrar el juego:", error);
-    return NextResponse.json({ message: error instanceof Error ? error.message : "Error interno del servidor" }, { status: 500 });
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-  }
-}
-
-// READ: Obtener todos los juegos de un usuario
 export async function GET(req: NextRequest) {
-  let connection;
+    const userId = req.nextUrl.searchParams.get("userId");
+    const gameId = req.nextUrl.searchParams.get("gameId");
 
-  try {
-    const user = await getUserFromToken(req);
-    console.log(user);
+    try {
+        const validUserId = validateData(userIdSchema, Number(userId));
 
-    connection = await db();
+        let games: Game[] = [];
+        let game: Game | null = null;
 
-    const [juegos] = await connection.execute(
-      `SELECT id, nombre, descripcion FROM Juegos WHERE user_id = ?`,
-      [user.id]
-    );
+        if (userId && !gameId) {
+            games = await gameService.getAllGamesByUser(validUserId);
+        } else if (userId && gameId) {
+            game = await gameService.getGamesById(
+                Number(gameId),
+                validUserId
+            );
+        }
 
-    return NextResponse.json({
-      message: "Juegos obtenidos exitosamente",
-      juegos,
-    });
-  } catch (error: unknown) {
-    console.error(error);
-    return NextResponse.json({ message: "Error al obtener los juegos" }, { status: 500 });
-  } finally {
-    if (connection) {
-      await connection.end();
+        return NextResponse.json({
+            message: "juegos obtenidos correctamente",
+            data: game ? game : game,
+        });
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            return NextResponse.json(
+                { message: "ID de usuario inválido" },
+                { status: 400 }
+            );
+        }
+        console.error(error);
+        return NextResponse.json(
+            { message: "Error en el servidor" },
+            { status: 500 }
+        );
     }
-  }
 }
 
-// UPDATE: Actualizar un juego
+export async function POST(req: NextRequest) {
+    try {
+        const data = await req.json();
+
+        const validatedData = validateData(createGameSchema.extend({ idUser: z.number().int().positive() }), data);
+
+        const newGame = await gameService.createGame(validatedData);
+
+        return NextResponse.json({
+            message: "Juego creado correctamente",
+            game: newGame,
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            return NextResponse.json(
+                { message: error.message },
+                { status: 400 }
+            );
+        }
+        console.error(error);
+        return NextResponse.json(
+            { message: "Error en el servidor" },
+            { status: 500 }
+        );
+    }
+}
+
 export async function PUT(req: NextRequest) {
-  const { id, nombre, descripcion } = await req.json();
+    const gameId = Number(req.nextUrl.searchParams.get("gameId"));
 
-  if (!id || !nombre || !descripcion) {
-    return NextResponse.json({ message: "ID, nombre y descripción son requeridos" }, { status: 400 });
-  }
+    try {
+        // Validate project ID
+        const validGameId = validateData(
+            z.number().int().positive(),
+            gameId
+        );
 
-  let connection;
+        const data = await req.json();
 
-  try {
-    const user = await getUserFromToken(req);
+        const validatedData = validateData(
+          updateGameSchema.extend({
+                id: z.number().int().positive(),
+                idUser: z.number().int().positive()
+            }),
+            { ...data, id: validGameId }
+        );
 
-    connection = await db();
+        const game: Game = {
+            id: validatedData.id,
+            name: validatedData.name!,
+            description: validatedData.description!,
+            category: validatedData.category!,
+            idUser: validatedData.idUser,
+        };
+        
 
-    const [result] = await connection.execute<ResultSetHeader>(
-      `UPDATE Juegos SET nombre = ?, descripcion = ? WHERE id = ? AND user_id = ?`,
-      [nombre, descripcion, id, user.id]
-    );
 
-    if (result.affectedRows === 0) {
-      return NextResponse.json({ message: "Juego no encontrado o no autorizado" }, { status: 404 });
+        const updateGame = await gameService.updateGame(game);
+
+        return NextResponse.json({
+            message: "Juego actualizado correctamente",
+            game: updateGame,
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            return NextResponse.json(
+                { message: error.message },
+                { status: 400 }
+            );
+        }
+        console.error(error);
+        return NextResponse.json(
+            { message: "Error en el servidor" },
+            { status: 500 }
+        );
     }
-
-    return NextResponse.json({ message: "Juego actualizado exitosamente" });
-  } catch (error: unknown) {
-    console.error(error);
-    return NextResponse.json({ message: "Error al actualizar el juego" }, { status: 500 });
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-  }
 }
 
-// DELETE: Eliminar un juego
 export async function DELETE(req: NextRequest) {
-  const { id } = await req.json();
+    const gameId = Number(req.nextUrl.searchParams.get("gameId"));
 
-  if (!id) {
-    return NextResponse.json({ message: "ID es requerido" }, { status: 400 });
-  }
+    try {
+        // Validate project ID
+        const validGameId = validateData(
+            z.number().int().positive(),
+            gameId
+        );
 
-  let connection;
+        await gameService.deleteGame(validGameId);
 
-  try {
-    const user = await getUserFromToken(req);
-
-    connection = await db();
-
-    const [result] = await connection.execute<ResultSetHeader>(
-      `DELETE FROM Juegos WHERE id = ? AND user_id = ?`,
-      [id, user.id]
-    );
-
-    if (result.affectedRows === 0) {
-      return NextResponse.json({ message: "Juego no encontrado o no autorizado" }, { status: 404 });
+        return NextResponse.json({
+            message: "Juego eliminado correctamente"
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            return NextResponse.json(
+                { message: error.message },
+                { status: 400 }
+            );
+        }
+        console.error(error);
+        return NextResponse.json(
+            { message: "Error en el servidor" },
+            { status: 500 }
+        );
     }
-
-    return NextResponse.json({ message: "Juego eliminado exitosamente" });
-  } catch (error: unknown) {
-    console.error(error);
-    return NextResponse.json({ message: "Error al eliminar el juego" }, { status: 500 });
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-  }
 }
