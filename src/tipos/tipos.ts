@@ -5,8 +5,7 @@ export interface LoginRequestBody {
 
 export interface Usuario {
   id: number;
-  Usuario: string;
-  Contraseña: string;
+  userName: string;
   rol: string;
   privilegio: string;
 }
@@ -18,5 +17,13 @@ export interface Project {
   category: string;
   status: string;
   technologies: string;
+  idUser?: number;
+}
+
+export interface Game {
+  id?: number;
+  name: string;
+  description: string;
+  category: string;
   idUser?: number;
 }
