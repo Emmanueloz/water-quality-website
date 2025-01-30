@@ -5,9 +5,10 @@ import { ResultSetHeader } from "mysql2";
 
 
 export class PrivilegioRepositoryImpl implements PrivilegioRepository {
-    private pool = db.getPool();
+    private static pool = db.getPool();
+    
     async getAllPrivilegios(): Promise<IPrivilegio[]> {
-        const [rows] = await this.pool.execute(
+        const [rows] = await PrivilegioRepositoryImpl.pool.execute(
             `SELECT p.id,
             p.name, 
             COALESCE(GROUP_CONCAT(pm.id_module ORDER BY pm.id_module), '') AS idRoutes
@@ -25,9 +26,9 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
         }));
     }
 
-    async getPrivilegioByName(name: string): Promise<IPrivilegio | null> {
+    static async getPrivilegioByName(name: string): Promise<IPrivilegio | null> {
         try {
-            const [rows] = await this.pool.execute(
+            const [rows] = await PrivilegioRepositoryImpl.pool.execute(
                 `SELECT p.id,
                 p.name
                 FROM privilegios p
@@ -44,21 +45,21 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
 
     }
     async createPrivilegio(privilegio: Omit<IPrivilegio, "id">): Promise<IPrivilegio> {
-        if(await this.getPrivilegioByName(privilegio.name)) {
+        if(await PrivilegioRepositoryImpl.getPrivilegioByName(privilegio.name)) {
             throw new Error('Privilegio already exists');
         }
 
         if (!await ModuleRepositoryImpl.checkIfListModulesExist(privilegio.idRoutes)) {
             throw new Error('Some modules do not exist');
         }
-        const [result] = await this.pool.execute<ResultSetHeader>(
+        const [result] = await PrivilegioRepositoryImpl.pool.execute<ResultSetHeader>(
             `INSERT INTO privilegios (name) VALUES (?)`,
             [privilegio.name]
         );
         
 
         for (const idModule of privilegio.idRoutes) {
-            await this.pool.execute(
+            await PrivilegioRepositoryImpl.pool.execute(
                 `INSERT INTO priv_mod (id_privilegio, id_module) VALUES (?, ?)`,
                 [result.insertId, idModule]
             );
@@ -72,7 +73,7 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
 
     async updatePrivilegio(privilegio: IPrivilegio): Promise<IPrivilegio> {
         try {
-            const existingPrivilegio = await this.getPrivilegioByName(privilegio.name);
+            const existingPrivilegio = await PrivilegioRepositoryImpl.getPrivilegioByName(privilegio.name);
             if (existingPrivilegio && existingPrivilegio.id !== privilegio.id) {
                 throw new Error('Privilegio already exists');
             }
@@ -81,7 +82,7 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
                 throw new Error('Some modules do not exist');
             }
     
-            await this.pool.execute(
+            await PrivilegioRepositoryImpl.pool.execute(
                 `UPDATE privilegios SET name = ? WHERE id = ?`,
                 [privilegio.name, privilegio.id]
             );
@@ -89,7 +90,7 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
             await this.deletePrivilegioOnIntermediateTable(privilegio.id!);
     
             for (const idModule of privilegio.idRoutes) {
-                await this.pool.execute(
+                await PrivilegioRepositoryImpl.pool.execute(
                     `INSERT INTO priv_mod (id_privilegio, id_module) VALUES (?, ?)`,
                     [privilegio.id, idModule]
                 );
@@ -106,7 +107,7 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
     }
 
     async deletePrivilegioOnIntermediateTable(id: number): Promise<void> {
-        await this.pool.execute(
+        await PrivilegioRepositoryImpl.pool.execute(
             `DELETE FROM priv_mod WHERE id_privilegio = ?`,
             [id]
         );

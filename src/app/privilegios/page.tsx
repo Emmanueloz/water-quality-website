@@ -130,11 +130,11 @@ const Page = () => {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {privilegios.map((privilegio) => (
                     <div
                         key={privilegio.id}
-                        className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow w-96 flex flex-col"
+                        className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow w-full flex flex-col"
                     >
                         <h3 
                             className="text-lg font-semibold cursor-pointer"

@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
 
     // Insertar el nuevo usuario en la base de datos con el rol de "usuario"
     const [result] = await connection.execute<ResultSetHeader>(
-      `INSERT INTO Usuarios (Usuario, Contraseña, Roles) VALUES (?, ?, ?)`,
-      [Usuario, hashedPassword, userRoleId]
+      `INSERT INTO Usuarios (Usuario, Contraseña, Roles, id_privilegio) VALUES (?, ?, ?, ?)`,
+      [Usuario, hashedPassword, userRoleId, 1] // Cambiar el 1 por el ID de privilegio correcto
     );
 
     // Obtener el insertId del resultado de la inserción
