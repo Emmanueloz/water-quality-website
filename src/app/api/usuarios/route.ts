@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   let connection;
 
   try {
-    connection = await db(); // Conexión a la base de datos
+    connection = await db.getPool(); // Conexión a la base de datos
 
     // Hacer una consulta SQL para obtener los usuarios
     const [rows] = await connection.execute(
