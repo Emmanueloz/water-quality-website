@@ -1,7 +1,7 @@
 // app/api/usuarios/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";  // Asumimos que db es tu función para la conexión
-import { Usuario } from "@/tipos/tipos";  // Tipos para los datos
+import { db } from "@/lib/db"; // Asumimos que db es tu función para la conexión
+import { Usuario } from "@/tipos/tipos"; // Tipos para los datos
 import { PrivilegioRepositoryImpl } from "@/infrastructure/repositories/PrivilegioRepositoryImpl";
 
 export async function GET(req: NextRequest) {
@@ -27,16 +27,21 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error en el servidor" },
+      { status: 500 }
+    );
   }
 }
-
 
 export async function PUT(req: NextRequest) {
   const { id, privilegio } = await req.json();
 
   if (!id || !privilegio) {
-    return NextResponse.json({ message: "ID y privilegio son requeridos" }, { status: 400 });
+    return NextResponse.json(
+      { message: "ID y privilegio son requeridos" },
+      { status: 400 }
+    );
   }
 
   let connection;
@@ -44,9 +49,13 @@ export async function PUT(req: NextRequest) {
   try {
     connection = db.getPool();
 
-    const existingPrivilegio = await PrivilegioRepositoryImpl.getPrivilegioByName(privilegio);
+    const existingPrivilegio =
+      await PrivilegioRepositoryImpl.getPrivilegioByName(privilegio);
     if (!existingPrivilegio) {
-      return NextResponse.json({ message: "Privilegio no encontrado" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Privilegio no encontrado" },
+        { status: 404 }
+      );
     }
 
     const [result] = await connection.execute(
@@ -67,9 +76,12 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({
       message: "Usuario actualizado correctamente",
       usuario: usuarioActualizado,
-    })
+    });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error en el servidor" },
+      { status: 500 }
+    );
   }
 }

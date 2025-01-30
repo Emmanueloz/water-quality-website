@@ -8,7 +8,10 @@ export async function POST(req: NextRequest) {
   const { Usuario, Contraseña }: LoginRequestBody = await req.json();
 
   if (!Usuario || !Contraseña) {
-    return NextResponse.json({ message: "Usuario y contraseña son requeridos" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Usuario y contraseña son requeridos" },
+      { status: 400 }
+    );
   }
 
   let connection;
@@ -28,7 +31,10 @@ export async function POST(req: NextRequest) {
     const usuarios = rows as Usuario[];
 
     if (usuarios.length === 0) {
-      return NextResponse.json({ message: "Credenciales inválidas" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Credenciales inválidas" },
+        { status: 401 }
+      );
     }
 
     const user = usuarios[0];
@@ -36,7 +42,10 @@ export async function POST(req: NextRequest) {
     // Verificar la contraseña
     const isPasswordValid = await bcrypt.compare(Contraseña, user.Contraseña);
     if (!isPasswordValid) {
-      return NextResponse.json({ message: "Credenciales inválidas" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Credenciales inválidas" },
+        { status: 401 }
+      );
     }
 
     // Generar un token JWT
@@ -65,7 +74,10 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error: unknown) {
-    console.error(error);
-    return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
+    //console.error(error);
+    return NextResponse.json(
+      { message: "Error en el servidor" },
+      { status: 500 }
+    );
   }
 }
