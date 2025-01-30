@@ -8,6 +8,7 @@ export interface Usuario {
   Usuario: string;
   Contraseña: string;
   rol: string;
+  privilegio: string;
 }
 
 export interface Project {
