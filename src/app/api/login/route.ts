@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       [Usuario]
     );
 
-    const usuarios = rows as UserProfile[];
+    const usuarios = rows as Usuario[];
 
     if (usuarios.length === 0) {
       return NextResponse.json(
@@ -40,10 +40,7 @@ export async function POST(req: NextRequest) {
     const user = usuarios[0];
 
     // Verificar la contraseña
-    const isPasswordValid = await bcrypt.compare(
-      Contraseña,
-      user?.password ?? ""
-    );
+    const isPasswordValid = await bcrypt.compare(Contraseña, user.Contraseña);
     if (!isPasswordValid) {
       return NextResponse.json(
         { message: "Credenciales inválidas" },
@@ -53,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     // Generar un token JWT
     const token = generarToken(
-      { id: user.id, Usuario: user.userName, rol: user.rol },
+      { id: user.id, Usuario: user.Usuario, rol: user.rol },
       "2h"
     );
 
@@ -63,7 +60,7 @@ export async function POST(req: NextRequest) {
       token,
       usuario: {
         id: user.id,
-        Usuario: user.userName,
+        Usuario: user.Usuario,
         rol: user.rol,
       },
     });
