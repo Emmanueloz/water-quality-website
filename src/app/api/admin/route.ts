@@ -1,70 +1,81 @@
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db"; // Asegúrate de que esto esté apuntando a tu configuración de base de datos
+// pages/api/admin.ts
+import { db } from "@/lib/db";
+import bcrypt from "bcryptjs";
 
-export async function POST(req: NextRequest) {
-  let connection;
-  
+// POST: Crear un nuevo administrador
+export async function POST(req: Request): Promise<Response> {
   try {
-    connection = await db.getPool(); // Obtener la conexión a la base de datos
-
-    // Primero, verifica si ya existe un administrador
-    const [rows] = await connection.execute(
-      `SELECT id FROM Usuarios WHERE Roles = 'Admin' LIMIT 1`
-    );
-
-    // Verifica si hay alguna fila (administrador)
-    if (Array.isArray(rows) && rows.length > 0) {
-      return NextResponse.json(
-        { message: "Ya existe un administrador" },
-        { status: 400 }
-      );
-    }
-
-    // Verifica si el rol 'Admin' existe en la tabla Rol
-    const [roles] = await connection.execute(
-      `SELECT id FROM Rol WHERE Rol  = 'Admin' LIMIT 1`
-    );
-
-    if (Array.isArray(roles) && roles.length === 0) {
-      return NextResponse.json(
-        { message: "Rol 'Admin' no encontrado en la base de datos" },
-        { status: 400 }
-      );
-    }
-
-    // Obtenemos el id del rol 'Admin'
-    const adminRoleId = (roles[0] as { id: number }).id;
-
-    // Si no existe un administrador, creamos uno nuevo
     const { Usuario, Contraseña } = await req.json();
 
-    // Asegúrate de que se reciban los datos necesarios
     if (!Usuario || !Contraseña) {
-      return NextResponse.json(
-        { message: "Faltan datos necesarios" },
-        { status: 400 }
+      return new Response(JSON.stringify({ message: "Usuario y Contraseña son obligatorios" }), { status: 400 });
+    }
+
+    const pool = db.getPool();
+
+    // Verificar si ya existe un administrador
+    const [adminRows]: any[] = await pool.execute(
+      `SELECT u.Usuario 
+       FROM Usuarios u
+       JOIN Rol r ON u.Roles = r.id
+       WHERE r.Rol = 'Admin' LIMIT 1`
+    );
+
+    if (adminRows.length > 0) {
+      return new Response(JSON.stringify({ message: "El administrador ya existe" }), { status: 400 });
+    }
+
+    // Obtener el ID del rol "Admin"
+    const [roleRows]: any[] = await pool.execute(
+      "SELECT id FROM Rol WHERE Rol = ? LIMIT 1",
+      ["Admin"]
+    );
+
+    if (roleRows.length === 0) {
+      return new Response(JSON.stringify({ message: "Rol 'Admin' no encontrado" }), { status: 500 });
+    }
+
+    const roleId = roleRows[0].id;
+
+    // Hashear la contraseña
+    const hashedPassword = await bcrypt.hash(Contraseña, 10);
+
+    // Insertar el nuevo administrador
+    await pool.execute(
+      "INSERT INTO Usuarios (Usuario, Contraseña, Roles) VALUES (?, ?, ?)",
+      [Usuario, hashedPassword, roleId]
+    );
+
+    return new Response(JSON.stringify({ message: "Administrador creado exitosamente" }), { status: 201 });
+  } catch (error) {
+    return new Response(JSON.stringify({ message: "Error interno del servidor", error: error }), { status: 500 });
+  }
+}
+
+// GET: Obtener información sobre el administrador
+export async function GET(): Promise<Response> {
+  try {
+    const pool = db.getPool();
+
+    // Verificar si ya existe un administrador
+    const [adminRows]: any[] = await pool.execute(
+      `SELECT u.Usuario 
+       FROM Usuarios u
+       JOIN Rol r ON u.Roles = r.id
+       WHERE r.Rol = 'Admin' LIMIT 1`
+    );
+
+    if (adminRows.length === 0) {
+      return new Response(
+        JSON.stringify({ message: "No existe un administrador registrado" }),
+        { status: 404 }
       );
     }
 
-    // Insertar el nuevo administrador en la base de datos
-    const [insertResult] = await connection.execute(
-      `INSERT INTO Usuarios (Usuario, Contraseña, Roles) VALUES (?, ?, ?)`,
-      [Usuario, Contraseña, adminRoleId]  // Insertamos el id del rol 'Admin'
-    );
-
-    // Aquí obtenemos el id del nuevo administrador insertado
-    const adminId = (insertResult as { insertId: number }).insertId;
-
-    return NextResponse.json({
-      message: "Administrador creado correctamente",
-      adminId: adminId,
+    return new Response(JSON.stringify({ message: "Administrador encontrado", admin: adminRows[0] }), {
+      status: 200,
     });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
-  } finally {
-    if (connection) {
-      await connection.end(); // Asegúrate de cerrar la conexión
-    }
+    return new Response(JSON.stringify({ message: "Error interno del servidor", error: error }), { status: 500 });
   }
 }
