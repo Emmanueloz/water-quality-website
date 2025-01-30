@@ -23,12 +23,12 @@ export async function POST(req: NextRequest) {
     const [rows] = await connection.execute(
       `SELECT u.id, u.Usuario, u.Contraseña, r.Rol AS rol 
        FROM Usuarios u 
-       JOIN Rol r ON u.Rol = r.id 
+       JOIN Rol r ON u.Roles = r.id 
        WHERE u.Usuario = ?`,
       [Usuario]
     );
 
-    const usuarios = rows as Usuario[];
+    const usuarios = rows as UserProfile[];
 
     if (usuarios.length === 0) {
       return NextResponse.json(
@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
     const user = usuarios[0];
 
     // Verificar la contraseña
-    const isPasswordValid = await bcrypt.compare(Contraseña, user.Contraseña);
+    const isPasswordValid = await bcrypt.compare(
+      Contraseña,
+      user?.password ?? ""
+    );
     if (!isPasswordValid) {
       return NextResponse.json(
         { message: "Credenciales inválidas" },
@@ -50,7 +53,7 @@ export async function POST(req: NextRequest) {
 
     // Generar un token JWT
     const token = generarToken(
-      { id: user.id, Usuario: user.Usuario, rol: user.rol },
+      { id: user.id, Usuario: user.userName, rol: user.rol },
       "2h"
     );
 
@@ -60,7 +63,7 @@ export async function POST(req: NextRequest) {
       token,
       usuario: {
         id: user.id,
-        Usuario: user.Usuario,
+        Usuario: user.userName,
         rol: user.rol,
       },
     });
@@ -74,7 +77,7 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error: unknown) {
-    //console.error(error);
+    console.error(error);
     return NextResponse.json(
       { message: "Error en el servidor" },
       { status: 500 }

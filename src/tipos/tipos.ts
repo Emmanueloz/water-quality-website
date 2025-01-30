@@ -7,6 +7,7 @@ export interface Usuario {
   id: number;
   userName: string;
   rol: string;
+  Contraseña: string;
   privilegio: string;
 }
 
