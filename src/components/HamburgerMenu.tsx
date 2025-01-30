@@ -89,7 +89,7 @@ const menuItems: MenuItem[] = [
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
-  const { isAuthenticated, projects, setProjects, userProfile } =
+  const { isAuthenticated, projects, setProjects, games, setGames, userProfile } =
     useContext(AuthContext);
 
   const { listMaterias, getListMaterias } = useContext(MateriaContext);
@@ -105,10 +105,22 @@ export default function HamburgerMenu({}) {
     }
   };
 
+  const getAllGamesPerUser = async () => {
+    const response = await fetch(`/api/juegos?userId=${userProfile?.id}`);
+    const data = await response.json();
+    if (response.ok) {
+      console.log("Juegos obtenidos:", data);
+      setProjects(data.data);
+    } else {
+      console.error("Error al obtener los proyectos:", data.message);
+    }
+  };
+
   useEffect(() => {
     if (userProfile?.id) {
       getAllProjectsPerUser();
       getListMaterias(userProfile.id);
+      getAllGamesPerUser();
     }
   }, [userProfile]);
 
@@ -122,6 +134,11 @@ export default function HamburgerMenu({}) {
     link: `/materias/${materia.id}`,
   }));
 
+  const subItemsForGames = games.map((game) => ({
+    name: game.name,
+    link: `/games/${game.id}`,
+  }));
+
   const menuItems = [
     {
       name: "Proyectos",
@@ -133,6 +150,11 @@ export default function HamburgerMenu({}) {
       link: "/materias",
       subItems: subItemsForMaterias,
     },
+    {
+      name: "Juegos",
+      link: "/games",
+      subItems: subItemsForGames,
+    }
   ];
 
   return (

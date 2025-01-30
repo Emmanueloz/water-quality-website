@@ -14,7 +14,6 @@ const categories = [
     { value: "Battle Royale", label: "Battle Royale" },
     { value: "Deportes", label: "Deportes" },];
 
-
 const Page = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);

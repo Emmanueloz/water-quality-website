@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { AuthContext } from "@/context/AuthProvider";
+import { loginSchema } from "@/schemas/validations";
+
 
 export default function LoginPage() {
   const [user, setUser] = useState("");

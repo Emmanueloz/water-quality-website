@@ -10,14 +10,14 @@ export class GameRepositoryImpl implements GameRepository {
     async verifyRoleForUser(userId: number): Promise<boolean> {
         const [rows] = await this.pool.execute(
             `SELECT r.Rol
-       FROM Usuarios u
-       JOIN Rol r ON u.roles = r.id
-       WHERE u.id = ?`,
+            FROM Usuarios u
+            JOIN Rol r ON u.roles = r.id
+            WHERE u.id = ?`,
             [userId]
         );
-        return (rows as { Rol: string }[])[0].Rol === "admin";
+        return (rows as { Rol: string }[])[0]?.Rol === "admin";
     }
-
+    
     async getAllGamesByUser(userId: number): Promise<Game[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
