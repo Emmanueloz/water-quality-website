@@ -28,8 +28,29 @@ export const projectSchema = z.object({
         .refine(val => val.replace(/\s/g, '').length > 0, "Las tecnologías no pueden ser solo espacios en blanco")
 });
 
+export const gameSchema = z.object({
+    name: z.string()
+        .trim()
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(100, "El nombre no puede tener más de 100 caracteres")
+        .refine(val => val.replace(/\s/g, '').length > 0, "El nombre no puede ser solo espacios en blanco"),
+
+    description: z.string()
+        .trim()
+        .min(10, "La descripción debe tener al menos 10 caracteres")
+        .max(500, "La descripción no puede tener más de 500 caracteres")
+        .refine(val => val.replace(/\s/g, '').length > 0, "La descripción no puede ser solo espacios en blanco"),
+
+    category: z.string()
+        .trim()
+        .nonempty("Selecciona una categoría"),
+});
+
 export const createProjectSchema = projectSchema;
 export const updateProjectSchema = projectSchema.partial();
+export const createGameSchema = gameSchema;
+export const updateGameSchema = gameSchema.partial();
+
 export function validateData<T>(schema: z.ZodSchema<T>, data: unknown): T {
     try {
         return schema.parse(data);

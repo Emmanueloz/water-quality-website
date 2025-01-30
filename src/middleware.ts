@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    console.log("Token válido:", decoded);
+    console.log("Token válido:", decoded); // Depuración
     return NextResponse.next();
   } catch (err: unknown) {
     if (err instanceof Error) {
