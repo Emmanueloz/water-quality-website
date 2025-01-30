@@ -150,8 +150,40 @@ export const updateUnidades = async (
   materia: IMateria,
   oldMateria: IMateria
 ) => {
-  //const connection = db.getPool();
+  const connection = db.getPool();
 
-  const newListUnidades = materia.unidades;
-  const oldListUnidades = oldMateria.unidades;
+  const getId = (u: IUnidades) => u.id;
+
+  const idsAnterior = new Set(oldMateria.unidades?.map(getId));
+  const idsActualizada = new Set(materia.unidades?.map(getId));
+
+  const newListUni = materia.unidades?.filter(
+    (u) => !idsAnterior.has(getId(u))
+  );
+
+  const delListUnit = oldMateria.unidades?.filter(
+    (u) => !idsActualizada.has(getId(u))
+  );
+
+  const updListUnit = materia.unidades?.filter((u) =>
+    idsAnterior.has(getId(u))
+  );
+
+  //connection.execute()
+
+  const insertQuery = `
+    INSERT INTO unidades (nombre, horas_totales, id_materia) 
+    
+    VALUES ${newListUni?.map((u) => "(?,?,?)").toString()}
+  
+  `;
+
+  const delQuery = `
+    DELETE FROM unidades
+      WHERE id IN ${delListUnit?.map((u) => "?").toString()}
+    `;
+
+  console.log(newListUni, delListUnit, updListUnit);
+
+  console.log(insertQuery, delQuery);
 };

@@ -45,7 +45,7 @@ const MateriaProvider = ({ children }: { children: any }) => {
     oldMateria: IMateria,
     isEditUnidades: boolean
   ) => {
-    await updateMateria(materia);
+    //await updateMateria(materia);
     if (isEditUnidades) {
       console.log("Editar Materias");
       await updateUnidades(materia, oldMateria);
