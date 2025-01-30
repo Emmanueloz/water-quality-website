@@ -173,15 +173,22 @@ export const updateUnidades = async (
 
   const insertQuery = `
     INSERT INTO unidades (nombre, horas_totales, id_materia) 
-    
     VALUES ${newListUni?.map((u) => "(?,?,?)").toString()}
-  
   `;
 
   const delQuery = `
     DELETE FROM unidades
-      WHERE id IN ${delListUnit?.map((u) => "?").toString()}
+      WHERE id IN (${delListUnit?.map((u) => "?").toString()})
     `;
+
+  /**
+     * UPDATE cursos    
+SET posicion = CASE Id
+    WHEN 1 THEN 11
+    WHEN 2 THEN 15
+END
+WHERE Id IN (1,2)
+     */
 
   console.log(newListUni, delListUnit, updListUnit);
 
