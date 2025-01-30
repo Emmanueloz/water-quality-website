@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { AuthContext } from "@/context/AuthProvider";
+import React, { useState, useEffect, useContext } from "react";
 
 interface Juego {
   id: number;
@@ -9,6 +10,20 @@ interface Juego {
 }
 
 const JuegosModule: React.FC = () => {
+  // Acceder al contexto dentro del componente
+  const authContext = useContext(AuthContext);
+
+  // Verificar si el contexto no es null o undefined
+  if (!authContext) {
+    console.error("AuthContext no está disponible");
+    return <div>Error: No se pudo acceder al contexto de autenticación.</div>;
+  }
+
+  // Obtener el ID del usuario logueado desde el contexto
+  const { userId } = authContext;
+
+  console.log("ID de usuario:", userId); // Imprimir el ID de usuario
+
   const [juegos, setJuegos] = useState<Juego[]>([]);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -35,7 +50,7 @@ const JuegosModule: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const juegoData = { nombre, descripcion };
+    const juegoData = { nombre, descripcion, userId }; // Incluir el userId en los datos enviados
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `/api/juegos/${editingId}` : "/api/juegos";
 

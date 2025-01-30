@@ -3,24 +3,6 @@ import { db } from "../../../lib/db";
 import jwt from "jsonwebtoken";
 import { ResultSetHeader } from "mysql2";
 
-// Clave secreta del token
-const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta_super_segura";
-
-// Middleware para validar el token y obtener el usuario logueado
-async function getUserFromToken(req: NextRequest) {
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return null;
-  }
-
-  const token = authHeader.split(" ")[1];
-  try {
-    const decoded: any = jwt.verify(token, JWT_SECRET);
-    return decoded; // { id, Usuario, rol }
-  } catch {
-    return null;
-  }
-}
 
 // CREATE: Registrar un nuevo juego
 export async function POST(req: NextRequest) {
@@ -37,7 +19,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "Nombre y descripción son requeridos" }, { status: 400 });
   }
 
-  const user = await getUserFromToken(req);
   if (!user) {
     return NextResponse.json({ message: "Token inválido o expirado" }, { status: 401 });
   }
