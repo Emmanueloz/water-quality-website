@@ -27,13 +27,13 @@ export async function POST(req: NextRequest) {
     u.Contraseña, 
     r.Rol AS rol, 
     COALESCE(JSON_ARRAYAGG(m.name), JSON_ARRAY()) AS modules
-FROM Usuarios u
-INNER JOIN Rol r ON u.Roles = r.id
-LEFT JOIN privilegios p ON u.id_privilegio = p.id
-LEFT JOIN priv_mod pm ON p.id = pm.id_privilegio
-LEFT JOIN modulos m ON pm.id_module = m.id
-WHERE u.Usuario = ?
-GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;`,
+    FROM Usuarios u
+    INNER JOIN Rol r ON u.Roles = r.id
+    LEFT JOIN privilegios p ON u.id_privilegio = p.id
+    LEFT JOIN priv_mod pm ON p.id = pm.id_privilegio
+    LEFT JOIN modulos m ON pm.id_module = m.id
+    WHERE u.Usuario = ?
+    GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;`,
       [Usuario]
     );
 

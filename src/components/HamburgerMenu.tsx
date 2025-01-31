@@ -1,10 +1,9 @@
 "use client";
-import { useContext, useEffect, useState } from "react"; // import state
+import { use, useContext, useEffect, useState } from "react"; // import state
 import Sidebar, { MenuItem } from "./Sidebar";
 import { AuthContext } from "@/context/AuthProvider";
 import { MateriaContext } from "@/context/MateriaContext";
-
-
+import { any } from "zod";
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
@@ -24,39 +23,78 @@ export default function HamburgerMenu({}) {
     }
   };
 
+  
+
+  const projectItem = {
+    name: "Proyectos",
+    link: "/proyectos",
+    subItems: projects.map((project) => ({
+      name: project.name,
+      link: `/proyectos/${project.id}`,
+    })),
+  };
+
+  const materiaItem = {
+    name: "Materias",
+    link: "/materias",
+    subItems: listMaterias.map((materia) => ({
+      name: materia.nombre,
+      link: `/materias/${materia.id}`,
+    })),
+  };
+
+  const juegosItem = {
+    name: "Juegos",
+    link: "/games",
+    subItems: [],
+  };
+
+  const usuariosItem = {
+    name: "Usuarios",
+    link: "/users",
+    subItems: [],
+  };
+
+  const privilegedItem = {
+    name: "Privilegios",
+    link: "/privilegios",
+    subItems: [],
+  };
+
+  let menuItems: MenuItem[] = [];
+
+  if ( isAuthenticated && userProfile?.rol.toLowerCase() === "admin") {
+    menuItems = [projectItem, materiaItem, juegosItem, usuariosItem, privilegedItem];
+  }
+  else if ( isAuthenticated &&  userProfile?.rol.toLowerCase() === "usuario") {
+    if (userProfile?.modules.includes("proyectos" as never)) {
+      menuItems.push(projectItem);
+    }
+     if (userProfile?.modules.includes("materias" as never)) {
+      menuItems.push(materiaItem);
+    }
+     if (userProfile?.modules.includes("games" as never)) {
+      menuItems.push(juegosItem);
+    }
+  }
+
   useEffect(() => {
     if (userProfile?.id) {
+     if (userProfile?.rol.toLowerCase() === "admin") {
       getAllProjectsPerUser();
-      getListMaterias(userProfile.id);
-    }
-    console.log(userProfile)
+      getListMaterias(userProfile.id); 
+     }
+     else if (userProfile?.rol.toLowerCase() === "usuario") {
+      if (userProfile?.modules.includes("proyectos" as never)) {
+        getAllProjectsPerUser();
+      }
+      if (userProfile?.modules.includes("materias" as never)) {
+        getListMaterias(userProfile.id);
+      }
+     }
+    } 
+    console.log(userProfile);
   }, [userProfile]);
-
-  const subItemsForProjects = projects.map((project) => ({
-    name: project.name,
-    link: `/proyectos/${project.id}`,
-  }));
-
-  const subItemsForMaterias = listMaterias.map((materia) => ({
-    name: materia.nombre,
-    link: `/materias/${materia.id}`,
-  }));
-
-
-
-  const menuItems = [
-    {
-      name: "Proyectos",
-      link: "/proyectos",
-      subItems: subItemsForProjects,
-    },
-    {
-      name: "Materias",
-      link: "/materias",
-      subItems: subItemsForMaterias,
-    },
-    
-  ];
 
   return (
     <div
@@ -101,7 +139,7 @@ export default function HamburgerMenu({}) {
             </svg>
           </button>
         </div>
-        <Sidebar menuItems={menuItems} />
+        {isAuthenticated && <Sidebar menuItems={menuItems} />}
       </aside>
 
       {isNavOpen && (

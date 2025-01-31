@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       console.log(decoded);
       
       
-      return NextResponse.json({ isAuthenticated: true, user: {id: decoded?.id, userName: decoded?.Usuario, rol: decoded?.rol,privilegio:decoded.privilegio} });
+      return NextResponse.json({ isAuthenticated: true, user: {id: decoded?.id, userName: decoded?.Usuario, rol: decoded?.rol,modules:decoded.modules} });
     } else {
       return NextResponse.json({ isAuthenticated: false });
     }
