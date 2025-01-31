@@ -6,6 +6,7 @@ export default function RegisterPage() {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -96,11 +97,24 @@ export default function RegisterPage() {
           className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="acceptTerms"
+            checked={acceptTerms}
+            onChange={(e) => setAcceptTerms(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <label htmlFor="acceptTerms" className="text-sm">
+            Acepto el <a href="/privacidad" className="text-blue-500 underline">aviso de privacidad</a>
+          </label>
+        </div>
+
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || !acceptTerms}
           className={`p-3 rounded-lg font-bold text-white ${
-            isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+            isLoading || !acceptTerms ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
           }`}
         >
           {isLoading ? 'Registrando...' : 'Registrar Usuario'}

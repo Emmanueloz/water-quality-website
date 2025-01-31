@@ -34,6 +34,9 @@ export class GameRepositoryImpl implements GameRepository {
        WHERE g.id_user = ?`,
             [userId]
         );
+
+        console.log(rows);
+        
         return rows as Game[];
     }
 

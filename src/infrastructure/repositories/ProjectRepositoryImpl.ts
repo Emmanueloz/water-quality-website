@@ -11,7 +11,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
         const [rows] = await this.pool.execute(
             `SELECT r.Rol
        FROM Usuarios u
-       JOIN Rol r ON u.Roles = r.id
+       JOIN Rol r ON u.roles = r.id
        WHERE u.id = ?`,
             [userId]
         );
