@@ -55,9 +55,5 @@ export async function POST(req: NextRequest) {
       { message: "Error en el servidor" },
       { status: 500 }
     );
-  } finally {
-    if (connection) {
-      await connection.end();
-    }
-  }
+  } 
 }
