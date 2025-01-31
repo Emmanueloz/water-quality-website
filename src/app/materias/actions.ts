@@ -165,32 +165,62 @@ export const updateUnidades = async (
     (u) => !idsActualizada.has(getId(u))
   );
 
-  const updListUnit = materia.unidades?.filter((u) =>
-    idsAnterior.has(getId(u))
-  );
+  const updListUnit = materia.unidades?.filter((u) => {
+    return (
+      idsAnterior.has(getId(u)) &&
+      (u.nombre !==
+        oldMateria.unidades?.find((u) => getId(u) === getId(u))?.nombre ||
+        u.horas_totales !==
+          oldMateria.unidades?.find((u) => getId(u) === getId(u))
+            ?.horas_totales)
+    );
+  });
 
-  //connection.execute()
-
-  const insertQuery = `
+  if (newListUni && newListUni.length > 0) {
+    const insertQuery = `
     INSERT INTO unidades (nombre, horas_totales, id_materia) 
-    VALUES ${newListUni?.map((u) => "(?,?,?)").toString()}
-  `;
+    VALUES ${newListUni?.map(() => "(?,?,?)").join(",")}`;
 
-  const delQuery = `
+    const insertValues = newListUni?.flatMap((u) => [
+      u.nombre,
+      u.horas_totales,
+      materia.id,
+    ]);
+
+    const [insertResult] = await connection.execute(insertQuery, insertValues);
+
+    console.log(insertResult);
+  }
+
+  if (delListUnit && delListUnit.length > 0) {
+    const delQuery = `
     DELETE FROM unidades
-      WHERE id IN (${delListUnit?.map((u) => "?").toString()})
-    `;
+    WHERE id IN (${delListUnit?.map(() => "?").join(",")})`;
 
-  /**
-     * UPDATE cursos    
-SET posicion = CASE Id
-    WHEN 1 THEN 11
-    WHEN 2 THEN 15
-END
-WHERE Id IN (1,2)
-     */
+    const delValues = delListUnit?.map((u) => u.id);
+    const [delResult] = await connection.execute(delQuery, delValues);
 
-  console.log(newListUni, delListUnit, updListUnit);
+    console.log(delResult);
+  }
 
-  console.log(insertQuery, delQuery);
+  if (updListUnit && updListUnit.length > 0) {
+    const updQuery = `
+    UPDATE unidades
+    SET 
+      nombre = CASE id 
+        ${updListUnit?.map(() => "WHEN ? THEN ?").join(" ")}
+      END,
+      horas_totales = CASE id 
+        ${updListUnit?.map(() => "WHEN ? THEN ?").join(" ")}
+      END
+    WHERE id IN (${updListUnit?.map(() => "?").join(",")})`;
+  
+    const updValues = updListUnit
+      ?.flatMap((u) => [u.id, u.nombre, u.id, u.horas_totales])
+      .concat(updListUnit?.map((u) => u.id));
+
+    const [updResult] = await connection.execute(updQuery, updValues);
+    console.log(updResult);
+  }
+ 
 };
