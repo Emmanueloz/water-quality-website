@@ -169,9 +169,9 @@ export const updateUnidades = async (
     return (
       idsAnterior.has(getId(u)) &&
       (u.nombre !==
-        oldMateria.unidades?.find((u) => getId(u) === getId(u))?.nombre ||
+        oldMateria.unidades?.find((ou) => getId(ou) === getId(u))?.nombre ||
         u.horas_totales !==
-          oldMateria.unidades?.find((u) => getId(u) === getId(u))
+          oldMateria.unidades?.find((ou) => getId(ou) === getId(u))
             ?.horas_totales)
     );
   });
@@ -214,13 +214,15 @@ export const updateUnidades = async (
         ${updListUnit?.map(() => "WHEN ? THEN ?").join(" ")}
       END
     WHERE id IN (${updListUnit?.map(() => "?").join(",")})`;
-  
+
     const updValues = updListUnit
-      ?.flatMap((u) => [u.id, u.nombre, u.id, u.horas_totales])
+      ?.flatMap((u) => [u.id, u.nombre])
+      .concat(updListUnit?.flatMap((u) => [u.id, u.horas_totales]))
       .concat(updListUnit?.map((u) => u.id));
+
+    console.log(updListUnit, updValues, updQuery);
 
     const [updResult] = await connection.execute(updQuery, updValues);
     console.log(updResult);
   }
- 
 };
