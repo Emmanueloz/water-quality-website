@@ -2,6 +2,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { decodificarToken } from "./lib/jwt";
+import { notFound } from "next/navigation";
+
+
+// lista con todos los modulos permitidos aun cuando el usuario no tenga el modulo correspondiente
+const allowedModules = ["", "david", "angel","daniel","raul"];
 
 export async function middleware(request: NextRequest) {
   try {
@@ -34,7 +39,32 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    console.log("Token válido:", decoded); // Depuración
+    // Del token, si el usuarios tiene el rol "usuario", valida que modulos tiene acceso
+    if (decoded.rol.toLowerCase() === "usuario") {
+      
+      const modules = decoded.modules as string[];
+      
+      // obtener la ruta inicial actual de la aplicación
+      const route = request.nextUrl.pathname;
+      const modulo = route.split("/")[1];
+
+      // si el modulo es la raiz, se permite el acceso
+      if (allowedModules.includes(modulo)) {
+        return NextResponse.next();
+      }
+
+      // si el modulo no existe en la lista de modulos y la ruta existe, mandar un error 404
+      if (!modules.includes(modulo) && route !== "/login" && route !== "/register" && route !== "/admin") {
+        console.error("Modulo no autorizado:", modulo);
+        
+        return NextResponse.rewrite(new URL("/not-found", request.url));
+
+      }
+
+    }
+    
+
+    //console.log("Token válido:", decoded); // Depuración
     return NextResponse.next();
   } catch (err: unknown) {
     if (err instanceof Error) {

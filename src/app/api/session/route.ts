@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { Usuario } from "@/tipos/tipos";
 
 export async function GET(req: NextRequest) {
   try {
@@ -7,9 +8,12 @@ export async function GET(req: NextRequest) {
     
     if (authToken) {
       const valueToken = authToken?.value;
-      const decoded = jwt.decode(valueToken);
+      const decoded = jwt.decode(valueToken) as Usuario;
+
+      console.log(decoded);
       
-      return NextResponse.json({ isAuthenticated: true, user: {id: decoded?.id, userName: decoded?.Usuario, rol: decoded?.rol} });
+      
+      return NextResponse.json({ isAuthenticated: true, user: {id: decoded?.id, userName: decoded?.Usuario, rol: decoded?.rol,modules:decoded.modules} });
     } else {
       return NextResponse.json({ isAuthenticated: false });
     }

@@ -34,6 +34,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [games, setGames] = useState<Game[]>([]);
 
+  
+
 
   return (
     <AuthContext.Provider

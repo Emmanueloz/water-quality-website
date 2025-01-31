@@ -3,6 +3,7 @@ import { strict } from "assert";
 export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
+  acceptTerms:boolean;
 }
 
 export interface Usuario {
@@ -12,7 +13,8 @@ export interface Usuario {
   Usuario: string;
   rol: string;
   Contraseña: string;
-  privilegio: string;
+  privilegio?: string;
+  modules:[] | string
 }
 
 export interface Project {

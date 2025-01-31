@@ -102,7 +102,7 @@ export default function FormMaterias({
     if (materia) {
       console.log("editar");
       await editMateria(data, materia, isEditUnidades);
-      //redirect("/materias");
+      redirect(`/materias/${data.id}`);
     } else {
       console.log("crear");
 
@@ -217,8 +217,8 @@ export default function FormMaterias({
       )}
 
       {isEditUnidades && (
-        <label htmlFor="unidades" className="flex flex-col ">
-          <div className="flex justify-between mb-1">
+        <div className="flex flex-col">
+          <div className="flex justify-between mb-2">
             <span className="font-semibold">Unidades</span>
             <button
               className="p-1 bg-cyan-400 w-10 text-white rounded-lg"
@@ -229,55 +229,106 @@ export default function FormMaterias({
             </button>
           </div>
 
-          <ul className="flex flex-col gap-2">
-            {listUnidades.map((u, i) => (
-              <li key={i}>
-                <div className="flex gap-4">
-                  <input
-                    type="text"
-                    name="unidades"
-                    id="unidades"
-                    placeholder="Nombre de la unidad"
-                    value={u.nombre}
-                    maxLength={80}
-                    className="border-cyan-400 border rounded-lg p-1 outline-none flex-grow "
-                    onChange={(e) =>
-                      handleNameUnidad(u.id ?? i, e.target.value)
-                    }
-                  />
-                  <input
-                    type="number"
-                    name="horas_totales"
-                    id="horas_totales"
-                    placeholder="Horas de la unidad"
-                    value={u.horas_totales}
-                    min={1}
-                    className="border-cyan-400 border rounded-lg p-1 outline-none w-20"
-                    onChange={(e) =>
-                      handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
-                    }
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveUnidad(u.id ?? i)}
-                    className={`${
-                      listUnidades.length === 1
-                        ? "disabled pointer-events-none  bg-red-200 "
-                        : "bg-red-600"
-                    }  p-1 w-10 text-white rounded-lg`}
-                  >
-                    -
-                  </button>
-                </div>
-                {formError.unidades[i] && (
-                  <span className="text-red-500 text-sm">
-                    {formError.unidades[i]}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </label>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-cyan-400">
+              <thead>
+                <tr >
+                  <th className="border border-cyan-400 p-2 text-left">
+                    Nombre
+                  </th>
+                  <th className="border border-cyan-400 p-2 text-left">
+                    Horas Totales
+                  </th>
+                  <th className="border border-cyan-400 p-2">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listUnidades.map((u, i) => (
+                  <tr key={i} className="border border-cyan-400">
+                    <td className="border border-cyan-400 p-2">
+                      <input
+                        type="text"
+                        name="unidades"
+                        placeholder="Nombre de la unidad"
+                        value={u.nombre}
+                        maxLength={80}
+                        className="w-full border border-cyan-400 rounded-lg p-1 outline-none"
+                        onChange={(e) =>
+                          handleNameUnidad(u.id ?? i, e.target.value)
+                        }
+                      />
+                      {formError.unidades[i] && (
+                        <span className="text-red-500 text-sm block mt-1">
+                          {formError.unidades[i]}
+                        </span>
+                      )}
+                    </td>
+                    <td className="border border-cyan-400 p-2">
+                      <input
+                        type="number"
+                        name="horas_totales"
+                        placeholder="Horas de la unidad"
+                        value={u.horas_totales}
+                        min={1}
+                        className="w-full border border-cyan-400 rounded-lg p-1 outline-none"
+                        onChange={(e) =>
+                          handleHorasUnidad(u.id ?? i, parseInt(e.target.value))
+                        }
+                      />
+                    </td>
+                    <td className="border border-cyan-400 p-2 text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveUnidad(u.id ?? i)}
+                        className={`p-1 w-10 text-white rounded-lg ${
+                          listUnidades.length === 1
+                            ? "bg-red-200 cursor-not-allowed"
+                            : "bg-red-600"
+                        }`}
+                        disabled={listUnidades.length === 1}
+                      >
+                        -
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {!isEditUnidades && (
+        <div className="flex flex-col">
+          <div className="flex justify-between mb-2">
+            <span className="font-semibold">Unidades</span>
+           
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-cyan-400">
+              <thead>
+                <tr className="border border-cyan-400">
+                  <th className="border border-cyan-400 p-2 text-left">
+                    Nombre
+                  </th>
+                  <th className="border border-cyan-400 p-2 text-left">
+                    Horas Totales
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {listUnidades.map((u, i) => (
+                  <tr key={i} className="border border-cyan-400">
+                    <td className="border border-cyan-400 p-2">{u.nombre}</td>
+                    <td className="border border-cyan-400 p-2">
+                      {u.horas_totales}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
       <div className="flex  gap-4">

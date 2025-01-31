@@ -1,5 +1,5 @@
 export default function Home() {
-  throw new Error("Error");
+  // throw new Error("Error");
 
   return (
 <main className="flex-1 p-4">
