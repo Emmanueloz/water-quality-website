@@ -5,11 +5,14 @@ import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 import { ResultSetHeader } from "mysql2";
 
 export async function POST(req: NextRequest) {
-  const { Usuario, Contraseña }: LoginRequestBody = await req.json();
+  const { Usuario, Contraseña,acceptTerms }: LoginRequestBody = await req.json();
 
-  if (!Usuario || !Contraseña) {
+  console.log(acceptTerms);
+  
+
+  if (!Usuario || !Contraseña || !acceptTerms) {
     return NextResponse.json(
-      { message: "Usuario y contraseña son requeridos" },
+      { message: "Usuario, contraseña y aceptar los términos son requeridos son requeridos" },
       { status: 400 }
     );
   }

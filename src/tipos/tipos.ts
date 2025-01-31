@@ -3,6 +3,7 @@ import { strict } from "assert";
 export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
+  acceptTerms:boolean;
 }
 
 export interface Usuario {
