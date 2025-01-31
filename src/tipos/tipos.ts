@@ -5,7 +5,9 @@ export interface LoginRequestBody {
 
 export interface Usuario {
   id: number;
+  Usuario: string;
   userName: string;
+  Contraseña: string;
   rol: string;
   privilegio: string;
 }
