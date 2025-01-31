@@ -163,13 +163,13 @@ const Page = () => {
   };
   const getAllGamesPerUser = async () => {
     console.log(userProfile);
-    
+
     const response = await fetch(`/api/juegos?userId=${userProfile?.id}`);
 
 
     const data = await response.json();
-    console.log("Data juegos: ",data);
-    
+    console.log("Data juegos: ", data);
+
     if (response.ok) {
       console.log(data.data);
 
@@ -207,16 +207,17 @@ const Page = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 rounded-md ${
-                    formErrors.name ? "border-red-500" : ""
-                  }`}
+                  className={`w-full px-3 py-2 rounded-md border ${formErrors.name ? "border-red-500" : "border-gray-300"
+                    }`}
                 />
                 {formErrors.name && (
                   <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
                 )}
               </div>
-
               <div className="mb-4">
+                <label htmlFor="block text-sm font-medium mb-1">
+                  Categoria
+                </label>
                 <Select
                   selectedValue={category}
                   setSelectedValue={setCategory}
@@ -237,9 +238,8 @@ const Page = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    formErrors.description ? "border-red-500" : ""
-                  }`}
+                  className={`w-full px-3 py-2 border rounded-md ${formErrors.description ? "border-red-500" : ""
+                    }`}
                 />
                 {formErrors.description && (
                   <p className="text-red-500 text-sm mt-1">

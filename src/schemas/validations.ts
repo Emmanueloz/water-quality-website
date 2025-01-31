@@ -29,9 +29,15 @@ export const projectSchema = z.object({
 });
 
 export const gameSchema = z.object({
-    user: z.string()
+    name: z.string()
         .trim()
         .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(100, "El nombre no puede tener más de 100 caracteres")
+        .refine(val => val.replace(/\s/g, '').length > 0, "El nombre no puede ser solo espacios en blanco"),
+
+    category: z.string()
+        .trim()
+        .min(3, " debe tener al menos 3 caracteres")
         .max(100, "El nombre no puede tener más de 100 caracteres")
         .refine(val => val.replace(/\s/g, '').length > 0, "El nombre no puede ser solo espacios en blanco"),
 
@@ -44,18 +50,42 @@ export const gameSchema = z.object({
 
 export const loginSchema = z.object({
     user: z.string()
-        .trim()
-        .min(3, "El usuario debe tener al menos 3 caracteres")
-        .max(50, "El usuario no puede tener más de 50 caracteres")
-        .refine(val => val.replace(/\s/g, '').length > 0, "El usuario no puede ser solo espacios en blanco"),
-
+      .trim()
+      .min(3, "El usuario debe tener al menos 3 caracteres")
+      .max(50, "El usuario no puede tener más de 50 caracteres")
+      .refine(val => val.replace(/\s/g, '').length > 0, "El usuario no puede ser solo espacios en blanco"),
+  
     password: z.string()
-        .trim()
-        .min(6, "La contraseña debe tener al menos 6 caracteres")
-        .max(100, "La contraseña no puede tener más de 100 caracteres")
-        .refine(val => val.replace(/\s/g, '').length > 0, "La contraseña no puede ser solo espacios en blanco"),
-});
+      .trim()
+      .min(6, "La contraseña debe tener al menos 6 caracteres")
+      .max(100, "La contraseña no puede tener más de 100 caracteres")
+      .refine(val => val.replace(/\s/g, '').length > 0, "La contraseña no puede ser solo espacios en blanco"),
+  });
+  
 
+export const registerSchema = z
+    .object({
+        user: z
+            .string()
+            .trim()
+            .min(3, "El usuario debe tener al menos 3 caracteres")
+            .max(50, "El usuario no puede tener más de 50 caracteres")
+            .refine((val) => val.replace(/\s/g, "").length > 0, "El usuario no puede ser solo espacios en blanco"),
+
+        password: z
+            .string()
+            .trim()
+            .min(6, "La contraseña debe tener al menos 6 caracteres")
+            .max(100, "La contraseña no puede tener más de 100 caracteres")
+            .refine((val) => val.replace(/\s/g, "").length > 0, "La contraseña no puede ser solo espacios en blanco"),
+
+        confirmPassword: z
+            .string()
+            .trim()
+            .min(6, "La contraseña debe tener al menos 6 caracteres")
+            .max(100, "La contraseña no puede tener más de 100 caracteres")
+            .refine((val) => val.replace(/\s/g, "").length > 0, "La contraseña no puede ser solo espacios en blanco"),
+    })
 
 export const createProjectSchema = projectSchema;
 export const updateProjectSchema = projectSchema.partial();
