@@ -541,3 +541,4 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/node,nextjs,react,vs
 data/
 compose.yaml
+.vscode/

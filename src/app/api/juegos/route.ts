@@ -8,6 +8,7 @@ import {
     updateGameSchema,
     validateData
 } from "@/schemas/validations";
+import { error } from "console";
 
 const gameRepository = new GameRepositoryImpl();
 const gameService = new GameService(gameRepository);
@@ -18,8 +19,13 @@ export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");
     const gameId = req.nextUrl.searchParams.get("gameId");
 
+    console.log(req.nextUrl.searchParams);
+    
+
     try {
         const validUserId = validateData(userIdSchema, Number(userId));
+        console.log("User id valid juegos: ",validUserId);
+        
 
         let games: Game[] = [];
         let game: Game | null = null;
@@ -32,10 +38,11 @@ export async function GET(req: NextRequest) {
                 validUserId
             );
         }
+       
 
         return NextResponse.json({
             message: "juegos obtenidos correctamente",
-            data: game ? game : game,
+            data: game ? game : games,
         });
     } catch (error) {
         if (error instanceof z.ZodError) {

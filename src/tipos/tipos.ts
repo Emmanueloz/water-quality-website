@@ -1,3 +1,5 @@
+import { strict } from "assert";
+
 export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
@@ -7,8 +9,9 @@ export interface Usuario {
   id: number;
   Usuario: string;
   userName: string;
-  Contraseña: string;
+  Usuario: string;
   rol: string;
+  Contraseña: string;
   privilegio: string;
 }
 
