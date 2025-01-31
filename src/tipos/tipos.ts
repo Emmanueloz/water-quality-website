@@ -11,7 +11,8 @@ export interface Usuario {
   Usuario: string;
   rol: string;
   Contraseña: string;
-  privilegio: string;
+  privilegio?: string;
+  modules:[] | string
 }
 
 export interface Project {

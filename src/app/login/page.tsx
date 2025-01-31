@@ -1,6 +1,6 @@
 "use client";
 import { useContext, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { AuthContext } from "@/context/AuthProvider";
@@ -48,6 +48,7 @@ export default function LoginPage() {
           rol: data.usuario.rol,
           exp: data.usuario.exp,
           iat: data.usuario.iat,
+          modules: data.usuario.modules
         });
         router.push("/");
       } else {
