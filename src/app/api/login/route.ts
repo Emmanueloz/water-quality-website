@@ -21,14 +21,26 @@ export async function POST(req: NextRequest) {
 
     // Buscar usuario en la base de datos
     const [rows] = await connection.execute(
-      `SELECT u.id, u.Usuario, u.Contraseña, r.Rol AS rol 
-       FROM Usuarios u 
-       JOIN Rol r ON u.Roles = r.id 
-       WHERE u.Usuario = ?`,
+      `SELECT 
+    u.id, 
+    u.Usuario, 
+    u.Contraseña, 
+    r.Rol AS rol, 
+    COALESCE(GROUP_CONCAT(m.name SEPARATOR ', '), '') AS modules
+FROM Usuarios u
+INNER JOIN Rol r ON u.Roles = r.id
+LEFT JOIN privilegios p ON u.id_privilegio = p.id
+LEFT JOIN priv_mod pm ON p.id = pm.id_privilegio
+LEFT JOIN modulos m ON pm.id_module = m.id
+WHERE u.Usuario = ?
+GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;`,
       [Usuario]
     );
 
+    console.log(rows);
+
     const usuarios = rows as Usuario[];
+    
 
     if (usuarios.length === 0) {
       return NextResponse.json(
@@ -50,9 +62,15 @@ export async function POST(req: NextRequest) {
 
     // Generar un token JWT
     const token = generarToken(
-      { id: user.id, Usuario: user.Usuario, rol: user.rol },
+      {
+        id: user.id,
+        Usuario: user.Usuario,
+        rol: user.rol,
+        modules:  JSON.parse(user.modules as string) ?? [],
+      },
       "2h"
     );
+    console.log(user);
 
     // Establecer la cookie del token
     const response = NextResponse.json({
@@ -62,6 +80,7 @@ export async function POST(req: NextRequest) {
         id: user.id,
         Usuario: user.Usuario,
         rol: user.rol,
+        modules:  JSON.parse(user.modules as string) ?? [],
       },
     });
 

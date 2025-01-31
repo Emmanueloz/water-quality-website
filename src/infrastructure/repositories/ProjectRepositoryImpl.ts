@@ -9,10 +9,9 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     private pool = db.getPool();
     async verifyRoleForUser(userId: number): Promise<boolean> {
         const [rows] = await this.pool.execute(
-            `SELECT r.Rol
-       FROM Usuarios u
-       JOIN Rol r ON u.roles = r.id
-       WHERE u.id = ?`,
+            `SELECT r.Rol FROM Usuarios u
+                JOIN Rol r ON u.roles = r.id
+                WHERE u.id = ?`,
             [userId]
         );
         return (rows as { Rol: string }[])[0].Rol === "admin";
