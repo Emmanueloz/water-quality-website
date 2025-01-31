@@ -26,6 +26,8 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
         }));
     }
 
+
+
     static async getPrivilegioByName(name: string): Promise<IPrivilegio | null> {
         try {
             const [rows] = await PrivilegioRepositoryImpl.pool.execute(

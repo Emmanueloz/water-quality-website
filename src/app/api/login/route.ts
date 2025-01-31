@@ -21,10 +21,11 @@ export async function POST(req: NextRequest) {
 
     // Buscar usuario en la base de datos
     const [rows] = await connection.execute(
-      `SELECT u.id, u.Usuario, u.Contraseña, r.Rol AS rol 
-       FROM Usuarios u 
-       JOIN Rol r ON u.Roles = r.id 
-       WHERE u.Usuario = ?`,
+      `SELECT u.id, u.Usuario, u.Contraseña, r.Rol AS rol, p.name AS privilegio
+        FROM Usuarios u
+        INNER JOIN Rol r ON u.Roles = r.id
+        INNER JOIN privilegios p ON u.id_privilegio = p.id
+        WHERE u.Usuario = ?`,
       [Usuario]
     );
 
@@ -50,10 +51,16 @@ export async function POST(req: NextRequest) {
 
     // Generar un token JWT
     const token = generarToken(
-      { id: user.id, Usuario: user.Usuario, rol: user.rol },
+      {
+        id: user.id,
+        Usuario: user.Usuario,
+        rol: user.rol,
+        privilegio:user.privilegio
+      },
       "2h"
     );
-
+    console.log(user);
+    
     // Establecer la cookie del token
     const response = NextResponse.json({
       message: "Inicio de sesión exitoso",
@@ -62,6 +69,7 @@ export async function POST(req: NextRequest) {
         id: user.id,
         Usuario: user.Usuario,
         rol: user.rol,
+        privilegio:user.privilegio
       },
     });
 

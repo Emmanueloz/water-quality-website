@@ -20,6 +20,7 @@ export default function Navbar() {
         rol: user?.rol,
         exp: user?.exp,
         iat: user?.iat,
+        privilegio: user?.privilegio
       });
     } catch (error) {
       console.error("Error verificando la sesión:", error);

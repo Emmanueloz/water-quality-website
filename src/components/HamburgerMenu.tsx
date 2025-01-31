@@ -4,88 +4,7 @@ import Sidebar, { MenuItem } from "./Sidebar";
 import { AuthContext } from "@/context/AuthProvider";
 import { MateriaContext } from "@/context/MateriaContext";
 
-const menuItems: MenuItem[] = [
-  {
-    name: "Integrantes",
-    subItems: [
-      {
-        name: "David",
-        link: "/david",
-      },
-      {
-        name: "Ángel",
-        link: "/angel",
-      },
-      {
-        name: "Raúl",
-        link: "/raul",
-      },
-      {
-        name: "Daniel",
-        link: "/daniel",
-      },
-    ],
-  },
-  {
-    name: "Materias",
-    subItems: [
-      {
-        name: "Mis Materias",
-        link: "/materias/",
-      },
-      {
-        name: "Matemáticas para ingeniería II",
-        link: "/angel/materias/matematicas",
-      },
-      {
-        name: "Administración de bases de datos",
-        link: "/angel/materias/BD",
-      },
-      {
-        name: "Desarrollo web profesional",
-        link: "/angel/materias/DW",
-      },
-      {
-        name: "Planeación y organización del trabajo",
-        link: "/angel/materias/POT",
-      },
-      {
-        name: "Seguridad en el desarrollo de aplicaciones",
-        link: "/angel/materias/SDA",
-      },
-      {
-        name: "Inglés VII",
-        link: "/angel/materias/ingles",
-      },
-    ],
-  },
-  {
-    name: "Juegos",
-    subItems: [
-      {
-        name: "Halo Infinite",
-        link: "/juegos",
-      },
-      {
-        name: "Call of Duty",
-        link: "/juegos",
-      },
-    ],
-  },
-  {
-    name: "Proyectos",
-    subItems: [
-      {
-        name: "Proyecto 1",
-        link: "/proyectos",
-      },
-      {
-        name: "Proyecto 2",
-        link: "/proyectos",
-      },
-    ],
-  },
-];
+
 
 export default function HamburgerMenu({}) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
@@ -110,6 +29,7 @@ export default function HamburgerMenu({}) {
       getAllProjectsPerUser();
       getListMaterias(userProfile.id);
     }
+    console.log(userProfile)
   }, [userProfile]);
 
   const subItemsForProjects = projects.map((project) => ({
@@ -122,6 +42,8 @@ export default function HamburgerMenu({}) {
     link: `/materias/${materia.id}`,
   }));
 
+
+
   const menuItems = [
     {
       name: "Proyectos",
@@ -133,6 +55,7 @@ export default function HamburgerMenu({}) {
       link: "/materias",
       subItems: subItemsForMaterias,
     },
+    
   ];
 
   return (
