@@ -9,5 +9,6 @@ interface IMateria {
 
 
 interface ISearchMateria {
-  [SearchAttributes]: number | string;
+  searchAttribute: SearchAttributes;
+  searchValue: number | string;
 }

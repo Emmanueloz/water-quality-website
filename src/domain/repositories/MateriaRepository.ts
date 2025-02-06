@@ -6,4 +6,5 @@ export interface IMateriaRepository {
   deleteMateria(materia: IMateria): Promise<void>;
   updateMateria(materia: IMateria): Promise<void>;
   updateUnidades(materia: IMateria, oldMateria: IMateria): Promise<void>;
+  searchMateria(search: ISearchMateria): Promise<IMateria[]>;
 }

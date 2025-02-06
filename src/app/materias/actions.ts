@@ -30,3 +30,7 @@ export const updateUnidades = async (
 ) => {
   materiaRepository.updateUnidades(materia, oldMateria);
 };
+
+export const searchMateria = async (search: ISearchMateria) => {
+  return materiaRepository.searchMateria(search);
+};

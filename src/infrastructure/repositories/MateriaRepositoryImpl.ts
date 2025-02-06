@@ -219,4 +219,10 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
       console.log(updResult);
     }
   }
+
+  async searchMateria(search: ISearchMateria): Promise<IMateria[]> {
+    console.log(search);
+    
+    return [];
+  }
 }

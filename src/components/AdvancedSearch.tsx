@@ -1,6 +1,8 @@
 "use client";
 
+import { searchMateria } from "@/app/materias/actions";
 import { SearchAttributes } from "@/domain/models/SearchMateria";
+import { MateriaSearchValidator } from "@/utils/materiaSearchValidator";
 import { useState } from "react";
 
 export default function AdvancedSearch() {
@@ -11,32 +13,45 @@ export default function AdvancedSearch() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [errorForm, setErrorForm] = useState<string | null>(null);
 
+  const formValidate = () => {
+    const validator = new MateriaSearchValidator({
+      searchAttribute: searchAttribute,
+      searchValue: searchValue,
+    });
+
+    setErrorForm(validator.getError());
+
+    return validator.validate();
+
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      searchAttribute === SearchAttributes.id &&
-      (isNaN(parseInt(searchValue)) || parseInt(searchValue) < 0)
-    ) {
-      setErrorForm("El valor debe ser un número positivo");
+    const isValid = formValidate();
+
+    console.log(isValid);
+    
+
+    if (!isValid) {
       return;
-    } else if (
-      searchAttribute === SearchAttributes.name &&
-      searchValue.length === 0
-    ) {
-      setErrorForm("El valor no puede estar vacío");
-      return;
-    } else if (
-      searchAttribute === SearchAttributes.teacher &&
-      searchValue.length === 0
-    ) {
-      setErrorForm("El valor no puede estar vacío");
-      return;
-    } else {
-      setErrorForm(null);
     }
 
-    console.log(searchAttribute, searchValue);
+    let searchInput: number | string = searchValue;
+
+    if (searchAttribute === SearchAttributes.id) {
+      searchInput = parseInt(searchValue);
+    } else if (
+      searchAttribute === SearchAttributes.name ||
+      searchAttribute === SearchAttributes.teacher
+    ) {
+      searchInput = searchValue.trim();
+    }
+
+    searchMateria({
+      searchAttribute: searchAttribute,
+      searchValue: searchInput,
+    });
   };
 
   return (
