@@ -8,15 +8,16 @@ export default function RegisterPage() {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState(''); // Estado para el email
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [error, setError] = useState({ user: "", password: "", confirmPassword: "", general: "" });
+  const [error, setError] = useState({ user: "", password: "", confirmPassword: "", email: "", general: "" });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     setIsLoading(true);
-    setError({ user: "", password: "", confirmPassword: "", general: "" });
+    setError({ user: "", password: "", confirmPassword: "", email: "", general: "" });
 
     // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
@@ -27,7 +28,7 @@ export default function RegisterPage() {
 
     // Validar el formulario con Zod
     try {
-      registerSchema.parse({ user, password, confirmPassword });
+      registerSchema.parse({ user, password, confirmPassword, email }); // Agregar email a la validación
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors = error.flatten().fieldErrors;
@@ -35,6 +36,7 @@ export default function RegisterPage() {
           user: errors.user?.[0] || "",
           password: errors.password?.[0] || "",
           confirmPassword: errors.confirmPassword?.[0] || "",
+          email: errors.email?.[0] || "", // Mostrar error de email
           general: "",
         });
         setIsLoading(false);
@@ -47,7 +49,7 @@ export default function RegisterPage() {
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ Usuario: user, Contraseña: password, acceptTerms}),
+        body: JSON.stringify({ Usuario: user, Contraseña: password, Email: email, acceptTerms }),
       });
 
       const data = await response.json();
@@ -78,6 +80,16 @@ export default function RegisterPage() {
           className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
         <p className="text-red-500 text-xs min-h-[16px]">{error.user}</p>
+
+        <label htmlFor="email" className="font-semibold text-sm">Correo Electrónico:</label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+        />
+        <p className="text-red-500 text-xs min-h-[16px]">{error.email}</p>
 
         <label htmlFor="password" className="font-semibold text-sm">Contraseña:</label>
         <input

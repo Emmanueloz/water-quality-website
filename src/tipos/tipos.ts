@@ -4,6 +4,7 @@ export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
   acceptTerms:boolean;
+  Email: string;
 }
 
 export interface Usuario {
