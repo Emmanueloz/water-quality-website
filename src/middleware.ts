@@ -5,8 +5,8 @@ import { decodificarToken } from "./lib/jwt";
 import { notFound } from "next/navigation";
 
 
-// lista con todos los modulos permitidos aun cuando el usuario no tenga el modulo correspondiente
-const allowedModules = ["", "david", "angel","daniel","raul"];
+// lista con todos los módulos permitidos aun cuando el usuario no tenga el modulo correspondiente
+const allowedModules = ["", "david", "angel","daniel","raul","profile"];
 const publicUrl = ["/reset-password"];
 export async function middleware(request: NextRequest) {
   
