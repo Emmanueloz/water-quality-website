@@ -9,7 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { set } from "zod";
 
 export default function AdvancedSearch() {
-  const { userProfile } = useContext(AuthContext);
+  const { userProfile, isAuthenticated } = useContext(AuthContext);
   const { getListSearchMaterias } = useContext(MateriaContext);
 
   const [searchAttribute, setSearchAttribute] = useState<SearchAttributes>(
@@ -62,7 +62,7 @@ export default function AdvancedSearch() {
 
   useEffect(() => {
     const fetchMaterias = async () => {
-      if (searchAttribute === SearchAttributes.all) {
+      if (isAuthenticated && searchAttribute === SearchAttributes.all) {
         setErrorForm(null);
         setSearchValue("");
 
@@ -75,10 +75,13 @@ export default function AdvancedSearch() {
     };
 
     fetchMaterias(); // Llamamos a la función async
-  }, [searchAttribute]);
+  }, [searchAttribute, isAuthenticated]);
 
   return (
-    <form onSubmit={handleSubmit} className="w-full flex items-center gap-2 mb-2 h-10">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full flex items-center gap-2 mb-2 h-10"
+    >
       <label htmlFor="" className="flex-1 flex items-center gap-2">
         <div className="flex items-center gap-2 w-full">
           <select
