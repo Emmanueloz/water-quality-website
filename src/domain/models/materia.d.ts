@@ -11,4 +11,5 @@ interface IMateria {
 interface ISearchMateria {
   searchAttribute: SearchAttributes;
   searchValue: number | string;
+  id_usuario?: number;
 }

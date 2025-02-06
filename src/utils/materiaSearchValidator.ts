@@ -1,26 +1,5 @@
 import { SearchAttributes } from "@/domain/models/SearchMateria";
 
-/*
-if (
-        searchAttribute === SearchAttributes.id &&
-        (isNaN(parseInt(searchValue)) || parseInt(searchValue) < 0)
-      ) {
-        return "El valor debe ser un número positivo";
-      } else if (
-        searchAttribute === SearchAttributes.name &&
-        searchValue.trim().length === 0
-      ) {
-        return "El valor no puede estar vacío";
-      } else if (
-        searchAttribute === SearchAttributes.teacher &&
-        searchValue.trim().length === 0
-      ) {
-        return "El valor no puede estar vacío";
-      } else {
-        isValid = true;
-        return null;
-      }
-*/
 export class MateriaSearchValidator {
   private search: ISearchMateria;
   constructor(search: ISearchMateria) {

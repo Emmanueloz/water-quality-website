@@ -1,3 +1,4 @@
+import { SearchAttributes } from "@/domain/models/SearchMateria";
 import { IMateriaRepository } from "@/domain/repositories/MateriaRepository";
 import { db } from "@/lib/db";
 import { ResultSetHeader } from "mysql2";
@@ -221,8 +222,49 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
   }
 
   async searchMateria(search: ISearchMateria): Promise<IMateria[]> {
-    console.log(search);
-    
-    return [];
+    let query = `
+      SELECT 
+          materias.id AS id,
+          materias.nombre AS nombre,
+          materias.maestro AS maestro
+        FROM materias
+        WHERE materias.id_usuario = ?
+    `;
+
+    if (search.searchAttribute !== SearchAttributes.all) {
+      query = `
+        SELECT 
+          materias.id AS id,
+          materias.nombre AS nombre,
+          materias.maestro AS maestro
+        FROM materias
+        WHERE materias.id_usuario = ?
+        AND
+        ${
+          search.searchAttribute === SearchAttributes.id
+            ? `${search.searchAttribute} = ?`
+            : `${search.searchAttribute} LIKE ?`
+        }`;
+    }
+
+    const searchValue =
+      search.searchAttribute === SearchAttributes.id
+        ? search.searchValue
+        : `%${search.searchValue}%`;
+
+    const queryValue = search.searchAttribute === SearchAttributes.all ? [search.id_usuario] : [search.id_usuario, searchValue];
+
+    const qResult = await this.pool.execute(query, queryValue);
+
+    const [rows] = qResult as any[];
+
+    const materias = rows.map((row: any) => ({
+      id: row.id,
+      nombre: row.nombre,
+      maestro: row.maestro,
+      unidades: [],
+    }));
+
+    return materias as IMateria[];
   }
 }

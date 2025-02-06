@@ -1,17 +1,24 @@
 "use client";
 
 import { searchMateria } from "@/app/materias/actions";
+import { AuthContext } from "@/context/AuthProvider";
+import { MateriaContext } from "@/context/MateriaContext";
 import { SearchAttributes } from "@/domain/models/SearchMateria";
 import { MateriaSearchValidator } from "@/utils/materiaSearchValidator";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { set } from "zod";
 
 export default function AdvancedSearch() {
+  const { userProfile } = useContext(AuthContext);
+  const { getListSearchMaterias } = useContext(MateriaContext);
+
   const [searchAttribute, setSearchAttribute] = useState<SearchAttributes>(
     SearchAttributes.all
   );
 
   const [searchValue, setSearchValue] = useState<string>("");
   const [errorForm, setErrorForm] = useState<string | null>(null);
+  const [listMaterias, setListMaterias] = useState<IMateria[]>([]);
 
   const formValidate = () => {
     const validator = new MateriaSearchValidator({
@@ -22,16 +29,14 @@ export default function AdvancedSearch() {
     setErrorForm(validator.getError());
 
     return validator.validate();
-
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const isValid = formValidate();
 
     console.log(isValid);
-    
 
     if (!isValid) {
       return;
@@ -48,11 +53,31 @@ export default function AdvancedSearch() {
       searchInput = searchValue.trim();
     }
 
-    searchMateria({
+    await getListSearchMaterias({
       searchAttribute: searchAttribute,
       searchValue: searchInput,
+      id_usuario: userProfile?.id,
     });
   };
+
+  useEffect(() => {
+    const fetchMaterias = async () => {
+      if (searchAttribute === SearchAttributes.all) {
+        setErrorForm(null);
+        setSearchValue("");
+
+        await getListSearchMaterias({
+          searchAttribute: searchAttribute,
+          searchValue: "",
+          id_usuario: userProfile?.id,
+        });
+
+        
+      }
+    };
+
+    fetchMaterias(); // Llamamos a la función async
+  }, [searchAttribute]);
 
   return (
     <form onSubmit={handleSubmit}>
