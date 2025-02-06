@@ -5,3 +5,9 @@ interface IMateria {
   id_usuario: number;
   unidades?: IUnidades[];
 }
+
+
+
+interface ISearchMateria {
+  [SearchAttributes]: number | string;
+}

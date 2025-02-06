@@ -1,3 +1,7 @@
+import AdvancedSearch from "@/components/AdvancedSearch";
+
 export default function Page() {
-  return <div>Page</div>;
+  return <div>
+    <AdvancedSearch />
+  </div>;
 }
