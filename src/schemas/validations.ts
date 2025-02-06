@@ -87,6 +87,14 @@ export const registerSchema = z
             .refine((val) => val.replace(/\s/g, "").length > 0, "La contraseña no puede ser solo espacios en blanco"),
     })
 
+
+export const profileSchema = z.object({
+      email: z.string().email("El email debe ser válido"),
+      password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+      confirmPassword: z.string().min(6, "La confirmación de la contraseña debe tener al menos 6 caracteres"),
+    });
+    
+
 export const createProjectSchema = projectSchema;
 export const updateProjectSchema = projectSchema.partial();
 export const createGameSchema = gameSchema;

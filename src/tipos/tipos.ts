@@ -10,7 +10,7 @@ export interface Usuario {
   id: number;
   Usuario: string;
   userName: string;
-  Usuario: string;
+  email: string;
   rol: string;
   Contraseña: string;
   privilegio?: string;

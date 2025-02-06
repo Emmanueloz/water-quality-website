@@ -75,7 +75,7 @@ export default function Navbar() {
             Contacto
           </a>
           {isAuthenticated && (
-            <a href="#" className="ml-4 hover:underline">
+            <a href="/profile" className="ml-4 hover:underline">
               Bienvenido {userProfile?.userName}
             </a>
           )}
