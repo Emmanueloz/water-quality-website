@@ -71,8 +71,6 @@ export default function AdvancedSearch() {
           searchValue: "",
           id_usuario: userProfile?.id,
         });
-
-        
       }
     };
 
@@ -80,14 +78,14 @@ export default function AdvancedSearch() {
   }, [searchAttribute]);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="">
-        <div>
+    <form onSubmit={handleSubmit} className="w-full flex items-center gap-2 mb-2 h-10">
+      <label htmlFor="" className="flex-1 flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full">
           <select
             onChange={(e) =>
               setSearchAttribute(e.target.value as SearchAttributes)
             }
-            className="capitalize"
+            className="capitalize p-2 bg-transparent text-gray-700 focus:ring-0 focus:outline-none"
             name="filter"
             id="filter"
           >
@@ -97,6 +95,7 @@ export default function AdvancedSearch() {
               </option>
             ))}
           </select>
+
           {searchAttribute !== SearchAttributes.all && (
             <>
               <input
@@ -108,14 +107,25 @@ export default function AdvancedSearch() {
                 placeholder="Valor"
                 value={searchValue}
                 min={1}
+                max={100}
+                maxLength={80}
                 onChange={(e) => setSearchValue(e.target.value)}
+                className="flex-1 p-2 border-b-2 border-gray-300 focus:border-cyan-400 bg-transparent focus:outline-none"
               />
-              <button type="submit">Buscar</button>
+              <button
+                type="submit"
+                className="px-4 py-2 border border-cyan-400 text-cyan-400 rounded-md hover:bg-cyan-400 hover:text-white transition"
+              >
+                Buscar
+              </button>
             </>
           )}
         </div>
-        {errorForm && <span className="text-red-500 text-sm">{errorForm}</span>}
       </label>
+
+      {errorForm && (
+        <span className="text-red-500 text-sm mt-2">{errorForm}</span>
+      )}
     </form>
   );
 }
