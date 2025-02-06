@@ -5,13 +5,16 @@ import {
   deleteMateria,
   updateMateria,
   updateUnidades,
+  searchMateria,
 } from "@/app/materias/actions";
 import { createContext, useState } from "react";
 
 const MateriaContext = createContext(
   {} as {
     listMaterias: IMateria[];
+    listSearchMaterias: IMateria[];
     getListMaterias: (id_usuario: number) => Promise<void>;
+    getListSearchMaterias: (search: ISearchMateria) => Promise<void>;
     createMateria: (materia: IMateria) => Promise<void>;
     delMateria: (materia: IMateria) => Promise<void>;
     editMateria: (
@@ -24,10 +27,16 @@ const MateriaContext = createContext(
 
 const MateriaProvider = ({ children }: { children: any }) => {
   const [listMaterias, setListMaterias] = useState([] as IMateria[]);
+  const [listSearchMaterias, setListSearchMaterias] = useState([] as IMateria[]);
 
   const getListMaterias = async (id_usuario: number) => {
     const materias = await getMaterias(id_usuario);
     setListMaterias(materias);
+  };
+
+  const getListSearchMaterias = async (search: ISearchMateria) => {
+    const materias = await searchMateria(search);
+    setListSearchMaterias(materias);
   };
 
   const createMateria = async (materia: IMateria) => {
@@ -57,10 +66,12 @@ const MateriaProvider = ({ children }: { children: any }) => {
     <MateriaContext.Provider
       value={{
         listMaterias,
+        listSearchMaterias,
         getListMaterias,
         createMateria,
         delMateria,
         editMateria,
+        getListSearchMaterias,
       }}
     >
       {children}

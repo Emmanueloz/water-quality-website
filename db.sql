@@ -48,17 +48,18 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `Usuarios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Usuarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `Usuario` varchar(100) NOT NULL,
-  `Contraseña` varchar(255) NOT NULL,
-  `Roles` int(11) NOT NULL,
-  `id_privilegio` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `Rol` (`Roles`),
-  KEY `Usuarios_privilegios_FK` (`id_privilegio`),
-  CONSTRAINT `Usuarios_ibfk_1` FOREIGN KEY (`Roles`) REFERENCES `Rol` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `Usuarios_privilegios_FK` FOREIGN KEY (`id_privilegio`) REFERENCES `privilegios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE Usuarios (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  Usuario varchar(100) NOT NULL,
+  Email varchar(255) DEFAULT NULL,
+  Contraseña varchar(255) NOT NULL,
+  Roles int(11) NOT NULL,
+  id_privilegio int(11) DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY Rol (Roles),
+  KEY Usuarios_privilegios_FK (id_privilegio),
+  CONSTRAINT Usuarios_ibfk_1 FOREIGN KEY (Roles) REFERENCES Rol (id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT Usuarios_privilegios_FK FOREIGN KEY (id_privilegio) REFERENCES privilegios (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

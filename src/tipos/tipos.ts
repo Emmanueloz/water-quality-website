@@ -4,12 +4,14 @@ export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
   acceptTerms:boolean;
+  Email: string;
 }
 
 export interface Usuario {
   id: number;
-  userName: string;
   Usuario: string;
+  userName: string;
+  email: string;
   rol: string;
   Contraseña: string;
   privilegio?: string;

@@ -3,16 +3,18 @@ import { MateriaContext } from "@/context/MateriaContext";
 import Link from "next/link";
 import { useContext } from "react";
 
-export default function TableMateria({ id_usuario }: { id_usuario: number }) {
-  const { listMaterias } = useContext(MateriaContext);
+export default function TableMateria({ id_usuario,isSearch }: { id_usuario?: number, isSearch?: boolean }) {
+  const { listMaterias,listSearchMaterias } = useContext(MateriaContext);
 
   const classNames = {
     th: "p-4 text-sm font-normal leading-none text-slate-500 text-left",
     td: "p-4 py-5 border-b border-slate-200",
   };
 
+  const listM = isSearch ? listSearchMaterias : listMaterias;
+
   return (
-    <div className="max-h-96 overflow-y-auto border rounded-md">
+    <div className="lg:max-h-[500px] overflow-y-auto border rounded-md">
       <table className="items-center bg-transparent w-full border-collapse table-fixed">
         <thead className="border-b border-slate-300 bg-slate-50">
           <tr>
@@ -22,13 +24,13 @@ export default function TableMateria({ id_usuario }: { id_usuario: number }) {
           </tr>
         </thead>
         <tbody className="max-h-16 overflow-auto">
-          {listMaterias.length === 0 && (
+          {( listM.length === 0 && !isSearch) || (isSearch && listSearchMaterias.length === 0) && (
             <tr>
               <td colSpan={3}>No hay materias</td>
             </tr>
           )}
 
-          {listMaterias.map((materia) => (
+          { listM.map((materia) => (
             <tr key={materia.id} className="hover:bg-slate-50">
               <td className={classNames.td}>{materia.nombre}</td>
               <td className={classNames.td}>{materia.maestro}</td>
