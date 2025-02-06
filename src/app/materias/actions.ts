@@ -1,39 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { ResultSetHeader } from "mysql2";
+import { MateriaRepositoryImpl } from "@/infrastructure/repositories/MateriaRepositoryImpl";
+
+const materiaRepository = new MateriaRepositoryImpl();
 
 export const addMateria = async (materia: IMateria) => {
-  const connection = db.getPool();
-
-  const qResult = await connection.execute(
-    "INSERT INTO materias (nombre, maestro, id_usuario) VALUES (?, ?, ?)",
-    [materia.nombre, materia.maestro, materia.id_usuario]
-  );
-
-  const [rows] = qResult as [ResultSetHeader, any];
-
-  console.log(rows);
-  console.log(materia);
-
-  const materiaId = rows.insertId;
-  for (const unidad of materia.unidades || []) {
-    console.log(unidad);
-
-    await addUnidad({ ...unidad, id_materia: materiaId });
-  }
-};
-
-const addUnidad = async (unidad: IUnidades) => {
-  const connection = db.getPool();
-
-  const qResult = await connection.execute(
-    "INSERT INTO unidades (nombre, horas_totales, id_materia) VALUES (?, ?, ?)",
-    [unidad.nombre, unidad.horas_totales, unidad.id_materia]
-  );
-
-  const [rows] = qResult;
-  console.log(rows);
+ materiaRepository.addMateria(materia);
 };
 
 export const getMaterias = async (id_usuario: number) => {
@@ -187,9 +160,9 @@ export const updateUnidades = async (
       materia.id,
     ]);
 
-    const [insertResult] = await connection.execute(insertQuery, insertValues);
+      const [insertResult] = await connection.execute(insertQuery, insertValues);
 
-    console.log(insertResult);
+      console.log(insertResult);
   }
 
   if (delListUnit && delListUnit.length > 0) {
