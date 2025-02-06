@@ -8,6 +8,7 @@ export interface LoginRequestBody {
 
 export interface Usuario {
   id: number;
+  Usuario: string;
   userName: string;
   Usuario: string;
   rol: string;
