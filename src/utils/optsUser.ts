@@ -15,7 +15,7 @@ export async function resetPassword( id: number, password: string ) {
 
 export async function findByEmail(email: string): Promise<number | null> {
     const connection = db.getPool();
-    const query = `SELECT id FROM Usuarios WHERE email = ?`;
+    const query = `SELECT id FROM Usuarios WHERE Email = ?`;
     const [rows]: any = await connection.query(query, [email]);
 
     if (rows.length === 0) {
