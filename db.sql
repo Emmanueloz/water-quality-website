@@ -277,3 +277,11 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-01-30 18:10:51
+
+-- crear la tabla para los tokens
+CREATE TABLE password_reset (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Identificador único
+    user_id INT NOT NULL REFERENCES Usuarios(id) ON DELETE CASCADE, -- Relación con la tabla de usuarios
+    token TEXT NOT NULL UNIQUE, -- Token de recuperación (encriptado con bcrypt)
+    expires_at TIMESTAMP NOT NULL -- Fecha de expiración del token
+);

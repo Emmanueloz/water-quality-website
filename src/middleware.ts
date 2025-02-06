@@ -7,10 +7,19 @@ import { notFound } from "next/navigation";
 
 // lista con todos los modulos permitidos aun cuando el usuario no tenga el modulo correspondiente
 const allowedModules = ["", "david", "angel","daniel","raul"];
-
+const publicUrl = ["/reset-password"];
 export async function middleware(request: NextRequest) {
+  
+  const res = NextResponse.next();
+  // Si la ruta es publica, permitir el acceso
+  if (publicUrl.includes(request.nextUrl.pathname.trim())) {
+    console.log(request.nextUrl.pathname);
+    return res;
+  }
   try {
 
+    
+    // Hacer la solicitud GET para verificar si existe un administrador
     const adminResponse = await fetch(`${request.nextUrl.origin}/api/admin`);
     const adminData = await adminResponse.json();
 
@@ -54,7 +63,7 @@ export async function middleware(request: NextRequest) {
       }
 
       // si el modulo no existe en la lista de modulos y la ruta existe, mandar un error 404
-      if (!modules.includes(modulo) && route !== "/login" && route !== "/register" && route !== "/admin") {
+      if (!modules.includes(modulo) && route !== "/login" && route !== "/register" && route !== "/admin" && route !== "/reset") {
         console.error("Modulo no autorizado:", modulo);
         
         return NextResponse.rewrite(new URL("/not-found", request.url));
