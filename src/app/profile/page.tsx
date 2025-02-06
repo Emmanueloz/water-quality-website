@@ -1,87 +1,67 @@
-"use client";
+'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { registerSchema } from "@/schemas/validations";
 import { z } from "zod";
-
-export default function RegisterPage() {
-  const [user, setUser] = useState('');
+import { profileSchema } from "@/schemas/validations"; // Asegúrate de que este esquema esté correctamente definido
+export default function ProfilePage() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [email, setEmail] = useState(''); // Estado para el email
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [error, setError] = useState({ user: "", password: "", confirmPassword: "", email: "", general: "" });
+  const [error, setError] = useState({ email: "", password: "", confirmPassword: "", general: "" });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError({ user: "", password: "", confirmPassword: "", email: "", general: "" });
-
-    // Validar que las contraseñas coincidan
+    setError({ email: "", password: "", confirmPassword: "", general: "" });
     if (password !== confirmPassword) {
       setError((prev) => ({ ...prev, confirmPassword: "Las contraseñas no coinciden" }));
       setIsLoading(false);
       return;
     }
-
-    // Validar el formulario con Zod
     try {
-      registerSchema.parse({ user, password, confirmPassword, email }); // Agregar email a la validación
+      profileSchema.parse({ email, password, confirmPassword });
     } catch (error) {
       if (error instanceof z.ZodError) {
         const errors = error.flatten().fieldErrors;
         setError({
-          user: errors.user?.[0] || "",
+          email: errors.email?.[0] || "",
           password: errors.password?.[0] || "",
           confirmPassword: errors.confirmPassword?.[0] || "",
-          email: errors.email?.[0] || "", // Mostrar error de email
           general: "",
         });
         setIsLoading(false);
         return;
       }
     }
-
-    // Enviar datos al backend
     try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ Usuario: user, Contraseña: password, Email: email, acceptTerms }),
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Enviamos solo email y password; la API se encargará de obtener el id del token
+        body: JSON.stringify({ email, password }),
+        credentials: 'include' // Para asegurarnos de que se envíen las cookies
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        router.push('/login'); // Redirigir al login si el registro es exitoso
+        router.push('/');
       } else {
-        // Mostrar mensaje de error del backend
-        setError((prev) => ({ ...prev, general: data.message || "Error al registrar el usuario" }));
+        setError((prev) => ({ ...prev, general: data.message || "Error al actualizar el perfil" }));
       }
-    } catch {
+    } catch (err) {
+      console.error("Error de conexión con el servidor:", err);
       setError((prev) => ({ ...prev, general: "Error de conexión con el servidor." }));
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
-      <h1 className="mb-3 text-xl font-bold">Registro de Usuario</h1>
+      <h1 className="mb-3 text-xl font-bold">Actualizar Perfil</h1>
       <form onSubmit={handleSubmit} className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg">
-        <label htmlFor="user" className="font-semibold text-sm">Usuario:</label>
-        <input
-          type="text"
-          id="user"
-          value={user}
-          onChange={(e) => setUser(e.target.value)}
-          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-        />
-        <p className="text-red-500 text-xs min-h-[16px]">{error.user}</p>
-
-        <label htmlFor="email" className="font-semibold text-sm">Correo Electrónico:</label>
+        <label htmlFor="email" className="font-semibold text-sm">Email:</label>
         <input
           type="email"
           id="email"
@@ -90,7 +70,6 @@ export default function RegisterPage() {
           className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
         <p className="text-red-500 text-xs min-h-[16px]">{error.email}</p>
-
         <label htmlFor="password" className="font-semibold text-sm">Contraseña:</label>
         <input
           type="password"
@@ -100,7 +79,6 @@ export default function RegisterPage() {
           className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
         <p className="text-red-500 text-xs min-h-[16px]">{error.password}</p>
-
         <label htmlFor="confirmPassword" className="font-semibold text-sm">Confirmar Contraseña:</label>
         <input
           type="password"
@@ -110,33 +88,20 @@ export default function RegisterPage() {
           className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         />
         <p className="text-red-500 text-xs min-h-[16px]">{error.confirmPassword}</p>
-
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="acceptTerms"
-            checked={acceptTerms}
-            onChange={(e) => setAcceptTerms(e.target.checked)}
-            className="w-4 h-4"
-          />
-          <label htmlFor="acceptTerms" className="text-xs">
-            Acepto el <a href="/privacidad" className="text-blue-500 underline">aviso de privacidad</a>
-          </label>
-        </div>
-
         {/* Mostrar mensaje de error general */}
         {error.general && (
           <p className="text-red-500 text-xs text-center">{error.general}</p>
         )}
-
         <button
           type="submit"
-          disabled={isLoading || !acceptTerms}
+          disabled={isLoading || !email || !password || !confirmPassword}
           className={`p-2 rounded-lg font-semibold text-sm text-white ${
-            isLoading || !acceptTerms ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+            isLoading || !email || !password || !confirmPassword
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-500 hover:bg-blue-600'
           }`}
         >
-          {isLoading ? 'Registrando...' : 'Registrar Usuario'}
+          {isLoading ? 'Actualizando...' : 'Actualizar Perfil'}
         </button>
       </form>
     </div>
