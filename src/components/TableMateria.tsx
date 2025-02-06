@@ -14,7 +14,7 @@ export default function TableMateria({ id_usuario,isSearch }: { id_usuario?: num
   const listM = isSearch ? listSearchMaterias : listMaterias;
 
   return (
-    <div className="max-h-96 overflow-y-auto border rounded-md">
+    <div className="lg:max-h-[500px] overflow-y-auto border rounded-md">
       <table className="items-center bg-transparent w-full border-collapse table-fixed">
         <thead className="border-b border-slate-300 bg-slate-50">
           <tr>
