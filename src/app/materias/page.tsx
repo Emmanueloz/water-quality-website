@@ -15,7 +15,14 @@ export default async function MateriasPage() {
           <FormMaterias id_usuario={user.id} />
         </article>
         <article className="lg:w-1/2">
-          <h2 className="text-xl font-semibold">Lista materias</h2>
+          <div className="flex justify-between mb-2">
+            <h2 className="text-xl font-semibold">Lista materias</h2>
+            <Link href="/materias/search">
+              <button className="p-2 rounded-lg bg-cyan-500 hover:bg-cyan-300">
+                Búsqueda avanzada
+              </button>
+            </Link>
+          </div>
           <TableMateria id_usuario={user.id} />
         </article>
       </section>
