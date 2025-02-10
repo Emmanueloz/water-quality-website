@@ -23,7 +23,7 @@ export async function requestPasswordReset(email: string) {
 
     const token = crypto.randomBytes(32).toString("hex");
     const hashedToken = await bcrypt.hash(token, 10);
-    await createPasswordReset(userId, hashedToken, new Date(Date.now() + 3600000)); // 1 hora
+    await createPasswordReset(userId, hashedToken, new Date(Date.now() + 120)); // 2 minutos
     const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
     await sendEmail(email, "Recuperación de Contraseña", resetPasswordTemplate(resetLink, email));
     return { message: "Correo enviado con instrucciones" };
