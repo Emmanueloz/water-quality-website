@@ -6,6 +6,7 @@ import { Project } from "@/tipos/tipos";
 import Select from "@/components/Select";
 import { projectSchema } from "@/schemas/validations";
 import { z } from "zod";
+import Link from "next/link";
 
 const categories = [
     { value: "Frontend", label: "Frontend" },
@@ -314,7 +315,9 @@ const Page = () => {
                         key={project.id}
                         className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow w-96 flex flex-col"
                     >
-                        <h3 className="text-lg font-semibold">{project.name}</h3>
+                        <Link href={`/proyectos/${project.id}`}>
+                            <h3 className="text-lg font-semibold">{project.name}</h3>
+                        </Link>
                         <p className="text-sm text-gray-600 mt-2 flex-grow">{project.description}</p>
                         <div className="flex justify-between mt-4">
                             <button
