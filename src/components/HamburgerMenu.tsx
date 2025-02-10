@@ -5,7 +5,7 @@ import { AuthContext } from "@/context/AuthProvider";
 import { MateriaContext } from "@/context/MateriaContext";
 import { any } from "zod";
 
-export default function HamburgerMenu({}) {
+export default function HamburgerMenu({ }) {
   const [isNavOpen, setIsNavOpen] = useState(false); // initiate isNavOpen state with false
   const { isAuthenticated, projects, setProjects, games, setGames, userProfile } =
     useContext(AuthContext);
@@ -23,7 +23,7 @@ export default function HamburgerMenu({}) {
     }
   };
 
-  
+
 
   const projectItem = {
     name: "Proyectos",
@@ -63,44 +63,43 @@ export default function HamburgerMenu({}) {
 
   let menuItems: MenuItem[] = [];
 
-  if ( isAuthenticated && userProfile?.rol.toLowerCase() === "admin") {
+  if (isAuthenticated && userProfile?.rol.toLowerCase() === "admin") {
     menuItems = [projectItem, materiaItem, juegosItem, usuariosItem, privilegedItem];
   }
-  else if ( isAuthenticated &&  userProfile?.rol.toLowerCase() === "usuario") {
+  else if (isAuthenticated && userProfile?.rol.toLowerCase() === "usuario") {
     if (userProfile?.modules.includes("proyectos" as never)) {
       menuItems.push(projectItem);
     }
-     if (userProfile?.modules.includes("materias" as never)) {
+    if (userProfile?.modules.includes("materias" as never)) {
       menuItems.push(materiaItem);
     }
-     if (userProfile?.modules.includes("games" as never)) {
+    if (userProfile?.modules.includes("games" as never)) {
       menuItems.push(juegosItem);
     }
   }
 
   useEffect(() => {
     if (userProfile?.id) {
-     if (userProfile?.rol.toLowerCase() === "admin") {
-      getAllProjectsPerUser();
-      getListMaterias(userProfile.id); 
-     }
-     else if (userProfile?.rol.toLowerCase() === "usuario") {
-      if (userProfile?.modules.includes("proyectos" as never)) {
+      if (userProfile?.rol.toLowerCase() === "admin") {
         getAllProjectsPerUser();
-      }
-      if (userProfile?.modules.includes("materias" as never)) {
         getListMaterias(userProfile.id);
       }
-     }
-    } 
+      else if (userProfile?.rol.toLowerCase() === "usuario") {
+        if (userProfile?.modules.includes("proyectos" as never)) {
+          getAllProjectsPerUser();
+        }
+        if (userProfile?.modules.includes("materias" as never)) {
+          getListMaterias(userProfile.id);
+        }
+      }
+    }
     console.log(userProfile);
   }, [userProfile]);
 
   return (
     <div
-      className={`relative md:static md:bg-gray-50 ${
-        !isAuthenticated ? "hidden" : ""
-      }`}
+      className={`relative md:static md:bg-gray-50 ${!isAuthenticated ? "hidden" : ""
+        }`}
     >
       <button
         className="absolute top-5 left-4 z-50 md:hidden"
@@ -119,9 +118,8 @@ export default function HamburgerMenu({}) {
 
       <aside
         className={`md:static md:w-60 md:translate-x-0 md:shadow-none  bg-gray-50 
-        fixed top-0 left-0 h-full  w-3/4 max-w-xs  shadow-lg transform transition-transform duration-500 ease-in-out z-50  ${
-          isNavOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        fixed top-0 left-0 h-full  w-3/4 max-w-xs  shadow-lg transform transition-transform duration-500 ease-in-out z-50  ${isNavOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="h-16 py-4 px-4 flex justify-end items-center bg-cyan-500">
           <button
