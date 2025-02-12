@@ -1,33 +1,13 @@
-import Link from "next/link";
+import Dashboard from "@/components/Dashboard";
+import { getUserToken } from "@/utils/getUserToken";
 
-export default function Home() {
+export default async function Home() {
+  const user = await getUserToken();
   return (
     <>
       <main className="flex-1 p-4">
         <h2 className="text-2xl font-bold mb-4">Bienvenido</h2>
-        <p>Integrantes del equipo:</p>
-        <ol className="list-decimal m-4">
-          <li className="text-decoration-line-through">
-            <Link className="hover:underline" href="/david">
-              David
-            </Link>
-          </li>
-          <li>
-            <Link className="hover:underline" href="/angel">
-              Angel
-            </Link>
-          </li>
-          <li>
-            <Link className="hover:underline" href="/raul">
-              Raúl
-            </Link>
-          </li>
-          <li>
-            <Link className="hover:underline" href="/daniel">
-              Daniel
-            </Link>
-          </li>
-        </ol>
+        <Dashboard user={user} />
       </main>
     </>
   );

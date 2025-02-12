@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import { generarToken } from "../../../lib/jwt";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 
+const modulesForAdmin = ["users", "materias", "privilegios", "proyectos", "games"];
+
 export async function POST(req: NextRequest) {
   const { Usuario, Contraseña }: LoginRequestBody = await req.json();
 
@@ -67,7 +69,7 @@ export async function POST(req: NextRequest) {
         id: user.id,
         Usuario: user.Usuario,
         rol: user.rol,
-        modules: modulesArray,
+        modules: user.rol.toLowerCase() === "admin" ? modulesForAdmin : modulesArray,
       },
       "2h"
     );
