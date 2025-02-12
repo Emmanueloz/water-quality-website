@@ -1,11 +1,15 @@
 "use client";
 
 import { AuthContext } from "@/context/AuthProvider";
-import { useContext, useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect } from "react";
 
 export default function Navbar() {
   const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } =
     useContext(AuthContext);
+
+  const router = useRouter();
 
   // Verificar la sesión al cargar la página
   const checkSession = async () => {
@@ -39,7 +43,8 @@ export default function Navbar() {
       if (response.ok) {
         console.log("Sesión cerrada exitosamente");
         setIsAuthenticated(false); // Actualizar estado local
-        window.location.href = "/"; // Redirigir si es necesario
+        //window.location.href = "/"; // Redirigir si es necesario
+        router.push("/");
       } else {
         const errorData = await response.json();
         console.error("Error al cerrar sesión:", errorData.message);
@@ -75,9 +80,9 @@ export default function Navbar() {
             Contacto
           </a>
           {isAuthenticated && (
-            <a href="/profile" className="ml-4 hover:underline">
+            <Link href="/profile" className="ml-4 hover:underline">
               Bienvenido {userProfile?.userName}
-            </a>
+            </Link>
           )}
           {isAuthenticated && (
             <button
