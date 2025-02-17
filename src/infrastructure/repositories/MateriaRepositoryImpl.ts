@@ -116,6 +116,36 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
     return materias as IMateria[];
   }
 
+  async getMateriasPaginated(
+    page: number,
+    limit: number,
+    id_usuario: number
+  ): Promise<IMateria[]> {
+    const qResult = await this.pool.execute(
+      `
+      SELECT 
+        materias.id AS materia_id,
+        materias.nombre AS materia_nombre,
+        materias.maestro AS materia_maestro
+      FROM materias
+      WHERE materias.id_usuario = ?
+      LIMIT ?, ?
+      `,
+      [id_usuario, page, limit]
+    );
+
+    const [rows] = qResult as any[];
+
+    const materias = rows.map((row: any) => ({
+      id: row.materia_id,
+      nombre: row.materia_nombre,
+      maestro: row.materia_maestro,
+      unidades: [],
+    }));
+
+    return materias as IMateria[];
+  }
+
   async deleteMateria(materia: IMateria): Promise<void> {
     const qResult = await this.pool.execute(
       `
@@ -252,7 +282,10 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
         ? search.searchValue
         : `%${search.searchValue}%`;
 
-    const queryValue = search.searchAttribute === SearchAttributes.all ? [search.id_usuario] : [search.id_usuario, searchValue];
+    const queryValue =
+      search.searchAttribute === SearchAttributes.all
+        ? [search.id_usuario]
+        : [search.id_usuario, searchValue];
 
     const qResult = await this.pool.execute(query, queryValue);
 
