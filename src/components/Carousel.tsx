@@ -6,13 +6,18 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
+type CarouselProps = {
+    user: UserProfile;
+}
+
 const items = [
     { id: 1, title: "Juegos", module: "games", image: "/img/juego.jpg" },
-    { id: 2, title: "Materias", module: "profile", image: "/img/materia.jpg" },
-    { id: 3, title: "Proyectos", module: "settings", image: "/img/proyecto.jpg" },
+    { id: 2, title: "Materias", module: "materias", image: "/img/materia.jpg" },
+    { id: 3, title: "Proyectos", module: "proyectos", image: "/img/proyecto.jpg" },
 ];
 
-export default function Carousel() {
+const Carousel = ({ user }: CarouselProps) => {
+    
     return (
         <div className="w-full max-w-4xl mx-auto">
             <Swiper
@@ -47,3 +52,6 @@ export default function Carousel() {
         </div>
     );
 }
+
+
+export default Carousel;
