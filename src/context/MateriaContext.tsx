@@ -1,6 +1,7 @@
 "use client";
 import {
   getMaterias,
+  getMateriasPaginated,
   addMateria,
   deleteMateria,
   updateMateria,
@@ -13,8 +14,14 @@ const MateriaContext = createContext(
   {} as {
     listMaterias: IMateria[];
     listSearchMaterias: IMateria[];
+    paginatedList: IMateria[];
     getListMaterias: (id_usuario: number) => Promise<void>;
     getListSearchMaterias: (search: ISearchMateria) => Promise<void>;
+    getPaginatedList: (
+      page: number,
+      limit: number,
+      idUsuario: number
+    ) => Promise<void>;
     createMateria: (materia: IMateria) => Promise<void>;
     delMateria: (materia: IMateria) => Promise<void>;
     editMateria: (
@@ -27,7 +34,10 @@ const MateriaContext = createContext(
 
 const MateriaProvider = ({ children }: { children: any }) => {
   const [listMaterias, setListMaterias] = useState([] as IMateria[]);
-  const [listSearchMaterias, setListSearchMaterias] = useState([] as IMateria[]);
+  const [paginatedList, setPaginatedList] = useState([] as IMateria[]);
+  const [listSearchMaterias, setListSearchMaterias] = useState(
+    [] as IMateria[]
+  );
 
   const getListMaterias = async (id_usuario: number) => {
     const materias = await getMaterias(id_usuario);
@@ -37,6 +47,16 @@ const MateriaProvider = ({ children }: { children: any }) => {
   const getListSearchMaterias = async (search: ISearchMateria) => {
     const materias = await searchMateria(search);
     setListSearchMaterias(materias);
+  };
+
+  const getPaginatedList = async (
+    page: number,
+    limit: number,
+    idUsuario: number
+  ) => {
+    const materias = await getMateriasPaginated(page, limit, idUsuario);
+    
+    setPaginatedList(materias);
   };
 
   const createMateria = async (materia: IMateria) => {
@@ -66,12 +86,14 @@ const MateriaProvider = ({ children }: { children: any }) => {
     <MateriaContext.Provider
       value={{
         listMaterias,
+        paginatedList,
         listSearchMaterias,
         getListMaterias,
         createMateria,
         delMateria,
         editMateria,
         getListSearchMaterias,
+        getPaginatedList,
       }}
     >
       {children}

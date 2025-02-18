@@ -34,3 +34,11 @@ export const updateUnidades = async (
 export const searchMateria = async (search: ISearchMateria) => {
   return materiaRepository.searchMateria(search);
 };
+
+export const getMateriasPaginated = async (
+  page: number,
+  limit: number,
+  idUsuario: number
+) => {
+  return materiaRepository.getMateriasPaginated(page, limit, idUsuario);
+};
