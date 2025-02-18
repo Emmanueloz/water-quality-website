@@ -7,7 +7,7 @@ type CardItemProps = {
     id: number;
     title: string;
     subtitle: string;
-    item: Project | Game;
+    item: any;
     openModal: (data?: any) => void;
     handleDelete: (id?: number) => void;
 }
