@@ -23,6 +23,16 @@ export default function HamburgerMenu({ }) {
     }
   };
 
+  const getAllGamesPerUser = async () => {
+    const response = await fetch(`/api/juegos?userId=${userProfile?.id}`);
+    const data = await response.json();
+    if (response.ok) {
+      console.log("Juegos obtenidos:", data);
+      setGames(data.data);
+    } else {
+      console.error("Error al obtener los juegos:", data.message);
+    }
+  };
 
 
   const projectItem = {
@@ -43,10 +53,13 @@ export default function HamburgerMenu({ }) {
     })),
   };
 
-  const juegosItem = {
+  const juegoItem = {
     name: "Juegos",
     link: "/games",
-    subItems: [],
+    subItems: games.map((game) => ({
+      name: game.name,
+      link: `/games/${game.id}`,
+    })),
   };
 
   const usuariosItem = {
@@ -64,7 +77,7 @@ export default function HamburgerMenu({ }) {
   let menuItems: MenuItem[] = [];
 
   if (isAuthenticated && userProfile?.rol.toLowerCase() === "admin") {
-    menuItems = [projectItem, materiaItem, juegosItem, usuariosItem, privilegedItem];
+    menuItems = [projectItem, materiaItem, juegoItem, usuariosItem, privilegedItem];
   }
   else if (isAuthenticated && userProfile?.rol.toLowerCase() === "usuario") {
     if (userProfile?.modules.includes("proyectos" as never)) {
@@ -74,7 +87,7 @@ export default function HamburgerMenu({ }) {
       menuItems.push(materiaItem);
     }
     if (userProfile?.modules.includes("games" as never)) {
-      menuItems.push(juegosItem);
+      menuItems.push(juegoItem);
     }
   }
 
@@ -83,6 +96,7 @@ export default function HamburgerMenu({ }) {
       if (userProfile?.rol.toLowerCase() === "admin") {
         getAllProjectsPerUser();
         getListMaterias(userProfile.id);
+        getAllGamesPerUser();
       }
       else if (userProfile?.rol.toLowerCase() === "usuario") {
         if (userProfile?.modules.includes("proyectos" as never)) {
@@ -90,6 +104,9 @@ export default function HamburgerMenu({ }) {
         }
         if (userProfile?.modules.includes("materias" as never)) {
           getListMaterias(userProfile.id);
+        }
+        if (userProfile?.modules.includes("juegos" as never)) {
+          getAllGamesPerUser();
         }
       }
     }
