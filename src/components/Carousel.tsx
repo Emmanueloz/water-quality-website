@@ -17,7 +17,7 @@ const items = [
 ];
 
 const Carousel = ({ user }: CarouselProps) => {
-    
+
     return (
         <div className="w-full max-w-4xl mx-auto">
             <Swiper
@@ -33,18 +33,17 @@ const Carousel = ({ user }: CarouselProps) => {
                 {items.map((item) => (
                     <SwiperSlide key={item.id}>
                         <Link href={`/${item.module}`}>
-                            <div className="relative w-full h-[500px] flex items-center justify-center">
+                            <div className="relative w-full h-[500px] flex items-center justify-center group">
                                 <img
                                     src={item.image}
                                     alt={item.title}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 />
-                                <div className="absolute bottom-0 bg-black/50 text-white p-4 w-full text-center">
-                                    <h2 className="text-lg font-semibold text-white">
-                                        {item.title}
-                                    </h2>
+                                <div className="absolute bottom-0 bg-black/50 text-white p-4 w-full text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <h2 className="text-lg font-semibold text-white">{item.title}</h2>
                                 </div>
                             </div>
+
                         </Link>
                     </SwiperSlide>
                 ))}
