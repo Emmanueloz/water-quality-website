@@ -14,7 +14,7 @@ type CardItemProps = {
 
 export default function CardItem({ nameModule, id, title, subtitle, openModal, item, handleDelete }: CardItemProps) {
     return <div
-        className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow w-96 flex flex-col"
+        className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg mb-10 ml-5 transition-shadow w-96 flex flex-col h-72"
     >
         <Link href={`/${nameModule}/${id}`}>
             <h3 className="text-lg font-semibold">{title}</h3>
