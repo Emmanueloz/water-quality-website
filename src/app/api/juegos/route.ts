@@ -20,12 +20,12 @@ export async function GET(req: NextRequest) {
     const gameId = req.nextUrl.searchParams.get("gameId");
 
     console.log(req.nextUrl.searchParams);
-    
+
 
     try {
         const validUserId = validateData(userIdSchema, Number(userId));
-        console.log("User id valid juegos: ",validUserId);
-        
+        console.log("User id valid juegos: ", validUserId);
+
 
         let games: Game[] = [];
         let game: Game | null = null;
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
                 validUserId
             );
         }
-       
+
 
         return NextResponse.json({
             message: "juegos obtenidos correctamente",
@@ -58,6 +58,7 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -99,7 +100,7 @@ export async function PUT(req: NextRequest) {
         const data = await req.json();
 
         const validatedData = validateData(
-          updateGameSchema.extend({
+            updateGameSchema.extend({
                 id: z.number().int().positive(),
                 idUser: z.number().int().positive()
             }),
@@ -113,7 +114,7 @@ export async function PUT(req: NextRequest) {
             category: validatedData.category!,
             idUser: validatedData.idUser,
         };
-        
+
 
 
         const updateGame = await gameService.updateGame(game);

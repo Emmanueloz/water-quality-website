@@ -17,7 +17,7 @@ export class GameRepositoryImpl implements GameRepository {
         );
         return (rows as { Rol: string }[])[0]?.Rol === "admin";
     }
-    
+
     async getAllGamesByUser(userId: number): Promise<Game[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
@@ -36,9 +36,37 @@ export class GameRepositoryImpl implements GameRepository {
         );
 
         console.log(rows);
-        
+
         return rows as Game[];
     }
+
+    async getLastSixGamesByUser(userId: number): Promise<Game[]> {
+        const isAdmin = await this.verifyRoleForUser(userId);
+        if (isAdmin) {
+            const [rows] = await this.pool.execute(
+                `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
+                FROM games g
+                JOIN Usuarios u ON g.id_user = u.id
+                ORDER BY g.id DESC
+                LIMIT 6`
+            );
+            return rows as Game[];
+        }
+        const [rows] = await this.pool.execute(
+            `SELECT g.id, g.name, g.description, g.category
+            FROM games g
+            WHERE g.id_user = ?
+            ORDER BY g.id DESC
+            LIMIT 6`,
+            [userId]
+        );
+
+        console.log(rows);
+
+        return rows as Game[];
+    }
+
+
 
     async getGameById(gameId: number, userId: number): Promise<Game | null> {
         const isAdmin = await this.verifyRoleForUser(userId);
