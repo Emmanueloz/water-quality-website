@@ -10,7 +10,7 @@ export default function HamburgerMenu({ }) {
   const { isAuthenticated, projects, setProjects, games, setGames, userProfile } =
     useContext(AuthContext);
 
-  const { listMaterias, getListMaterias } = useContext(MateriaContext);
+  const { listMaterias, getListMaterias,cleanState } = useContext(MateriaContext);
 
   const getAllProjectsPerUser = async () => {
     const response = await fetch(`/api/proyectos?userId=${userProfile?.id}`);
@@ -104,6 +104,7 @@ export default function HamburgerMenu({ }) {
         }
         if (userProfile?.modules.includes("materias" as never)) {
           getListMaterias(userProfile.id);
+
         }
         if (userProfile?.modules.includes("juegos" as never)) {
           getAllGamesPerUser();

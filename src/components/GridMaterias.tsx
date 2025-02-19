@@ -6,11 +6,15 @@ import { use, useContext, useEffect, useRef, useState } from "react";
 import CardItem from "./CardItem";
 
 export default function GridMaterias() {
-  const { paginatedList, hasMore, isLoading, lastItemRef, setIsMounted } =
+  const { paginatedList, hasMore, isLoading, lastItemRef, setIsMounted,cleanState } =
     useContext(MateriaContext);
 
   useEffect(() => {
     setIsMounted(true);
+
+    return () => {
+      cleanState();
+    };
   }, []);
 
   return (
