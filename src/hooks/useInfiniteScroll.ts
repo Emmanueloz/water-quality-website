@@ -2,7 +2,7 @@ import { AuthContext } from "@/context/AuthProvider";
 import { useContext, useEffect, useRef, useState } from "react";
 
 export function useInfiniteScroll<T>(
-  fetchData: (page: number) => Promise<T[]>,
+  fetchData: (page: number, userProfile: UserProfile) => Promise<T[]>,
   initialPage: number = 1
 ) {
   const [items, setItems] = useState<T[]>([]);
@@ -11,36 +11,37 @@ export function useInfiniteScroll<T>(
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef<IntersectionObserver | null>(null);
   const lastItemRef = useRef<HTMLDivElement | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const { userProfile } = useContext(AuthContext);
 
   async function loadMoreData() {
     if (!userProfile || isLoading || !hasMore) return;
 
     setIsLoading(true);
-    const newData = await fetchData(page);
+    try {
+      const newData = await fetchData(page, userProfile);
 
-    if (newData.length === 0) {
-      setHasMore(false);
-    } else {
-      setItems((prev) => [...prev, ...newData]);
-      setPage((prev) => prev + 1);
+      if (newData.length === 0) {
+        setHasMore(false);
+      } else {
+        setItems((prev) => [...prev, ...newData]);
+        setPage((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-
     setIsLoading(false);
   }
 
   useEffect(() => {
-    let isMounted = false;
-
-    if (!userProfile || items.length > 0 || !isMounted) return;
+    if (!isMounted) return;
+    if (!userProfile) return;
 
     loadMoreData();
-    return () => {
-      isMounted = true;
-    };
-  }, [userProfile]);
+  }, [userProfile,isMounted,lastItemRef]); // Se ejecuta una vez cuando el usuario está definido
 
   useEffect(() => {
+    if (!isMounted) return;
     if (!hasMore || isLoading) return;
 
     if (observer.current) observer.current.disconnect();
@@ -57,7 +58,7 @@ export function useInfiniteScroll<T>(
     if (lastItemRef.current) observer.current.observe(lastItemRef.current);
 
     return () => observer.current?.disconnect();
-  }, [hasMore, isLoading]);
+  }, [isMounted,items, hasMore, isLoading]); // Se reactiva cada vez que cambia la cantidad de elementos
 
-  return { items, isLoading, hasMore, lastItemRef, setHasMore, setItems };
+  return { items, isLoading, hasMore, lastItemRef,isMounted, setHasMore, setItems,setIsMounted };
 }
