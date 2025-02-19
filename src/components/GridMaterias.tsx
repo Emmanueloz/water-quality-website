@@ -45,8 +45,14 @@ export default function GridMaterias() {
 
   // Se ejecuta solo cuando el usuario carga por primera vez o cambia de usuario
   useEffect(() => {
-    if (!userProfile || paginatedList.length > 0) return;
+    let isMounted = false;
+
+    if (!userProfile || paginatedList.length > 0 || !isMounted) return;
     loadMoreData();
+
+    return () => {
+      isMounted = true;
+    };
   }, [userProfile]);
 
   // Configuración del observer
