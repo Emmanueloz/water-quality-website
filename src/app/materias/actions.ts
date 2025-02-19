@@ -5,7 +5,7 @@ import { MateriaRepositoryImpl } from "@/infrastructure/repositories/MateriaRepo
 const materiaRepository = new MateriaRepositoryImpl();
 
 export const addMateria = async (materia: IMateria) => {
- materiaRepository.addMateria(materia);
+ return await materiaRepository.addMateria(materia);
 };
 
 export const getMaterias = async (id_usuario: number) => {
@@ -33,4 +33,12 @@ export const updateUnidades = async (
 
 export const searchMateria = async (search: ISearchMateria) => {
   return materiaRepository.searchMateria(search);
+};
+
+export const getMateriasPaginated = async (
+  page: number,
+  limit: number,
+  idUsuario: number
+) => {
+  return materiaRepository.getMateriasPaginated(page, limit, idUsuario);
 };

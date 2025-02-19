@@ -7,6 +7,7 @@ import Select from "@/components/Select";
 import { gameSchema } from "@/schemas/validations";
 import { z } from "zod";
 import Link from "next/link";
+import CardItem from "@/components/CardItem";
 
 const categories = [
   { value: "Acción ", label: "Acción" },
@@ -199,14 +200,12 @@ const Page = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-full max-w-md p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
       />
-
       <button
         onClick={() => openModal()}
         className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
       >
         Agregar Juego
       </button>
-
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg md:w-1/2 lg:w-1/3 flex flex-col gap-4 justify-center items-center">
@@ -221,8 +220,9 @@ const Page = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 rounded-md border ${formErrors.name ? "border-red-500" : "border-gray-300"
-                    }`}
+                  className={`w-full px-3 py-2 rounded-md border ${
+                    formErrors.name ? "border-red-500" : "border-gray-300"
+                  }`}
                 />
                 {formErrors.name && (
                   <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
@@ -252,8 +252,9 @@ const Page = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md ${formErrors.description ? "border-red-500" : ""
-                    }`}
+                  className={`w-full px-3 py-2 border rounded-md ${
+                    formErrors.description ? "border-red-500" : ""
+                  }`}
                 />
                 {formErrors.description && (
                   <p className="text-red-500 text-sm mt-1">
@@ -281,7 +282,6 @@ const Page = () => {
           </div>
         </div>
       )}
-
       {/* Lista de juegos filtrados */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredGames.length === 0 ? (
@@ -290,34 +290,20 @@ const Page = () => {
           </div>
         ) : (
           filteredGames.map((game) => (
-            <div
+            <CardItem
               key={game.id}
-              className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow w-96 flex flex-col"
-            >
-              <Link href={`/games/${game.id}`}>
-                <h3 className="text-lg font-semibold">{game.name}</h3>
-              </Link>
-              <p className="text-sm text-gray-600 mt-2 flex-grow">
-                {game.description}
-              </p>
-              <div className="flex justify-between mt-4">
-                <button
-                  onClick={() => openModal(game)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDeleteProject(game.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
+              id={game.id!}
+              title={game.name}
+              subtitle={game.description}
+              nameModule="games"
+              item={game}
+              openModal={openModal}
+              handleDelete={handleDeleteProject}
+            />
           ))
         )}
-      </div>    </div>
+      </div>{" "}
+    </div>
   );
 };
 

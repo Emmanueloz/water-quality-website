@@ -3,6 +3,7 @@ import { getMaterias } from "@/app/materias/actions";
 import Link from "next/link";
 import { getUserToken } from "@/utils/getUserToken";
 import TableMateria from "@/components/TableMateria";
+import GridMaterias from "@/components/GridMaterias";
 
 export default async function MateriasPage() {
   const user = await getUserToken();
@@ -23,7 +24,7 @@ export default async function MateriasPage() {
               </button>
             </Link>
           </div>
-          <TableMateria id_usuario={user.id} />
+          <GridMaterias />
         </article>
       </section>
     </main>
