@@ -1,5 +1,5 @@
 import { AuthContext } from "@/context/AuthProvider";
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useContext, useEffect, useRef, useState } from "react";
 
 export function useInfiniteScroll<T>(
   fetchData: (page: number, userProfile: UserProfile) => Promise<T[]>,
@@ -34,14 +34,24 @@ export function useInfiniteScroll<T>(
   }
 
   useEffect(() => {
-    if (!isMounted) return;
     if (!userProfile) return;
 
     loadMoreData();
-  }, [userProfile,isMounted,lastItemRef]); // Se ejecuta una vez cuando el usuario está definido
+  }, [userProfile, lastItemRef]); // Se ejecuta una vez cuando el usuario está definido
+
+  function cleanState() {
+    setItems([]);
+    setHasMore(true);
+    setIsLoading(false);
+    setPage(initialPage);
+    setIsMounted(false);
+    observer.current?.disconnect();
+    observer.current = null;
+    lastItemRef.current = null;
+  }
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!lastItemRef.current) return;
     if (!hasMore || isLoading) return;
 
     if (observer.current) observer.current.disconnect();
@@ -58,7 +68,17 @@ export function useInfiniteScroll<T>(
     if (lastItemRef.current) observer.current.observe(lastItemRef.current);
 
     return () => observer.current?.disconnect();
-  }, [isMounted,items, hasMore, isLoading]); // Se reactiva cada vez que cambia la cantidad de elementos
+  }, [items, hasMore, isLoading,lastItemRef]); // Se reactiva cada vez que cambia la cantidad de elementos
 
-  return { items, isLoading, hasMore, lastItemRef,isMounted, setHasMore, setItems,setIsMounted };
+  return {
+    items,
+    isLoading,
+    hasMore,
+    lastItemRef,
+    isMounted,
+    setHasMore,
+    setItems,
+    setIsMounted,
+    cleanState,
+  };
 }
