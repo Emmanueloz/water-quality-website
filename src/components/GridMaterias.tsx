@@ -9,49 +9,48 @@ import { getMateriasPaginated } from "@/app/materias/actions";
 export default function GridMaterias() {
   const limitData = 6;
   const { userProfile } = useContext(AuthContext);
-  const [paginatedList, setPaginatedList] = useState([] as IMateria[]);
+  const {
+    paginatedList,
+    setPaginatedList,
+    hasMore,
+    setHasMore,
+    page,
+    setPage, // Ahora manejamos `page` desde el contexto
+  } = useContext(MateriaContext);
 
   const observer = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    if (!userProfile) return;
+  // Función para cargar más datos
+  async function loadMoreData() {
+    if (!userProfile || isLoading || !hasMore) return;
 
-    let isCancelled = false;
+    setIsLoading(true);
+    const newData = await getMateriasPaginated(
+      page,
+      limitData,
+      userProfile?.id ?? 0
+    );
 
-    async function loadingData() {
-      setIsLoading(true);
-      const newData = await getMateriasPaginated(
-        page,
-        limitData,
-        userProfile?.id ?? 0
-      );
-      console.log("data", newData);
-
-      if (!isCancelled) {
-        if (newData.length === 0) {
-          setHasMore(false);
-        } else {
-          setPaginatedList((prev) => [...prev, ...newData]);
-        }
-        setIsLoading(false);
-      }
+    if (newData.length === 0) {
+      setHasMore(false);
+    } else {
+      setPaginatedList((prev: IMateria[]) => [...prev, ...newData]);
+      setPage((prev) => prev + 1); 
     }
 
-    loadingData();
+    setIsLoading(false);
+  }
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [userProfile, page]);
-
+  // Se ejecuta solo cuando el usuario carga por primera vez o cambia de usuario
   useEffect(() => {
-    console.log(paginatedList);
+    if (!userProfile || paginatedList.length > 0) return;
+    loadMoreData();
+  }, [userProfile]);
 
+  // Configuración del observer
+  useEffect(() => {
     if (!hasMore || isLoading) return;
 
     if (observer.current) observer.current.disconnect();
@@ -59,22 +58,17 @@ export default function GridMaterias() {
     observer.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          console.log("Cargar mas");
-          setPage((prev) => prev + limitData);
+          loadMoreData();
         }
       },
-      {
-        threshold: 1,
-      }
+      { threshold: 1 }
     );
 
     if (loadMoreRef.current) {
       observer.current.observe(loadMoreRef.current);
     }
 
-    return () => {
-      observer.current?.disconnect();
-    };
+    return () => observer.current?.disconnect();
   }, [hasMore, isLoading]);
 
   return (

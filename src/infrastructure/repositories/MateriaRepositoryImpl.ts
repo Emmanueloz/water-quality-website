@@ -6,7 +6,7 @@ import { ResultSetHeader } from "mysql2";
 export class MateriaRepositoryImpl implements IMateriaRepository {
   private pool = db.getPool();
 
-  async addMateria(materia: IMateria): Promise<void> {
+  async addMateria(materia: IMateria): Promise<IMateria> {
     const connection = db.getPool();
 
     const qResult = await connection.execute(
@@ -23,7 +23,12 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
 
     materia.id = materiaId;
 
-    this.addUnidades(materia);
+    await this.addUnidades(materia);
+
+    return {
+      ...materia,
+      id: materiaId,
+    };
   }
 
   async addUnidades(materia: IMateria): Promise<void> {
@@ -121,6 +126,9 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
     limit: number,
     id_usuario: number
   ): Promise<IMateria[]> {
+
+    const offset = (page - 1) * limit;
+
     const qResult = await this.pool.execute(
       `
       SELECT 
@@ -131,7 +139,7 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
       WHERE materias.id_usuario = ?
       LIMIT ?, ?
       `,
-      [id_usuario, page, limit]
+      [id_usuario, offset, limit]
     );
 
     const [rows] = qResult as any[];

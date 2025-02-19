@@ -1,5 +1,5 @@
 export interface IMateriaRepository {
-  addMateria(materia: IMateria): Promise<void>;
+  addMateria(materia: IMateria): Promise<IMateria>;
   addUnidades(materia: IMateria): Promise<void>;
   getMateria(id: number, id_usuario: number): Promise<IMateria | null>;
   getMaterias(id_usuario: number): Promise<IMateria[]>;
