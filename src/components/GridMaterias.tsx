@@ -18,7 +18,7 @@ export default function GridMaterias() {
   }, []);
 
   return (
-    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 lg:max-h-[500px] overflow-y-auto border border-1">
+    <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 lg:max-h-[500px] lg:max-w-[650px] overflow-y-auto border border-1">
       {paginatedList.map((materia) => (
         <CardItem
           key={materia.id}
