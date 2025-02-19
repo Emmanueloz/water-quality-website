@@ -36,7 +36,7 @@ const ProjectCard: React.FC<ProjectProps> = ({ id }) => {
                     <h3 className="text-xl font-bold text-gray-800 truncate text-center">{project?.name}</h3>
 
                     <div className="space-y-2 w-4/5 mx-auto">
-                       {project?.nameUser &&  <div className="flex items-center ">
+                        {project?.nameUser && <div className="flex items-center ">
                             <span className="text-base font-bold text-gray-500 w-auto mr-3">Usuario:</span>
                             <p className="text-base text-center text-gray-700 truncate">{project?.nameUser}</p>
                         </div>}
