@@ -7,6 +7,7 @@ import Select from "@/components/Select";
 import { projectSchema } from "@/schemas/validations";
 import { z } from "zod";
 import CardItem from "@/components/CardItem";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 const categories = [
     { value: "Frontend", label: "Frontend" },
@@ -47,6 +48,21 @@ const Page = () => {
 
     const { userProfile, projects, setProjects } = useContext(AuthContext);
 
+    const [page, setPage] = useState(1);
+
+    const {
+        items,
+        isLoading,
+        hasMore,
+        lastItemRef,
+        isMounted,
+        setHasMore,
+        setItems,
+        setIsMounted,
+    } = useInfiniteScroll<Project>(async (page, userProfile) => {
+        return await getProjectsPaginated(page, 6, userProfile?.id ?? 0);
+    }, page);
+
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -58,6 +74,13 @@ const Page = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const getProjectsPaginated = async (page: number, limit: number, userId: number) => {
+        const response = await fetch(`/api/proyectos?userId=${userId}&page=${page}&limit=${limit}`);
+        const data = await response.json();
+        console.log(data);
+        return data.data;
     };
 
     const validateForm = () => {
@@ -90,6 +113,7 @@ const Page = () => {
                 const data = await response.json();
                 if (response.ok) {
                     setProjects(projects.filter(p => p.id !== projectId));
+                    setItems(items.filter(p => p.id !== projectId));
                 } else {
                     console.error("Error al eliminar el proyecto:", data.message);
                 }
@@ -131,10 +155,16 @@ const Page = () => {
 
             if (response.ok) {
                 if (isEditMode && currentProject) {
+                    setItems(items.map(p =>
+                        p.id === currentProject.id ? result.project : p
+                    ));
                     setProjects(projects.map(p =>
                         p.id === currentProject.id ? result.project : p
                     ));
                 } else {
+                    if (!hasMore) {
+                        setItems([...items, result.project]);
+                    }
                     setProjects([...projects, result.project]);
                 }
                 closeModal();
@@ -197,11 +227,15 @@ const Page = () => {
         }
     };
 
+    // useEffect(() => {
+    //     if (userProfile?.id) {
+    //         getAllProjectsPerUser();
+    //     }
+    // }, [userProfile]);
+
     useEffect(() => {
-        if (userProfile?.id) {
-            getAllProjectsPerUser();
-        }
-    }, [userProfile]);
+        setIsMounted(true);
+    }, []);
 
     return (
         <div className="container mx-auto flex flex-col items-center justify-center p-4">
@@ -309,11 +343,17 @@ const Page = () => {
                     </div>
                 </div>
             )}
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {projects.map((project) => (
+            <div className="mt-6 grid grid-cols-1 w-full md:grid-cols-2 gap-4 lg:max-h-[500px] overflow-y-auto border border-1">
+                {items.map((project) => (
                     <CardItem key={project.id} id={project.id!} nameModule="proyectos" title={project.name} subtitle={project.description} item={project}
                         openModal={openModal} handleDelete={handleDeleteProject} />
                 ))}
+                {hasMore && <div ref={lastItemRef}></div>}
+                {isLoading && (
+                    <div className="flex justify-center items-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
+                    </div>
+                )}
             </div>
         </div>
     );

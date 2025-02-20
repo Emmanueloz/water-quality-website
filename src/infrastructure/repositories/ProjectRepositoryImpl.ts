@@ -57,6 +57,47 @@ export class ProjectRepositoryImpl implements ProjectRepository {
         return (rows as Project[])[0] || null;
     }
 
+    async getLast6ProjectsByUser(userId: number): Promise<Project[]> {
+        const isAdmin = await this.verifyRoleForUser(userId);
+        if (isAdmin) {
+            const [rows] = await this.pool.execute(
+                `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies, u.Usuario as nameUser
+       FROM projects p 
+       JOIN Usuarios  u ON p.id_user = u.id
+       ORDER BY p.id DESC
+       LIMIT 6`,
+            );
+            return rows as Project[];
+        }
+        const [rows] = await this.pool.execute(
+            `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies
+       FROM projects p
+       WHERE p.id_user = ? ORDER BY p.id DESC LIMIT 6`,
+            [userId]
+        );
+        return rows as Project[];
+    }
+    async getPaginatedProjectsByUser(userId: number, page: number, limit: number): Promise<Project[]> {
+        const isAdmin = await this.verifyRoleForUser(userId);
+        if (isAdmin) {
+            const [rows] = await this.pool.execute(
+                `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies, u.Usuario as nameUser
+       FROM projects p 
+       JOIN Usuarios  u ON p.id_user = u.id
+       LIMIT ? OFFSET ?`,
+                [limit, (page - 1) * limit]
+            );
+            return rows as Project[];
+        }
+        const [rows] = await this.pool.execute(
+            `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies
+       FROM projects p
+       WHERE p.id_user = ? LIMIT ? OFFSET ?`,
+            [userId, limit, (page - 1) * limit]
+        );
+        return rows as Project[];
+    }
+
     async createProject(project: Omit<Project, "id">): Promise<Project> {
         const [result] = await this.pool.execute<ResultSetHeader>(
             `INSERT INTO projects (name, description, category, status, technologies, id_user)
