@@ -8,7 +8,6 @@ import {
     updateGameSchema,
     validateData
 } from "@/schemas/validations";
-import { error } from "console";
 
 const gameRepository = new GameRepositoryImpl();
 const gameService = new GameService(gameRepository);
@@ -18,27 +17,31 @@ const userIdSchema = z.number().int().positive();
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");
     const gameId = req.nextUrl.searchParams.get("gameId");
+    const page = req.nextUrl.searchParams.get("page");
+    const limit = req.nextUrl.searchParams.get("limit");
+
 
     console.log(req.nextUrl.searchParams);
-    
+
 
     try {
         const validUserId = validateData(userIdSchema, Number(userId));
-        console.log("User id valid juegos: ",validUserId);
-        
+        console.log("User id valid juegos: ", validUserId);
+
 
         let games: Game[] = [];
         let game: Game | null = null;
 
-        if (userId && !gameId) {
+        if (userId && !gameId && !page && !limit) {
             games = await gameService.getAllGamesByUser(validUserId);
         } else if (userId && gameId) {
             game = await gameService.getGamesById(
                 Number(gameId),
                 validUserId
             );
+        } else if (page && limit) {
+            games = await gameService.getPaginatedProjectsByUser(validUserId, Number(page), Number(limit));
         }
-       
 
         return NextResponse.json({
             message: "juegos obtenidos correctamente",
@@ -58,6 +61,7 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -99,7 +103,7 @@ export async function PUT(req: NextRequest) {
         const data = await req.json();
 
         const validatedData = validateData(
-          updateGameSchema.extend({
+            updateGameSchema.extend({
                 id: z.number().int().positive(),
                 idUser: z.number().int().positive()
             }),
@@ -113,7 +117,7 @@ export async function PUT(req: NextRequest) {
             category: validatedData.category!,
             idUser: validatedData.idUser,
         };
-        
+
 
 
         const updateGame = await gameService.updateGame(game);

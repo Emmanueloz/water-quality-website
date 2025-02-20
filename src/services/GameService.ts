@@ -11,6 +11,15 @@ export class GameService {
         return this.gameRepository.getGameById(gameId, userId);
     }
 
+    async getLast6ProjectsByUser(userId: number): Promise<Game[]> {
+        return this.gameRepository.getLast6GamesByUser(userId);
+    }
+
+    async getPaginatedProjectsByUser(userId: number, page: number, limit: number): Promise<Game[]> {
+        return this.gameRepository.getPaginatedGamesByUser(userId, page, limit);
+    }
+
+
     async createGame(game: Omit<Game, "id">): Promise<Game> {
         return this.gameRepository.createGame(game);
     }

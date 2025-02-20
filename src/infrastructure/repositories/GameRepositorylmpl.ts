@@ -17,7 +17,7 @@ export class GameRepositoryImpl implements GameRepository {
         );
         return (rows as { Rol: string }[])[0]?.Rol === "admin";
     }
-    
+
     async getAllGamesByUser(userId: number): Promise<Game[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
@@ -36,7 +36,33 @@ export class GameRepositoryImpl implements GameRepository {
         );
 
         console.log(rows);
-        
+
+        return rows as Game[];
+    }
+
+    async getLastSixGamesByUser(userId: number): Promise<Game[]> {
+        const isAdmin = await this.verifyRoleForUser(userId);
+        if (isAdmin) {
+            const [rows] = await this.pool.execute(
+                `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
+                FROM games g
+                JOIN Usuarios u ON g.id_user = u.id
+                ORDER BY g.id DESC
+                LIMIT 6`
+            );
+            return rows as Game[];
+        }
+        const [rows] = await this.pool.execute(
+            `SELECT g.id, g.name, g.description, g.category
+            FROM games g
+            WHERE g.id_user = ?
+            ORDER BY g.id DESC
+            LIMIT 6`,
+            [userId]
+        );
+
+        console.log(rows);
+
         return rows as Game[];
     }
 
@@ -60,6 +86,48 @@ export class GameRepositoryImpl implements GameRepository {
         );
         return (rows as Game[])[0] || null;
     }
+
+    async getLast6GamesByUser(userId: number): Promise<Game[]> {
+        const isAdmin = await this.verifyRoleForUser(userId);
+        if (isAdmin) {
+            const [rows] = await this.pool.execute(
+                `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
+           FROM games g 
+           JOIN Usuarios  u ON g.id_user = u.id
+           ORDER BY g.id DESC
+           LIMIT 6`,
+            );
+            return rows as Game[];
+        }
+        const [rows] = await this.pool.execute(
+            `SELECT g.id, g.name, g.description, g.category
+           FROM games g
+           WHERE g.id_user = ? ORDER BY g.id DESC LIMIT 6`,
+            [userId]
+        );
+        return rows as Game[];
+    }
+    async getPaginatedGamesByUser(userId: number, page: number, limit: number): Promise<Game[]> {
+        const isAdmin = await this.verifyRoleForUser(userId);
+        if (isAdmin) {
+            const [rows] = await this.pool.execute(
+                `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
+           FROM games g
+           JOIN Usuarios  u ON g.id_user = u.id
+           LIMIT ? OFFSET ?`,
+                [limit, (page - 1) * limit]
+            );
+            return rows as Game[];
+        }
+        const [rows] = await this.pool.execute(
+            `SELECT g.id, g.name, g.description, g.category
+           FROM games g
+           WHERE g.id_user = ? LIMIT ? OFFSET ?`,
+            [userId, limit, (page - 1) * limit]
+        );
+        return rows as Game[];
+    }
+
 
     async createGame(game: Omit<Game, "id">): Promise<Game> {
         const [result] = await this.pool.execute<ResultSetHeader>(
