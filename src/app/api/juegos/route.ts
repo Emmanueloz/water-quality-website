@@ -8,7 +8,6 @@ import {
     updateGameSchema,
     validateData
 } from "@/schemas/validations";
-import { error } from "console";
 
 const gameRepository = new GameRepositoryImpl();
 const gameService = new GameService(gameRepository);
@@ -18,6 +17,9 @@ const userIdSchema = z.number().int().positive();
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");
     const gameId = req.nextUrl.searchParams.get("gameId");
+    const page = req.nextUrl.searchParams.get("page");
+    const limit = req.nextUrl.searchParams.get("limit");
+
 
     console.log(req.nextUrl.searchParams);
 
@@ -30,15 +32,16 @@ export async function GET(req: NextRequest) {
         let games: Game[] = [];
         let game: Game | null = null;
 
-        if (userId && !gameId) {
+        if (userId && !gameId && !page && !limit) {
             games = await gameService.getAllGamesByUser(validUserId);
         } else if (userId && gameId) {
             game = await gameService.getGamesById(
                 Number(gameId),
                 validUserId
             );
+        } else if (page && limit) {
+            games = await gameService.getPaginatedProjectsByUser(validUserId, Number(page), Number(limit));
         }
-
 
         return NextResponse.json({
             message: "juegos obtenidos correctamente",

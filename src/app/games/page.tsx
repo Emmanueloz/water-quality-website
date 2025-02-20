@@ -5,9 +5,11 @@ import { AuthContext } from "@/context/AuthProvider";
 import { Game } from "@/tipos/tipos";
 import Select from "@/components/Select";
 import { gameSchema } from "@/schemas/validations";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { z } from "zod";
-import Link from "next/link";
 import CardItem from "@/components/CardItem";
+import { CircleLoader } from "react-spinners";
+
 
 const categories = [
   { value: "Acción ", label: "Acción" },
@@ -22,14 +24,32 @@ const Page = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentGame, setCurrentGame] = useState<Game | null>(null);
   const [category, setCategory] = useState<string>(categories[0].value);
+
   const [formErrors, setFormErrors] = useState<{
     name?: string;
     description?: string;
     category?: string;
   }>({});
+
   const [searchTerm, setSearchTerm] = useState<string>(""); // Estado para el término de búsqueda
 
   const { userProfile, games, setGames } = useContext(AuthContext);
+
+  const {
+    items,
+    isLoading,
+    hasMore,
+    lastItemRef,
+    isMounted,
+    setHasMore,
+    setItems,
+    setIsMounted,
+    cleanState
+  } = useInfiniteScroll<Game>(async (page, userProfile) => {
+    return await getGamesPaginated(page, 6, userProfile?.id ?? 0);
+  }, 1);
+
+
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,6 +73,14 @@ const Page = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const getGamesPaginated = async (page: number, limit: number, userId: number) => {
+    const response = await fetch(`/api/juegos?userId=${userId}&page=${page}&limit=${limit}`);
+    const data = await response.json();
+    console.log(data);
+    return data.data;
+  };
+
+
   const validateForm = () => {
     try {
       gameSchema.parse(formData);
@@ -71,7 +99,7 @@ const Page = () => {
     }
   };
 
-  const handleDeleteProject = async (gameId: number | undefined) => {
+  const handleDeleteGame = async (gameId: number | undefined) => {
     const confirmDelete = window.confirm(
       "¿Estás seguro de que quieres eliminar este proyecto?"
     );
@@ -124,20 +152,27 @@ const Page = () => {
 
       if (response.ok) {
         if (isEditMode && currentGame) {
-          setGames(
-            games.map((g) => (g.id === currentGame.id ? result.game : g))
-          );
+          setItems(items.map(g =>
+            g.id === currentGame.id ? result.game : g
+          ));
+          setGames(games.map(g =>
+            g.id === currentGame.id ? result.game : g
+          ));
         } else {
+          if (!hasMore) {
+            setItems([...items, result.game]);
+          }
           setGames([...games, result.game]);
         }
         closeModal();
       } else {
-        console.error("Error al guardar el juego:", result.message);
+        console.error("Error al guardar el proyecto:", result.message);
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
     }
   };
+
 
   const openModal = (game?: Game) => {
     if (game) {
@@ -184,22 +219,30 @@ const Page = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (userProfile?.id) {
+  //     getAllGamesPerUser();
+  //   }
+  // }, [userProfile]);
+
+
   useEffect(() => {
-    if (userProfile?.id) {
-      getAllGamesPerUser();
-    }
-  }, [userProfile]);
+    setIsMounted(true);
+    return () => {
+      cleanState();
+    };
+  }, []);
 
   return (
     <div className="container mx-auto flex flex-col items-center justify-center p-4">
       {/* Campo de búsqueda */}
-      <input
+      {/* <input
         type="text"
         placeholder="Buscar por nombre o descripción..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="w-full max-w-md p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-      />
+      /> */}
       <button
         onClick={() => openModal()}
         className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
@@ -220,9 +263,8 @@ const Page = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 rounded-md border ${
-                    formErrors.name ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-3 py-2 rounded-md border ${formErrors.name ? "border-red-500" : "border-gray-300"
+                    }`}
                 />
                 {formErrors.name && (
                   <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
@@ -252,9 +294,8 @@ const Page = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    formErrors.description ? "border-red-500" : ""
-                  }`}
+                  className={`w-full px-3 py-2 border rounded-md ${formErrors.description ? "border-red-500" : ""
+                    }`}
                 />
                 {formErrors.description && (
                   <p className="text-red-500 text-sm mt-1">
@@ -282,27 +323,20 @@ const Page = () => {
           </div>
         </div>
       )}
-      {/* Lista de juegos filtrados */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredGames.length === 0 ? (
-          <div className="col-span-full text-center text-gray-600">
-            <p>Ups. No tienes juegos registrados</p>
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 w-full gap-4 lg:max-h-[500px] overflow-y-auto border border-1">
+        {items.map((game) => (
+          <CardItem key={game.id} id={game.id!} nameModule="games" title={game.name} subtitle={game.description} item={game}
+            openModal={openModal} handleDelete={handleDeleteGame} />
+        ))}
+        {hasMore && <div ref={lastItemRef}></div>}
+        {isLoading && (
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></div>
           </div>
-        ) : (
-          filteredGames.map((game) => (
-            <CardItem
-              key={game.id}
-              id={game.id!}
-              title={game.name}
-              subtitle={game.description}
-              nameModule="games"
-              item={game}
-              openModal={openModal}
-              handleDelete={handleDeleteProject}
-            />
-          ))
         )}
-      </div>{" "}
+      </div>
+
+
     </div>
   );
 };
