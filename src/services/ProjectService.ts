@@ -11,6 +11,14 @@ export class ProjectService {
         return this.projectRepository.getProjectById(projectId, userId);
     }
 
+    async getLast6ProjectsByUser(userId: number): Promise<Project[]> {
+        return this.projectRepository.getLast6ProjectsByUser(userId);
+    }
+
+    async getPaginatedProjectsByUser(userId: number, page: number, limit: number): Promise<Project[]> {
+        return this.projectRepository.getPaginatedProjectsByUser(userId, page, limit);
+    }
+
     async createProject(project: Omit<Project, "id">): Promise<Project> {
         return this.projectRepository.createProject(project);
     }

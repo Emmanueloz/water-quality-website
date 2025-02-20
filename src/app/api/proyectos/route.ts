@@ -17,6 +17,8 @@ const userIdSchema = z.number().int().positive();
 export async function GET(req: NextRequest) {
     const userId = req.nextUrl.searchParams.get("userId");
     const projectId = req.nextUrl.searchParams.get("projectId");
+    const page = req.nextUrl.searchParams.get("page");
+    const limit = req.nextUrl.searchParams.get("limit");
 
     try {
         const validUserId = validateData(userIdSchema, Number(userId));
@@ -24,13 +26,15 @@ export async function GET(req: NextRequest) {
         let projects: Project[] = [];
         let project: Project | null = null;
 
-        if (userId && !projectId) {
+        if (userId && !projectId && !page && !limit) {
             projects = await projectService.getAllProjectsByUser(validUserId);
         } else if (userId && projectId) {
             project = await projectService.getProjectById(
                 Number(projectId),
                 validUserId
             );
+        } else if (page && limit) {
+            projects = await projectService.getPaginatedProjectsByUser(validUserId, Number(page), Number(limit));
         }
 
         return NextResponse.json({
@@ -108,7 +112,7 @@ export async function PUT(req: NextRequest) {
             technologies: validatedData.technologies!,
             idUser: validatedData.idUser,
         };
-        
+
 
 
         const updatedProject = await projectService.updateProject(project);

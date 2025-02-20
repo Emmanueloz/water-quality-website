@@ -19,8 +19,6 @@ interface MateriaContextType {
   setPaginatedList: React.Dispatch<React.SetStateAction<IMateria[]>>;
   hasMore: boolean;
   setHasMore: React.Dispatch<React.SetStateAction<boolean>>;
-  page: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
   getListMaterias: (id_usuario: number) => Promise<void>;
   getListSearchMaterias: (search: ISearchMateria) => Promise<void>;
   createMateria: (materia: IMateria) => Promise<void>;
@@ -34,6 +32,7 @@ interface MateriaContextType {
   lastItemRef: React.RefObject<HTMLDivElement | null> | null;
   isMounted: boolean;
   setIsMounted: React.Dispatch<React.SetStateAction<boolean>>;
+  cleanState: () => void;
 }
 
 const MateriaContext = createContext<MateriaContextType>({
@@ -43,8 +42,6 @@ const MateriaContext = createContext<MateriaContextType>({
   setPaginatedList: () => {},
   hasMore: true,
   setHasMore: () => {},
-  page: 1,
-  setPage: () => {},
   getListMaterias: async () => {},
   getListSearchMaterias: async () => {},
   createMateria: async () => {},
@@ -54,6 +51,7 @@ const MateriaContext = createContext<MateriaContextType>({
   lastItemRef: null,
   isMounted: false,
   setIsMounted: () => {},
+  cleanState: () => {},
 });
 
 const MateriaProvider = ({ children }: { children: any }) => {
@@ -61,7 +59,6 @@ const MateriaProvider = ({ children }: { children: any }) => {
   //const [hasMore, setHasMore] = useState(true);
   //const [paginatedList, setPaginatedList] = useState<IMateria[]>([]);
   const [listSearchMaterias, setListSearchMaterias] = useState<IMateria[]>([]);
-  const [page, setPage] = useState(1);
 
   const {
     items,
@@ -69,12 +66,13 @@ const MateriaProvider = ({ children }: { children: any }) => {
     hasMore,
     lastItemRef,
     isMounted,
+    cleanState,
     setHasMore,
     setItems,
     setIsMounted,
   } = useInfiniteScroll<IMateria>(async (page, userProfile) => {
     return await getMateriasPaginated(page, 6, userProfile?.id ?? 0);
-  }, page);
+  }, 1);
 
   const getListMaterias = async (id_usuario: number) => {
     const materias = await getMaterias(id_usuario);
@@ -123,8 +121,6 @@ const MateriaProvider = ({ children }: { children: any }) => {
         setPaginatedList: setItems,
         hasMore,
         setHasMore,
-        page,
-        setPage,
         getListMaterias,
         createMateria,
         delMateria,
@@ -134,6 +130,7 @@ const MateriaProvider = ({ children }: { children: any }) => {
         lastItemRef,
         isMounted,
         setIsMounted,
+        cleanState,
       }}
     >
       {children}

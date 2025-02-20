@@ -7,7 +7,7 @@ import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 type CarouselProps = {
-    user: UserProfile;
+    modules: string[];
 }
 
 const items = [
@@ -16,7 +16,8 @@ const items = [
     { id: 3, title: "Proyectos", module: "proyectos", image: "/img/proyecto.jpg" },
 ];
 
-const Carousel = ({ user }: CarouselProps) => {
+const Carousel = ({ modules }: CarouselProps) => {
+    const itemsAlloweds = items.filter(item => modules.includes(item.module));
 
     return (
         <div className="w-full max-w-4xl mx-auto">
@@ -30,7 +31,7 @@ const Carousel = ({ user }: CarouselProps) => {
                 loop
                 className="rounded-lg overflow-hidden"
             >
-                {items.map((item) => (
+                {itemsAlloweds.map((item) => (
                     <SwiperSlide key={item.id}>
                         <Link href={`/${item.module}`}>
                             <div className="relative w-full h-[500px] flex items-center justify-center group">

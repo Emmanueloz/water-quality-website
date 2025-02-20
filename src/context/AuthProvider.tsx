@@ -15,13 +15,13 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
+  setIsAuthenticated: () => { },
   userProfile: null,
-  setUserProfile: () => {},
+  setUserProfile: () => { },
   projects: [],
-  setProjects: () => {},
+  setProjects: () => { },
   games: [],
-  setGames: () => {},
+  setGames: () => { },
 });
 
 interface AuthProviderProps {
@@ -34,7 +34,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [games, setGames] = useState<Game[]>([]);
 
-  
+
 
 
   return (
