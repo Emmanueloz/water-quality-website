@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import { Project, Game } from "@/tipos/tipos";
 
 type CardItemProps = {
   nameModule: string;

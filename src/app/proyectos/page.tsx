@@ -6,8 +6,8 @@ import { Project } from "@/tipos/tipos";
 import Select from "@/components/Select";
 import { projectSchema } from "@/schemas/validations";
 import { z } from "zod";
-import CardItem from "@/components/CardItem";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import CardItem from "@/components/CardItem";
 
 const categories = [
     { value: "Frontend", label: "Frontend" },
@@ -48,8 +48,6 @@ const Page = () => {
 
     const { userProfile, projects, setProjects } = useContext(AuthContext);
 
-    const [page, setPage] = useState(1);
-
     const {
         items,
         isLoading,
@@ -59,9 +57,10 @@ const Page = () => {
         setHasMore,
         setItems,
         setIsMounted,
+        cleanState
     } = useInfiniteScroll<Project>(async (page, userProfile) => {
         return await getProjectsPaginated(page, 6, userProfile?.id ?? 0);
-    }, page);
+    }, 1);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -233,8 +232,13 @@ const Page = () => {
     //     }
     // }, [userProfile]);
 
+
+
     useEffect(() => {
         setIsMounted(true);
+        return () => {
+            cleanState();
+        };
     }, []);
 
     return (
@@ -343,7 +347,7 @@ const Page = () => {
                     </div>
                 </div>
             )}
-            <div className="mt-6 grid grid-cols-1 w-full md:grid-cols-2 gap-4 lg:max-h-[500px] overflow-y-auto border border-1">
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 w-full gap-4 lg:max-h-[500px] overflow-y-auto border border-1">
                 {items.map((project) => (
                     <CardItem key={project.id} id={project.id!} nameModule="proyectos" title={project.name} subtitle={project.description} item={project}
                         openModal={openModal} handleDelete={handleDeleteProject} />
