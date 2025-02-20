@@ -12,7 +12,7 @@ type CarouselProps = {
 }
 
 const items = [
-    { id: 1, title: "Juegos", module: "games", image: "/public/img/juego.jpg" },
+    { id: 1, title: "Juegos", module: "games", image: "/img/juego.jpg" },
     { id: 2, title: "Materias", module: "materias", image: "/img/materia.jpg" },
     { id: 3, title: "Proyectos", module: "proyectos", image: "/img/proyecto.jpg" },
 ];
