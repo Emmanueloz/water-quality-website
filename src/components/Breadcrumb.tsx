@@ -1,38 +1,75 @@
 "use client";
 import { getNameMateria } from "@/app/materias/actions";
+import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 interface IPathName {
   path: string;
-  name: string | number;
+  name: string | number | undefined;
   module: string | undefined;
 }
+
+const getDisplayNameByModule = async (
+  module: string,
+  idItem: number,
+  idUser: number
+) => {
+  switch (module) {
+    case "materias":
+      return await getNameMateria(idItem, idUser);
+    default:
+      return idItem.toString();
+  }
+};
 
 export default function Breadcrumb() {
   const pathname = usePathname();
 
   const [itemPath, setItemPath] = useState<IPathName[]>([]);
+
   const moduleList = ["materias", "proyectos", "games"];
-  let lastModule: string | undefined;
-
+  const { userProfile } = useContext(AuthContext);
+ 
   useEffect(() => {
-    const pathParts = pathname.split("/").filter(Boolean);
+    if (!userProfile) return;
 
-    const newItemsPath = pathParts.map((item) => {
-      const name = isNaN(parseInt(item))
-        ? getDisplayName(item)
-        : parseInt(item);
-      
-      lastModule = moduleList.find((module) => module === item) ?? lastModule;
+    const fetchPathNames = async () => {
+      const pathParts = pathname.split("/").filter(Boolean);
+      let lastModule: string | undefined;
 
-      return { path: item, name , module:lastModule};
-    });
+      const newItemsPath = await Promise.all(
+        pathParts.map(async (item) => {
+          const name = isNaN(parseInt(item))
+            ? getDisplayName(item)
+            : parseInt(item);
 
-    setItemPath(newItemsPath);
-    console.log(newItemsPath);
-  }, [pathname]);
+          lastModule =
+            moduleList.find((module) => module === item) ?? lastModule;
+
+          if (typeof name === "number") {
+
+            let newName = await getDisplayNameByModule(lastModule??"", name, userProfile.id) ?? "Error 404";
+
+            newName = textCapitalized(newName);
+
+            return {
+              path: item,
+              name: newName,
+              module: lastModule,
+            };
+          }
+
+          return { path: item, name, module: lastModule };
+        })
+      );
+
+      setItemPath(newItemsPath);
+    };
+
+    fetchPathNames();
+  }, [pathname, userProfile]);
 
   const getDisplayName = (pathName: string) => {
     return textCapitalized(pathName);

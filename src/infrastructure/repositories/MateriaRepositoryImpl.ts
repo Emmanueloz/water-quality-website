@@ -154,7 +154,7 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
     return materias as IMateria[];
   }
 
-  async getNameMateria(id: number, idUsuario: number): Promise<string> {
+  async getNameMateria(id: number, idUsuario: number): Promise<string | null> {
     const qResult = await this.pool.execute(
       `
       SELECT 
@@ -167,7 +167,7 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
 
     const [rows] = qResult as any[];
 
-    return rows[0].materia_nombre;
+    return rows[0]?.materia_nombre;
   }
 
   async deleteMateria(materia: IMateria): Promise<void> {
