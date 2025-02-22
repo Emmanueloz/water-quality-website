@@ -1,12 +1,83 @@
 "use client";
+import { getNameMateria } from "@/app/materias/actions";
+import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+
+interface IPathName {
+  path: string;
+  name: string | number | undefined;
+  module: string | undefined;
+}
+
+const getDisplayNameByModule = async (
+  module: string,
+  idItem: number,
+  idUser: number
+) => {
+  switch (module) {
+    case "materias":
+      return await getNameMateria(idItem, idUser);
+    default:
+      return idItem.toString();
+  }
+};
 
 export default function Breadcrumb() {
   const pathname = usePathname();
-  console.log(pathname);
 
-  const pathParts = pathname.split("/").filter(Boolean);
+  const [itemPath, setItemPath] = useState<IPathName[]>([]);
+
+  const moduleList = ["materias", "proyectos", "games"];
+  const { userProfile } = useContext(AuthContext);
+ 
+  useEffect(() => {
+    if (!userProfile) return;
+
+    const fetchPathNames = async () => {
+      const pathParts = pathname.split("/").filter(Boolean);
+      let lastModule: string | undefined;
+
+      const newItemsPath = await Promise.all(
+        pathParts.map(async (item) => {
+          const name = isNaN(parseInt(item))
+            ? getDisplayName(item)
+            : parseInt(item);
+
+          lastModule =
+            moduleList.find((module) => module === item) ?? lastModule;
+
+          if (typeof name === "number") {
+
+            let newName = await getDisplayNameByModule(lastModule??"", name, userProfile.id) ?? "Error 404";
+
+            newName = textCapitalized(newName);
+
+            return {
+              path: item,
+              name: newName,
+              module: lastModule,
+            };
+          }
+
+          return { path: item, name, module: lastModule };
+        })
+      );
+
+      setItemPath(newItemsPath);
+    };
+
+    fetchPathNames();
+  }, [pathname, userProfile]);
+
+  const getDisplayName = (pathName: string) => {
+    return textCapitalized(pathName);
+  };
+
+  const textCapitalized = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
 
   return (
     <nav className="bg-gray-100 py-3">
@@ -16,15 +87,15 @@ export default function Breadcrumb() {
             Inicio
           </Link>
           <span>/</span>
-          {pathParts.map((pathname, index) => (
+          {itemPath.map((item, index) => (
             <li key={index}>
               <Link
-                href={`/${pathParts.slice(0, index + 1).join("/")}`}
+                href={`/${item.path}`}
                 className="text-cyan-700 hover:underline"
               >
-                {pathname.charAt(0).toUpperCase() + pathname.slice(1)}
+                {item.name}
               </Link>
-              {index < pathParts.length - 1 && " / "}
+              {index < itemPath.length - 1 && " / "}
             </li>
           ))}
         </ol>
