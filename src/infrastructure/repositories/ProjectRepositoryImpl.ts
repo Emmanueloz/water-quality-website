@@ -6,9 +6,9 @@ import { ResultSetHeader } from "mysql2";
 
 
 export class ProjectRepositoryImpl implements ProjectRepository {
-    private pool = db.getPool();
+    private static pool = db.getPool();
     async verifyRoleForUser(userId: number): Promise<boolean> {
-        const [rows] = await this.pool.execute(
+        const [rows] = await ProjectRepositoryImpl.pool.execute(
             `SELECT r.Rol FROM Usuarios u
                 JOIN Rol r ON u.roles = r.id
                 WHERE u.id = ?`,
@@ -20,14 +20,14 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     async getAllProjectsByUser(userId: number): Promise<Project[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await ProjectRepositoryImpl.pool.execute(
                 `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies, u.Usuario as nameUser
        FROM projects p 
        JOIN Usuarios  u ON p.id_user = u.id`
             );
             return rows as Project[];
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await ProjectRepositoryImpl.pool.execute(
             `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies
        FROM projects p
        WHERE p.id_user = ?`,
@@ -39,7 +39,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     async getProjectById(projectId: number, userId: number): Promise<Project | null> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await ProjectRepositoryImpl.pool.execute(
                 `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies, u.Usuario as nameUser
        FROM projects p 
        JOIN Usuarios  u ON p.id_user = u.id
@@ -48,7 +48,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
             );
             return (rows as Project[])[0] || null;
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await ProjectRepositoryImpl.pool.execute(
             `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies
        FROM projects p
        WHERE p.id = ? AND p.id_user = ?`,
@@ -56,11 +56,26 @@ export class ProjectRepositoryImpl implements ProjectRepository {
         );
         return (rows as Project[])[0] || null;
     }
+    static async getNameProject(id: number, userId: number): Promise<string | null> {
+        const qResult = await ProjectRepositoryImpl.pool.execute(
+            `
+            SELECT 
+              projects.name AS project_name
+            FROM projects
+            WHERE projects.id = ? AND projects.id_user = ?
+            `,
+            [id, userId]
+        );
+
+        const [rows] = qResult as any[];
+
+        return rows[0]?.project_name;
+    }
 
     async getLast6ProjectsByUser(userId: number): Promise<Project[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await ProjectRepositoryImpl.pool.execute(
                 `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies, u.Usuario as nameUser
        FROM projects p 
        JOIN Usuarios  u ON p.id_user = u.id
@@ -69,7 +84,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
             );
             return rows as Project[];
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await ProjectRepositoryImpl.pool.execute(
             `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies
        FROM projects p
        WHERE p.id_user = ? ORDER BY p.id DESC LIMIT 6`,
@@ -80,7 +95,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     async getPaginatedProjectsByUser(userId: number, page: number, limit: number): Promise<Project[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await ProjectRepositoryImpl.pool.execute(
                 `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies, u.Usuario as nameUser
        FROM projects p 
        JOIN Usuarios  u ON p.id_user = u.id
@@ -89,7 +104,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
             );
             return rows as Project[];
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await ProjectRepositoryImpl.pool.execute(
             `SELECT p.id, p.name, p.description, p.category, p.status, p.technologies
        FROM projects p
        WHERE p.id_user = ? LIMIT ? OFFSET ?`,
@@ -99,7 +114,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     async createProject(project: Omit<Project, "id">): Promise<Project> {
-        const [result] = await this.pool.execute<ResultSetHeader>(
+        const [result] = await ProjectRepositoryImpl.pool.execute<ResultSetHeader>(
             `INSERT INTO projects (name, description, category, status, technologies, id_user)
        VALUES (?, ?, ?, ?, ?, ?)`,
             [project.name, project.description, project.category, project.status, project.technologies, project.idUser]
@@ -114,7 +129,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     async updateProject(project: Project): Promise<Project> {
-        await this.pool.execute(
+        await ProjectRepositoryImpl.pool.execute(
             `UPDATE projects
        SET name = ?, description = ?, category = ?, status = ?, technologies = ?
        WHERE id = ?`,
@@ -125,7 +140,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     async deleteProject(projectId: number): Promise<void> {
-        await this.pool.execute(
+        await ProjectRepositoryImpl.pool.execute(
             `DELETE FROM projects
        WHERE id = ?`,
             [projectId]

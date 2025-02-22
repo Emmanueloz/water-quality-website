@@ -1,5 +1,6 @@
 "use client";
 import { getNameMateria } from "@/app/materias/actions";
+import { getNameProject } from "@/app/proyectos/actions";
 import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,6 +20,8 @@ const getDisplayNameByModule = async (
   switch (module) {
     case "materias":
       return await getNameMateria(idItem, idUser);
+    case "proyectos":
+      return await getNameProject(idItem, idUser);
     default:
       return idItem.toString();
   }
@@ -31,7 +34,7 @@ export default function Breadcrumb() {
 
   const moduleList = ["materias", "proyectos", "games"];
   const { userProfile } = useContext(AuthContext);
- 
+
   useEffect(() => {
     if (!userProfile) return;
 
@@ -50,7 +53,7 @@ export default function Breadcrumb() {
 
           if (typeof name === "number") {
 
-            let newName = await getDisplayNameByModule(lastModule??"", name, userProfile.id) ?? "Error 404";
+            let newName = await getDisplayNameByModule(lastModule ?? "", name, userProfile.id) ?? "Error 404";
 
             newName = textCapitalized(newName);
 
