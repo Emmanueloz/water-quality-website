@@ -1,12 +1,46 @@
 "use client";
+import { getNameMateria } from "@/app/materias/actions";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+interface IPathName {
+  path: string;
+  name: string | number;
+  module: string | undefined;
+}
 
 export default function Breadcrumb() {
   const pathname = usePathname();
-  console.log(pathname);
 
-  const pathParts = pathname.split("/").filter(Boolean);
+  const [itemPath, setItemPath] = useState<IPathName[]>([]);
+  const moduleList = ["materias", "proyectos", "games"];
+  let lastModule: string | undefined;
+
+  useEffect(() => {
+    const pathParts = pathname.split("/").filter(Boolean);
+
+    const newItemsPath = pathParts.map((item) => {
+      const name = isNaN(parseInt(item))
+        ? getDisplayName(item)
+        : parseInt(item);
+      
+      lastModule = moduleList.find((module) => module === item) ?? lastModule;
+
+      return { path: item, name , module:lastModule};
+    });
+
+    setItemPath(newItemsPath);
+    console.log(newItemsPath);
+  }, [pathname]);
+
+  const getDisplayName = (pathName: string) => {
+    return textCapitalized(pathName);
+  };
+
+  const textCapitalized = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  };
 
   return (
     <nav className="bg-gray-100 py-3">
@@ -16,15 +50,15 @@ export default function Breadcrumb() {
             Inicio
           </Link>
           <span>/</span>
-          {pathParts.map((pathname, index) => (
+          {itemPath.map((item, index) => (
             <li key={index}>
               <Link
-                href={`/${pathParts.slice(0, index + 1).join("/")}`}
+                href={`/${item.path}`}
                 className="text-cyan-700 hover:underline"
               >
-                {pathname.charAt(0).toUpperCase() + pathname.slice(1)}
+                {item.name}
               </Link>
-              {index < pathParts.length - 1 && " / "}
+              {index < itemPath.length - 1 && " / "}
             </li>
           ))}
         </ol>
