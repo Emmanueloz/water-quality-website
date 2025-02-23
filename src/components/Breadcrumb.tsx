@@ -1,6 +1,7 @@
 "use client";
 import { getNameMateria } from "@/app/materias/actions";
 import { getNameProject } from "@/app/proyectos/actions";
+import { getNameGame } from "@/app/games/actions";
 import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,6 +23,8 @@ const getDisplayNameByModule = async (
       return await getNameMateria(idItem, idUser);
     case "proyectos":
       return await getNameProject(idItem, idUser);
+    case "games":
+      return await getNameGame(idItem, idUser);
     default:
       return idItem.toString();
   }

@@ -6,10 +6,10 @@ import { ResultSetHeader } from "mysql2";
 
 
 export class GameRepositoryImpl implements GameRepository {
-    private pool = db.getPool();
+
+    private static pool = db.getPool();
     async verifyRoleForUser(userId: number): Promise<boolean> {
-        const [rows] = await this.pool.execute(
-            `SELECT r.Rol
+        const [rows] = await GameRepositoryImpl.pool.execute(`SELECT r.Rol
             FROM Usuarios u
             JOIN Rol r ON u.roles = r.id
             WHERE u.id = ?`,
@@ -18,17 +18,33 @@ export class GameRepositoryImpl implements GameRepository {
         return (rows as { Rol: string }[])[0]?.Rol === "admin";
     }
 
+    static async getNameGame(id: number, userId: number): Promise<string | null> {
+        const qResult = await GameRepositoryImpl.pool.execute(
+            `
+            SELECT 
+              games.name AS game_name
+            FROM games
+            WHERE games.id = ? AND games.id_user = ?
+            `,
+            [id, userId]
+        );
+
+        const [rows] = qResult as any[];
+
+        return rows[0]?.game_name;
+    }
+
     async getAllGamesByUser(userId: number): Promise<Game[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await GameRepositoryImpl.pool.execute(
                 `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
        FROM games g
        JOIN Usuarios  u ON g.id_user = u.id`
             );
             return rows as Game[];
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await GameRepositoryImpl.pool.execute(
             `SELECT g.id, g.name, g.description, g.category
        FROM games g
        WHERE g.id_user = ?`,
@@ -43,7 +59,7 @@ export class GameRepositoryImpl implements GameRepository {
     async getLastSixGamesByUser(userId: number): Promise<Game[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await GameRepositoryImpl.pool.execute(
                 `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
                 FROM games g
                 JOIN Usuarios u ON g.id_user = u.id
@@ -52,7 +68,7 @@ export class GameRepositoryImpl implements GameRepository {
             );
             return rows as Game[];
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await GameRepositoryImpl.pool.execute(
             `SELECT g.id, g.name, g.description, g.category
             FROM games g
             WHERE g.id_user = ?
@@ -69,7 +85,7 @@ export class GameRepositoryImpl implements GameRepository {
     async getGameById(gameId: number, userId: number): Promise<Game | null> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await GameRepositoryImpl.pool.execute(
                 `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
        FROM games g 
        JOIN Usuarios  u ON g.id_user = u.id
@@ -78,7 +94,7 @@ export class GameRepositoryImpl implements GameRepository {
             );
             return (rows as Game[])[0] || null;
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await GameRepositoryImpl.pool.execute(
             `SELECT g.id, g.name, g.description, g.category
        FROM games g
        WHERE g.id = ? AND g.id_user = ?`,
@@ -90,7 +106,7 @@ export class GameRepositoryImpl implements GameRepository {
     async getLast6GamesByUser(userId: number): Promise<Game[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await GameRepositoryImpl.pool.execute(
                 `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
            FROM games g 
            JOIN Usuarios  u ON g.id_user = u.id
@@ -99,7 +115,7 @@ export class GameRepositoryImpl implements GameRepository {
             );
             return rows as Game[];
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await GameRepositoryImpl.pool.execute(
             `SELECT g.id, g.name, g.description, g.category
            FROM games g
            WHERE g.id_user = ? ORDER BY g.id DESC LIMIT 6`,
@@ -110,7 +126,7 @@ export class GameRepositoryImpl implements GameRepository {
     async getPaginatedGamesByUser(userId: number, page: number, limit: number): Promise<Game[]> {
         const isAdmin = await this.verifyRoleForUser(userId);
         if (isAdmin) {
-            const [rows] = await this.pool.execute(
+            const [rows] = await GameRepositoryImpl.pool.execute(
                 `SELECT g.id, g.name, g.description, g.category, u.Usuario as nameUser
            FROM games g
            JOIN Usuarios  u ON g.id_user = u.id
@@ -119,7 +135,7 @@ export class GameRepositoryImpl implements GameRepository {
             );
             return rows as Game[];
         }
-        const [rows] = await this.pool.execute(
+        const [rows] = await GameRepositoryImpl.pool.execute(
             `SELECT g.id, g.name, g.description, g.category
            FROM games g
            WHERE g.id_user = ? LIMIT ? OFFSET ?`,
@@ -130,7 +146,7 @@ export class GameRepositoryImpl implements GameRepository {
 
 
     async createGame(game: Omit<Game, "id">): Promise<Game> {
-        const [result] = await this.pool.execute<ResultSetHeader>(
+        const [result] = await GameRepositoryImpl.pool.execute<ResultSetHeader>(
             `INSERT INTO games (name, description, category, id_user)
        VALUES (?, ?, ?, ?)`,
             [game.name, game.description, game.category, game.idUser]
@@ -145,7 +161,7 @@ export class GameRepositoryImpl implements GameRepository {
     }
 
     async updateGame(game: Game): Promise<Game> {
-        await this.pool.execute(
+        await GameRepositoryImpl.pool.execute(
             `UPDATE games
        SET name = ?, description = ?, category = ?
        WHERE id = ?`,
@@ -156,7 +172,7 @@ export class GameRepositoryImpl implements GameRepository {
     }
 
     async deleteGame(gameId: number): Promise<void> {
-        await this.pool.execute(
+        await GameRepositoryImpl.pool.execute(
             `DELETE FROM games
        WHERE id = ?`,
             [gameId]
