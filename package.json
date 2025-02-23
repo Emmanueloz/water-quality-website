@@ -21,6 +21,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swiper": "^11.2.4",
+    "twilio": "^5.4.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

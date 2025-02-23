@@ -16,6 +16,10 @@ export const getMateria = async (id: number, id_usuario: number) => {
   return materiaRepository.getMateria(id, id_usuario);
 };
 
+export const getNameMateria = async (id: number, idUsuario: number) => {
+  return materiaRepository.getNameMateria(id, idUsuario);
+};
+
 export const deleteMateria = async (materia: IMateria) => {
   materiaRepository.deleteMateria(materia);
 };
