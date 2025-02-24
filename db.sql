@@ -98,7 +98,7 @@ CREATE TABLE `games` (
 
 LOCK TABLES `games` WRITE;
 /*!40000 ALTER TABLE `games` DISABLE KEYS */;
-INSERT INTO `games` VALUES (2,'Fifa 25','Un juego de futbol que es no ha cambiado y ahora es una casino','Deportes',5),(3,'fgfdgfdg','dsfsdfsdfsdf','Acción',5),(4,'mnzm,c xnz,mcn','sdzxczxc,m nm,nmn','Battle Royale',5),(5,'Halo infinite v2','Juego algo bueno','Battle Royale',7),(6,'Free fire','un juego de cagada para vagos.','Battle Royale',7),(7,'COT','Una absoluta perdida de tiempo, solo para vagos.','Battle Royale',7),(8,'Fornite','Juego para amantes de la procrastinacion.','Battle Royale',7),(9,'COD','KAKAKKAKAKAKAK','Battle Royale',7),(10,'ejemplo2','kfkkfksfs;kmbs ;sdmv;fdmb;d','Estrategia',7),(11,'ejemplo2','jjfdnkjdnvnsllfljfjdfljdfljdfljdfj,xcxcnvcnmvcnmmn','Aventura',7),(12,'ejemplo3','kldldflkfdkldfkldfllkffdlfdllfd','Deportes',7);
+INSERT INTO `games` VALUES (2,'Fifa 25','Un juego de futbol que es no ha cambiado y ahora es una casino','Deportes',5),(3,'fgfdgfdg','dsfsdfsdfsdf','Acción',5),(4,'mnzm,c xnz,mcn','sdzxczxc,m nm,nmn','Battle Royale',5),(5,'Halo infinite v2','Juego algo bueno','Battle Royale',7),(6,'Free fire','un juego de .','Battle Royale',7),(7,'COT','Una absoluta p','Battle Royale',7),(8,'Fornite','Juego para amantes de','Battle Royale',7),(9,'COD','KAKAKKAKAKAKAK','Battle Royale',7),(10,'ejemplo2','kfkkfksfs;kmbs ;sdmv;fdmb;d','Estrategia',7),(11,'ejemplo2','jjfdnkjdnvnsllfljfjdfljdfljdfljdfj,xcxcnvcnmvcnmmn','Aventura',7),(12,'ejemplo3','kldldflkfdkldfkldfllkffdlfdllfd','Deportes',7);
 /*!40000 ALTER TABLE `games` ENABLE KEYS */;
 UNLOCK TABLES;
 
