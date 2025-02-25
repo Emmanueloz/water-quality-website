@@ -60,6 +60,8 @@ export async function POST(req: NextRequest) {
       answer,
     });
 
+
+
     return NextResponse.json({
       message: "Registro exitoso",
       usuario: newUser,
