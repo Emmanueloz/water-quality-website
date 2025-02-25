@@ -3,14 +3,17 @@ import { db } from "../../../lib/db";
 import { hashPassword } from "../../../lib/auth";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 import { ResultSetHeader } from "mysql2";
+import { QuestionRecoverRepositoryImpl } from "@/infrastructure/repositories/QuestionRecoverRepositoryImpl";
+
+const questionRecoverRepository = new QuestionRecoverRepositoryImpl();
 
 export async function POST(req: NextRequest) {
-  const { Usuario, Contraseña, acceptTerms, Email }: LoginRequestBody & { Email: string } = await req.json(); // Añadimos Email
+  const { Usuario, Contraseña, acceptTerms, Email,question,answer }: LoginRequestBody & { Email: string } = await req.json(); // Añadimos Email
 
   console.log(acceptTerms, Email);  // Comprobamos que el email se reciba correctamente
 
   // Validar que los campos sean requeridos
-  if (!Usuario || !Contraseña || !acceptTerms || !Email) {
+  if (!Usuario || !Contraseña || !acceptTerms || !Email || !question || !answer) {
     return NextResponse.json(
       { message: "Usuario, contraseña, email y aceptar los términos son requeridos" },
       { status: 400 }
@@ -49,6 +52,13 @@ export async function POST(req: NextRequest) {
       Usuario,
       Email, // Incluimos el email en la respuesta
     };
+
+    await questionRecoverRepository.create({
+      id:0,
+      idUser: newUser.id,
+      questionNum: question,
+      answer,
+    });
 
     return NextResponse.json({
       message: "Registro exitoso",

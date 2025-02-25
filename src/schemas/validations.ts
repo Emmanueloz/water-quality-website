@@ -85,6 +85,13 @@ export const registerSchema = z
             .min(6, "La contraseña debe tener al menos 6 caracteres")
             .max(100, "La contraseña no puede tener más de 100 caracteres")
             .refine((val) => val.replace(/\s/g, "").length > 0, "La contraseña no puede ser solo espacios en blanco"),
+        
+        answer: z
+            .string()
+            .trim()
+            .min(2, "La respuesta debe tener al menos 2 caracteres")
+            .max(100, "La contraseña no puede tener más de 100 caracteres")
+            .refine((val) => val.replace(/\s/g, "").length > 0, "La pregunta no puede ser solo espacios en blanco"),
     })
 
 

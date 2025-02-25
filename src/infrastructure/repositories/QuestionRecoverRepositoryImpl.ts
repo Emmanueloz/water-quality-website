@@ -1,7 +1,8 @@
+import { QuestionRecoverUser } from "@/domain/models/QuestionRecover";
 import { QuestionRecoverRepository } from "@/domain/repositories/QuestionRecoverRepository";
 import { db } from "@/lib/db";
 
-export class MateriaRepositoryImpl implements QuestionRecoverRepository {
+export class QuestionRecoverRepositoryImpl implements QuestionRecoverRepository {
   private pool = db.getPool();
 
   async create(questionRecoverUser: QuestionRecoverUser): Promise<void> {
