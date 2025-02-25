@@ -29,7 +29,7 @@ export default function PasswordRecovery() {
                     className={`p-3 rounded-lg font-bold ${recoveryMethod === "sms" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
                     onClick={() => setRecoveryMethod("sms")}
                 >
-                    Por Código SMS
+                    Por código en whatsapp
                 </button>
             </div>
 

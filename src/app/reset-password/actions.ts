@@ -45,24 +45,24 @@ export async function requestPasswordResetBySMS(phone: string) {
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
     const expiresAt = new Date(Date.now() + 3 * 60 * 1000); // 2 minutos
     await createPasswordReset(userId, verificationCode.toString(), expiresAt, "sms"); // 2 minutos
-    const message = `Tu código de verificación para restablecer tu contraseña es: ${verificationCode}`;
+    const message = `${verificationCode}`;
     const smsResult = await sendSMS(phone, message);
     if (smsResult.success) {
-        return { message: "SMS enviado con instrucciones", success: true };
+        return { message: "Código enviado con instrucciones", success: true };
     } else {
-        return { message: "Error al enviar el SMS", success: false };
+        return { message: "Error al enviar el código", success: false };
     }
 }
 
 export async function validateCodeSMS(codeSMS: string) {
     const resetEntry = await findByCodeSMS(codeSMS);
     if (!resetEntry) {
-        return { message: "Código SMS inválido", success: false };
+        return { message: "Código es inválido", success: false };
     }
     const token = crypto.randomBytes(32).toString("hex");
     const hashedToken = await bcrypt.hash(token, 10);
     await updatePasswordReset(resetEntry.id, hashedToken);
-    return { message: "Código SMS válido", success: true, token };
+    return { message: "Código válido", success: true, token };
 }
 
 
