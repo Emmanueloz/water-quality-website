@@ -106,6 +106,15 @@ export const profileSchema = z.object({
       password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
       confirmPassword: z.string().min(6, "La confirmación de la contraseña debe tener al menos 6 caracteres"),
     });
+
+export const emailSchema = z.object({
+    email: z.string().email("El email debe ser válido"),
+});
+
+export const passwordSchema = z.object({
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string().min(6, "La confirmación de la contraseña debe tener al menos 6 caracteres"),
+});
     
 
 export const createProjectSchema = projectSchema;
