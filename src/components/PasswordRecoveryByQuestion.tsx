@@ -6,16 +6,16 @@ import {
 import { updatePassword } from "@/app/reset-password/actions";
 import {
   QuestionRecoverUser,
-  SecurityQuestion,
   SecurityQuestionText,
 } from "@/domain/models/QuestionRecover";
 import { resetPasswordSchema } from "@/schemas/validations";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function PasswordRecoveryByQuestion() {
+  const [userId, setUserId] = useState<number | null>(null);
   const [questions, setQuestions] = useState<QuestionRecoverUser[]>([]);
   const [user, setUser] = useState("");
-  const [answer, setAnswer] = useState<string | null>(null);
+  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const [message, setMessage] = useState("");
 
   const [error, setError] = useState("");
@@ -50,22 +50,39 @@ export default function PasswordRecoveryByQuestion() {
       return;
     }
 
+    setUserId(questionsRecoverUser[0]?.idUser ?? 0);
     setQuestions(questionsRecoverUser);
     setIsQuestion(true);
 
     setLoading(false);
   };
 
+  const validateAnswer = async () => {
+    const validationResults = await Promise.all(
+      Object.keys(answers).map(async (key) => {
+        const id = parseInt(key);
+        console.log(answers[id]);
+        return isValidAnswer(id, answers[id] ?? "", userId ?? 0); // Server action
+      })
+    );
+
+    return validationResults
+  };
+
   const handleSubmitValidAnswer = async () => {
-    setLoading(true);
-    //const isValid = await isValidAnswer(answer ?? "", question?.idUser ?? 0);
-    if (isValid) {
+    const validationResults = await validateAnswer();
+
+    console.log(validationResults);
+
+    if (validationResults.every((answer) => answer)) {
       setIsValid(true);
       setError("Respuesta correcta");
     } else {
-      setError("Respuesta incorrecta");
+      setError("Respuestas incorrectas");
+      setIsValid(false);
     }
-    setLoading(false);
+
+    console.log(answers);
   };
 
   const handleSubmit = async () => {
@@ -78,7 +95,7 @@ export default function PasswordRecoveryByQuestion() {
         confirmPassword: errors.confirmPassword?._errors[0],
       });
     } else {
-      await updatePassword(questions[0]?.idUser ?? 0, data.password);
+      await updatePassword(userId ?? 0, data.password);
 
       setErrorPassword({});
       setIsValid(false);
@@ -87,7 +104,7 @@ export default function PasswordRecoveryByQuestion() {
       setQuestions([]);
       setIsQuestion(false);
       setError("");
-      setAnswer("");
+      setAnswers({});
       setMessage("Contraseña actualizada correctamente");
     }
   };
@@ -123,6 +140,7 @@ export default function PasswordRecoveryByQuestion() {
           {questions.map((question) => (
             <div key={question.id}>
               <label className="font-semibold">
+                {question.id}
                 {
                   SecurityQuestionText[
                     question.questionNum as keyof typeof SecurityQuestionText
@@ -133,9 +151,11 @@ export default function PasswordRecoveryByQuestion() {
                 type="text"
                 maxLength={50}
                 className="w-full p-3 border border-gray-300 rounded-lg mt-2"
-                placeholder="Pregunta"
-                value={answer ?? ""}
-                onChange={(e) => setAnswer(e.target.value)}
+                placeholder="Respuesta"
+                value={answers[question.id] ?? ""}
+                onChange={(e) =>
+                  setAnswers({ ...answers, [question.id]: e.target.value })
+                }
               />
             </div>
           ))}

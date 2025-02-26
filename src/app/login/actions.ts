@@ -5,24 +5,29 @@ import { QuestionRecoverRepositoryImpl } from "@/infrastructure/repositories/Que
 const questionRecoverRepository = new QuestionRecoverRepositoryImpl();
 
 export async function getIdUser(user: string) {
-  return await questionRecoverRepository.getIdUser(user);  
+  return await questionRecoverRepository.getIdUser(user);
 }
 
 export async function getQuestionRecoverUserByUser(user: string) {
-
-  const id =  await questionRecoverRepository.getIdUser(user); 
+  const id = await questionRecoverRepository.getIdUser(user);
 
   if (!id) {
     return [];
   }
-  
+
   return await questionRecoverRepository.getQuestionRecoverUserById(id);
 }
 
-export async function isValidAnswer(answer: string, idUser: number) {
-  return await questionRecoverRepository.isValidAnswer(answer, idUser);
+export async function isValidAnswer(
+  id: number,
+  answer: string,
+  idUser: number
+) {
+  return await questionRecoverRepository.isValidAnswer(id, answer, idUser);
 }
 
-export async function  updateQuestionRecoverUser(questionRecoverUser: QuestionRecoverUser) {
+export async function updateQuestionRecoverUser(
+  questionRecoverUser: QuestionRecoverUser
+) {
   return await questionRecoverRepository.update(questionRecoverUser);
 }

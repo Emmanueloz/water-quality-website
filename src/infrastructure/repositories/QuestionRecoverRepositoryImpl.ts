@@ -40,10 +40,14 @@ export class QuestionRecoverRepositoryImpl
     }));
   }
 
-  async isValidAnswer(answer: string, idUser: number): Promise<boolean> {
+  async isValidAnswer(
+    id: number,
+    answer: string,
+    idUser: number
+  ): Promise<boolean> {
     const qResult = await this.pool.execute(
-      `SELECT * FROM question_recover_user WHERE answer = ? AND id_user = ?`,
-      [answer, idUser]
+      `SELECT * FROM question_recover_user WHERE id = ? AND answer = ? AND id_user = ?`,
+      [id, answer, idUser]
     );
 
     const [rows] = qResult as any[];
