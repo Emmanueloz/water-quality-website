@@ -6,10 +6,12 @@ import { AuthContext } from "@/context/AuthProvider";
 import { Profile } from "@/domain/models/profile";
 import { useContext, useEffect, useState } from "react";
 import { getProfileById } from "./actions";
-import { get } from "http";
+import EditQuestionRecover from "@/components/EditQuestionRecover";
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState<"email" | "password">("email");
+  const [activeTab, setActiveTab] = useState<
+    "email" | "password" | "question-recover"
+  >("email");
 
   const { userProfile } = useContext(AuthContext);
 
@@ -17,7 +19,7 @@ export default function ProfilePage() {
 
   const getProfile = async () => {
     const data = await getProfileById(userProfile?.id ?? 0);
-    setUserData(data );
+    setUserData(data);
   };
 
   useEffect(() => {
@@ -46,11 +48,22 @@ export default function ProfilePage() {
         >
           Editar Contraseña
         </button>
+
+        <button
+          className={`px-4 py-2 rounded-lg font-semibold text-sm ${
+            activeTab === "question-recover"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          }`}
+          onClick={() => setActiveTab("question-recover")}
+        >
+          Editar Preguntas
+        </button>
       </div>
-      {activeTab === "email" ? (
-        <EditEmail userProfile={userData} />
-      ) : (
-        <EditPassword userProfile={userData} />
+      {activeTab === "email" && <EditEmail userProfile={userData} />}
+      {activeTab === "password" && <EditPassword userProfile={userData} />}
+      {activeTab === "question-recover" && (
+        <EditQuestionRecover userProfile={userData} />
       )}
     </div>
   );
