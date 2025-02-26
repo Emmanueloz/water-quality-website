@@ -13,7 +13,7 @@ export async function getQuestionRecoverUserByUser(user: string) {
   const id =  await questionRecoverRepository.getIdUser(user); 
 
   if (!id) {
-    return null;
+    return [];
   }
   
   return await questionRecoverRepository.getQuestionRecoverUserById(id);

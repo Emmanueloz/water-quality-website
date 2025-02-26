@@ -22,7 +22,7 @@ export class QuestionRecoverRepositoryImpl
   }
   async getQuestionRecoverUserById(
     idUser: number
-  ): Promise<QuestionRecoverUser> {
+  ): Promise<QuestionRecoverUser[]> {
     const qResult = await this.pool.execute(
       `SELECT * FROM question_recover_user WHERE id_user = ?`,
       [idUser]
@@ -30,14 +30,14 @@ export class QuestionRecoverRepositoryImpl
 
     const [rows] = qResult as any[];
 
-    const questionRecoverUser = rows[0];
+    console.log(rows);
 
-    return {
-      id: questionRecoverUser.id,
-      questionNum: questionRecoverUser.question_num,
+    return rows.map((row: any) => ({
+      id: row.id,
+      questionNum: row.question_num,
       answer: "********",
-      idUser: questionRecoverUser.id_user,
-    };
+      idUser: row.id_user,
+    }));
   }
 
   async isValidAnswer(answer: string, idUser: number): Promise<boolean> {

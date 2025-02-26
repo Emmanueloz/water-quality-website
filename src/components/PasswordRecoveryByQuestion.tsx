@@ -10,12 +10,10 @@ import {
   SecurityQuestionText,
 } from "@/domain/models/QuestionRecover";
 import { resetPasswordSchema } from "@/schemas/validations";
-import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-import { set } from "zod";
 
 export default function PasswordRecoveryByQuestion() {
-  const [question, setQuestion] = useState<QuestionRecoverUser | null>(null);
+  const [questions, setQuestions] = useState<QuestionRecoverUser[]>([]);
   const [user, setUser] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [message, setMessage] = useState("");
@@ -44,15 +42,15 @@ export default function PasswordRecoveryByQuestion() {
       return;
     }
 
-    const questionRecoverUser = await getQuestionRecoverUserByUser(user);
+    const questionsRecoverUser = await getQuestionRecoverUserByUser(user);
 
-    if (!questionRecoverUser) {
+    if (!questionsRecoverUser) {
       setError("Usuario no encontrado");
       setLoading(false);
       return;
     }
 
-    setQuestion(questionRecoverUser);
+    setQuestions(questionsRecoverUser);
     setIsQuestion(true);
 
     setLoading(false);
@@ -60,7 +58,7 @@ export default function PasswordRecoveryByQuestion() {
 
   const handleSubmitValidAnswer = async () => {
     setLoading(true);
-    const isValid = await isValidAnswer(answer ?? "", question?.idUser ?? 0);
+    //const isValid = await isValidAnswer(answer ?? "", question?.idUser ?? 0);
     if (isValid) {
       setIsValid(true);
       setError("Respuesta correcta");
@@ -80,16 +78,13 @@ export default function PasswordRecoveryByQuestion() {
         confirmPassword: errors.confirmPassword?._errors[0],
       });
     } else {
-      await updatePassword(
-        question?.idUser ?? 0,
-        data.password
-      );
+      await updatePassword(questions[0]?.idUser ?? 0, data.password);
 
       setErrorPassword({});
       setIsValid(false);
       setData({ password: "", confirmPassword: "" });
       setUser("");
-      setQuestion(null);
+      setQuestions([]);
       setIsQuestion(false);
       setError("");
       setAnswer("");
@@ -97,19 +92,11 @@ export default function PasswordRecoveryByQuestion() {
     }
   };
 
-  useEffect(() => {
-    console.log(question);
-
-    console.log("questionNum:", question?.questionNum);
-    console.log("SecurityQuestionText:", SecurityQuestionText);
-  }, [question]);
-
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
       className="flex flex-col w-full max-w-md gap-4 border-2 border-gray-300 p-6 rounded-lg"
     >
-
       {!isQuestion && (
         <>
           {message && <p className="mt-4 text-center">{message}</p>}
@@ -133,22 +120,25 @@ export default function PasswordRecoveryByQuestion() {
       )}
       {isQuestion && !isValid && (
         <>
-          <label className="font-semibold">
-            {
-              SecurityQuestionText[
-                question?.questionNum as keyof typeof SecurityQuestionText
-              ]
-            }
-          </label>
-
-          <input
-            type="text"
-            maxLength={50}
-            className="w-full p-3 border border-gray-300 rounded-lg mt-2"
-            placeholder="Pregunta"
-            value={answer ?? ""}
-            onChange={(e) => setAnswer(e.target.value)}
-          />
+          {questions.map((question) => (
+            <div key={question.id}>
+              <label className="font-semibold">
+                {
+                  SecurityQuestionText[
+                    question.questionNum as keyof typeof SecurityQuestionText
+                  ]
+                }
+              </label>
+              <input
+                type="text"
+                maxLength={50}
+                className="w-full p-3 border border-gray-300 rounded-lg mt-2"
+                placeholder="Pregunta"
+                value={answer ?? ""}
+                onChange={(e) => setAnswer(e.target.value)}
+              />
+            </div>
+          ))}
           <span className="text-red-500">{error}</span>
           <button
             onClick={handleSubmitValidAnswer}

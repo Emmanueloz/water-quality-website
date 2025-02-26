@@ -2,7 +2,7 @@ import { QuestionRecoverUser } from "@/domain/models/QuestionRecover";
 
 export interface QuestionRecoverRepository {
   create(questionRecoverUser: QuestionRecoverUser): Promise<void>;
-  getQuestionRecoverUserById(idUser: number): Promise<QuestionRecoverUser>;
+  getQuestionRecoverUserById(idUser: number): Promise<QuestionRecoverUser[]>;
   update(questionRecoverUser: QuestionRecoverUser): Promise<void>;
   isValidAnswer(answer: string, idUser: number):Promise<boolean>;
 }
