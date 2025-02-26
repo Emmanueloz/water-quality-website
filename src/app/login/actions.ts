@@ -18,6 +18,10 @@ export async function getQuestionRecoverUserByUser(user: string) {
   return await questionRecoverRepository.getQuestionRecoverUserById(id);
 }
 
+export async function getQuestionRecoverUserById(id:number) {
+  return await questionRecoverRepository.getQuestionRecoverUserById(id);
+}
+
 export async function isValidAnswer(
   id: number,
   answer: string,

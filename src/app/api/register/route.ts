@@ -4,7 +4,6 @@ import { hashPassword } from "../../../lib/auth";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 import { ResultSetHeader } from "mysql2";
 import { QuestionRecoverRepositoryImpl } from "@/infrastructure/repositories/QuestionRecoverRepositoryImpl";
-import { a, p } from "framer-motion/client";
 
 const questionRecoverRepository = new QuestionRecoverRepositoryImpl();
 
