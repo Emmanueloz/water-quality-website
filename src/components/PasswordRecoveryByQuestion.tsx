@@ -44,11 +44,13 @@ export default function PasswordRecoveryByQuestion() {
 
     const questionsRecoverUser = await getQuestionRecoverUserByUser(user);
 
-    if (!questionsRecoverUser) {
-      setError("Usuario no encontrado");
+    if (!questionsRecoverUser || questionsRecoverUser.length === 0) {
+      setError("Usuario no encontrado o no tiene respuestas");
       setLoading(false);
       return;
     }
+
+
 
     setUserId(questionsRecoverUser[0]?.idUser ?? 0);
     setQuestions(questionsRecoverUser);
@@ -137,10 +139,10 @@ export default function PasswordRecoveryByQuestion() {
       )}
       {isQuestion && !isValid && (
         <>
-          {questions.map((question) => (
+          {questions.map((question,key) => (
             <div key={question.id}>
               <label className="font-semibold">
-                {question.id}
+                {`${key+1}.- ` }
                 {
                   SecurityQuestionText[
                     question.questionNum as keyof typeof SecurityQuestionText
