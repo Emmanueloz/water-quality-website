@@ -8,7 +8,6 @@ import { gameSchema } from "@/schemas/validations";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { z } from "zod";
 import CardItem from "@/components/CardItem";
-import { CircleLoader } from "react-spinners";
 
 
 const categories = [
