@@ -50,8 +50,6 @@ export default function PasswordRecoveryByQuestion() {
       return;
     }
 
-
-
     setUserId(questionsRecoverUser[0]?.idUser ?? 0);
     setQuestions(questionsRecoverUser);
     setIsQuestion(true);
@@ -68,7 +66,7 @@ export default function PasswordRecoveryByQuestion() {
       })
     );
 
-    return validationResults
+    return validationResults;
   };
 
   const handleSubmitValidAnswer = async () => {
@@ -139,10 +137,10 @@ export default function PasswordRecoveryByQuestion() {
       )}
       {isQuestion && !isValid && (
         <>
-          {questions.map((question,key) => (
+          {questions.map((question, key) => (
             <div key={question.id}>
               <label className="font-semibold">
-                {`${key+1}.- ` }
+                {`${key + 1}.- `}
                 {
                   SecurityQuestionText[
                     question.questionNum as keyof typeof SecurityQuestionText
@@ -166,7 +164,7 @@ export default function PasswordRecoveryByQuestion() {
             onClick={handleSubmitValidAnswer}
             className="w-full p-3 mt-2 bg-blue-600 text-white rounded-lg"
           >
-            Buscar
+            Validar
           </button>
         </>
       )}
