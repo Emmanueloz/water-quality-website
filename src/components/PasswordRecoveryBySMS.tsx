@@ -78,7 +78,7 @@ export default function PasswordRecoveryBySMS() {
 
             </>)}
             {isSMSSent && (<><div className="flex flex-col w-full max-w-md gap-4 border-2 border-gray-300 p-6 rounded-lg">
-                <label htmlFor="codeSMS" className="font-semibold">Código SMS:</label>
+                <label htmlFor="codeSMS" className="font-semibold">Código:</label>
                 <input
                     type="text"
                     id="codeSMS"
