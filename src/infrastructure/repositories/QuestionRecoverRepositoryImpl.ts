@@ -25,7 +25,8 @@ export class QuestionRecoverRepositoryImpl
     console.log(insertResult); 
   }
   async getQuestionRecoverUserById(
-    idUser: number
+    idUser: number,
+    showAnswer: boolean=false
   ): Promise<QuestionRecoverUser[]> {
     const qResult = await this.pool.execute(
       `SELECT * FROM question_recover_user WHERE id_user = ?`,
@@ -39,7 +40,7 @@ export class QuestionRecoverRepositoryImpl
     return rows.map((row: any) => ({
       id: row.id,
       questionNum: row.question_num,
-      answer: "********",
+      answer: showAnswer ? row.answer : "********",
       idUser: row.id_user,
     }));
   }

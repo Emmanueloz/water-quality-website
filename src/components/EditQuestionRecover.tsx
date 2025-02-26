@@ -18,22 +18,32 @@ export default function EditQuestionRecover({
   const [isEdit, setIsEdit] = useState(false);
   const [error, setError] = useState("");
 
-  const [isLoading, setIsLoading] = useState(false);
-
   const getQuestions = async (id: number) => {
-    const questions = await getQuestionRecoverUserById(id);
-    //setQuestions(questions);
-    console.log(questions);
+    const questions = await getQuestionRecoverUserById(id, true);
+    if (questions.length > 0) {
+      setIsEdit(true);
+
+      setQuestion1(questions[0].questionNum);
+      setQuestion2(questions[1].questionNum);
+      setAnswer1(questions[0].answer);
+      setAnswer2(questions[1].answer);
+    } else {
+      setIsEdit(false);
+    }
   };
 
   const isValid = () => {
     const qt1 = question1 !== "" && Number(question1) >= 0;
     const qt2 = question2 !== "" && Number(question2) >= 0;
 
-    const ans1 = answer1.trim() !== "" && answer1.trim().length >= 6 && answer1.trim().length <= 100;
-    const ans2 = answer2.trim() !== "" && answer2.trim().length >= 6 && answer2.trim().length <= 100;
-
-    
+    const ans1 =
+      answer1.trim() !== "" &&
+      answer1.trim().length >= 6 &&
+      answer1.trim().length <= 100;
+    const ans2 =
+      answer2.trim() !== "" &&
+      answer2.trim().length >= 6 &&
+      answer2.trim().length <= 100;
 
     return qt1 && qt2 && ans1 && ans2;
   };
@@ -44,10 +54,8 @@ export default function EditQuestionRecover({
     const valid = isValid();
 
     console.log(valid);
-    
-    
-    if (!valid) {
 
+    if (!valid) {
       setError("Por favor ingresa un valor válido");
       return;
     }
@@ -57,7 +65,6 @@ export default function EditQuestionRecover({
 
   useEffect(() => {
     if (userProfile) {
-      console.log(userProfile.id);
       getQuestions(userProfile.id);
     }
   }, [userProfile]);
@@ -143,9 +150,7 @@ export default function EditQuestionRecover({
           className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
         />
       </section>
-      {
-        error && <span className="text-red-500">{error}</span>
-      }
+      {error && <span className="text-red-500">{error}</span>}
 
       <button
         type="submit"
