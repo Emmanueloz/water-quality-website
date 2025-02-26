@@ -3,18 +3,22 @@ import {
   getQuestionRecoverUserByUser,
   isValidAnswer,
 } from "@/app/login/actions";
+import { updatePassword } from "@/app/reset-password/actions";
 import {
   QuestionRecoverUser,
   SecurityQuestion,
   SecurityQuestionText,
 } from "@/domain/models/QuestionRecover";
 import { resetPasswordSchema } from "@/schemas/validations";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
+import { set } from "zod";
 
 export default function PasswordRecoveryByQuestion() {
   const [question, setQuestion] = useState<QuestionRecoverUser | null>(null);
   const [user, setUser] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
 
   const [error, setError] = useState("");
   const [isValid, setIsValid] = useState(false);
@@ -32,6 +36,7 @@ export default function PasswordRecoveryByQuestion() {
   const handleSubmitSearchUser = async () => {
     setLoading(true);
     setError("");
+    setMessage("");
 
     if (!user) {
       setError("Por favor ingresa un usuario");
@@ -66,20 +71,31 @@ export default function PasswordRecoveryByQuestion() {
   };
 
   const handleSubmit = async () => {
-      const result = resetPasswordSchema.safeParse(data);
-  
-      if (!result.success) {
-        const errors = result.error.format();
-        setErrorPassword({
-          password: errors.password?._errors[0],
-          confirmPassword: errors.confirmPassword?._errors[0],
-        });
-      } else {
+    const result = resetPasswordSchema.safeParse(data);
 
-        setErrorPassword({});
-        
-      }
-    };
+    if (!result.success) {
+      const errors = result.error.format();
+      setErrorPassword({
+        password: errors.password?._errors[0],
+        confirmPassword: errors.confirmPassword?._errors[0],
+      });
+    } else {
+      await updatePassword(
+        question?.idUser ?? 0,
+        data.password
+      );
+
+      setErrorPassword({});
+      setIsValid(false);
+      setData({ password: "", confirmPassword: "" });
+      setUser("");
+      setQuestion(null);
+      setIsQuestion(false);
+      setError("");
+      setAnswer("");
+      setMessage("Contraseña actualizada correctamente");
+    }
+  };
 
   useEffect(() => {
     console.log(question);
@@ -93,8 +109,10 @@ export default function PasswordRecoveryByQuestion() {
       onSubmit={(e) => e.preventDefault()}
       className="flex flex-col w-full max-w-md gap-4 border-2 border-gray-300 p-6 rounded-lg"
     >
+
       {!isQuestion && (
         <>
+          {message && <p className="mt-4 text-center">{message}</p>}
           <label className="font-semibold">Usuario</label>
           <input
             type="text"
@@ -142,12 +160,12 @@ export default function PasswordRecoveryByQuestion() {
       )}
       {isValid && isQuestion && (
         <>
-          <h3 className="font-semibold">Cambiar contraseña para el usuario {user}</h3>
+          <h3 className="font-semibold">
+            Cambiar contraseña para el usuario:
+            <span className="font-normal capitalize"> {user}</span>
+          </h3>
           <div>
-            <label
-              htmlFor="password"
-              className="font-semibold"
-            >
+            <label htmlFor="password" className="font-semibold">
               Password
             </label>
             <input
@@ -168,10 +186,7 @@ export default function PasswordRecoveryByQuestion() {
           </div>
 
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="font-semibold"
-            >
+            <label htmlFor="confirmPassword" className="font-semibold">
               Confirm Password
             </label>
             <input
