@@ -1,12 +1,16 @@
+import { QuestionRecoverUser } from "@/domain/models/QuestionRecover";
 import { strict } from "assert";
+
+
 
 export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
   acceptTerms:boolean;
+  phone: string;
   Email: string;
   question: number;
-  answer: string;
+  answers: QuestionRecoverUser[];
 }
 
 export interface Usuario {

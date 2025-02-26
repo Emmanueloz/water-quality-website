@@ -4,28 +4,60 @@ import { hashPassword } from "../../../lib/auth";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 import { ResultSetHeader } from "mysql2";
 import { QuestionRecoverRepositoryImpl } from "@/infrastructure/repositories/QuestionRecoverRepositoryImpl";
+import { a, p } from "framer-motion/client";
 
 const questionRecoverRepository = new QuestionRecoverRepositoryImpl();
 
 export async function POST(req: NextRequest) {
-  const { Usuario, Contraseña, acceptTerms, Email,question,answer }: LoginRequestBody & { Email: string } = await req.json(); // Añadimos Email
+  const data = await req.json();
+  const {
+    Usuario,
+    Contraseña,
+    acceptTerms,
+    Email,
+    phone,
+    answers,
+  }: LoginRequestBody & { Email: string } = data; // Añadimos Email
 
-  console.log(acceptTerms, Email);  // Comprobamos que el email se reciba correctamente
-
+  console.log(data);
+  console.log(phone,answers);
+  console.log(
+    Usuario,
+    Contraseña,
+    acceptTerms,
+    Email,
+    phone,
+    answers,
+    
+  );
+  
   // Validar que los campos sean requeridos
-  if (!Usuario || !Contraseña || !acceptTerms || !Email || !question || !answer) {
+  if (
+    !Usuario ||
+    !Contraseña ||
+    !acceptTerms ||
+    !Email ||
+    !phone ||
+    !answers
+  ) {
     return NextResponse.json(
-      { message: "Usuario, contraseña, email y aceptar los términos son requeridos" },
+      {
+        message:
+          "Usuario, contraseña, email y aceptar los términos son requeridos",
+      },
       { status: 400 }
     );
   }
 
   let connection;
 
+  
   try {
     // Conexión a la base de datos
-    connection = db.getPool();
+   
 
+    connection = db.getPool();
+    
     const [existingUserRows] = await connection.execute(
       `SELECT * FROM Usuarios WHERE Usuario = ?`,
       [Usuario]
@@ -52,15 +84,8 @@ export async function POST(req: NextRequest) {
       Usuario,
       Email, // Incluimos el email en la respuesta
     };
-
-    await questionRecoverRepository.create({
-      id:0,
-      idUser: newUser.id,
-      questionNum: question,
-      answer,
-    });
-
-
+ 
+    await questionRecoverRepository.create(newUser.id, answers);
 
     return NextResponse.json({
       message: "Registro exitoso",

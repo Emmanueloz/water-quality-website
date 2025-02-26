@@ -7,18 +7,22 @@ export class QuestionRecoverRepositoryImpl
 {
   private pool = db.getPool();
 
-  async create(questionRecoverUser: QuestionRecoverUser): Promise<void> {
+  async create(
+    idUser: number,
+    questions: QuestionRecoverUser[]
+  ): Promise<void> {
     const query = `
             INSERT INTO question_recover_user (question_num, answer, id_user) 
-            VALUES (?, ?, ?)
+            VALUES ${questions.map(() => {
+              return `(?, ?, ?)`;
+            })}
         `;
-    const [insertResult] = await this.pool.query(query, [
-      questionRecoverUser.questionNum,
-      questionRecoverUser.answer,
-      questionRecoverUser.idUser,
-    ]);
 
-    console.log(insertResult);
+    const values = questions.flatMap((q) => [q.questionNum, q.answer, idUser]);
+
+    const [insertResult] = await this.pool.execute(query, values);
+
+    console.log(insertResult); 
   }
   async getQuestionRecoverUserById(
     idUser: number

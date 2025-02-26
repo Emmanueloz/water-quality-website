@@ -13,10 +13,11 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [selectedQuestion, setSelectedQuestion] = useState<
-    SecurityQuestion | ""
-  >("");
-  const [answer, setAnswer] = useState("");
+  const [phone, setPhone] = useState(""); // Nuevo campo de teléfono
+  const [question1, setQuestion1] = useState<SecurityQuestion | "">("");
+  const [question2, setQuestion2] = useState<SecurityQuestion | "">("");
+  const [answer1, setAnswer1] = useState("");
+  const [answer2, setAnswer2] = useState("");
 
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState({
@@ -24,17 +25,17 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
     email: "",
+    phone: "",
     general: "",
-    answer: "",
+    answer1: "",
+    answer2: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedQuestion(Number(event.target.value) as SecurityQuestion);
-  };
-
   const handleSubmit = async (e: { preventDefault: () => void }) => {
+    console.log("registro");
+
     e.preventDefault();
     setIsLoading(true);
     setError({
@@ -42,12 +43,14 @@ export default function RegisterPage() {
       password: "",
       confirmPassword: "",
       email: "",
+      phone: "",
       general: "",
-      answer: "",
+      answer1: "",
+      answer2: "",
     });
 
-    // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
+      console.log("contraseñas diferentes");
       setError((prev) => ({
         ...prev,
         confirmPassword: "Las contraseñas no coinciden",
@@ -56,26 +59,37 @@ export default function RegisterPage() {
       return;
     }
 
-    // Validar el formulario con Zod
     try {
-      registerSchema.parse({ user, password, confirmPassword, email,answer }); // Agregar email a la validación
+      console.log("validando");
+      registerSchema.parse({
+        user,
+        password,
+        confirmPassword,
+        email,
+        phone,
+        answer1,
+        answer2,
+      });
     } catch (error) {
+      console.log("error de validacion");
+      console.log(error);
       if (error instanceof z.ZodError) {
         const errors = error.flatten().fieldErrors;
         setError({
           user: errors.user?.[0] || "",
           password: errors.password?.[0] || "",
           confirmPassword: errors.confirmPassword?.[0] || "",
-          email: errors.email?.[0] || "", // Mostrar error de email
+          email: errors.email?.[0] || "",
+          phone: errors.phone?.[0] || "",
           general: "",
-          answer: errors.answer?.[0] || "",
+          answer1: errors.answer1?.[0] || "",
+          answer2: errors.answer2?.[0] || "",
         });
         setIsLoading(false);
         return;
       }
     }
 
-    // Enviar datos al backend
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -84,18 +98,28 @@ export default function RegisterPage() {
           Usuario: user,
           Contraseña: password,
           Email: email,
+          phone: phone,
           acceptTerms,
-          question: selectedQuestion,
-          answer: answer,
+          answers: [
+            {
+              questionNum: question1,
+              answer: answer1,
+            },
+            {
+              questionNum: question2,
+              answer: answer2,
+            },
+          ],
         }),
       });
 
       const data = await response.json();
 
+     
+
       if (response.ok) {
-        router.push("/login"); // Redirigir al login si el registro es exitoso
+        router.push("/login");
       } else {
-        // Mostrar mensaje de error del backend
         setError((prev) => ({
           ...prev,
           general: data.message || "Error al registrar el usuario",
@@ -116,7 +140,7 @@ export default function RegisterPage() {
       <h1 className="mb-3 text-xl font-bold">Registro de Usuario</h1>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg"
+        className="flex flex-col w-full max-w-3xl gap-3 border-2 border-gray-300 p-4 rounded-lg"
       >
         <label htmlFor="user" className="font-semibold text-sm">
           Usuario:
@@ -126,9 +150,9 @@ export default function RegisterPage() {
           id="user"
           value={user}
           onChange={(e) => setUser(e.target.value)}
-          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="p-2 border border-gray-300 rounded-lg text-sm"
         />
-        <p className="text-red-500 text-xs min-h-[16px]">{error.user}</p>
+        <p className="text-red-500 text-xs">{error.user}</p>
 
         <label htmlFor="email" className="font-semibold text-sm">
           Correo Electrónico:
@@ -138,41 +162,90 @@ export default function RegisterPage() {
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="p-2 border border-gray-300 rounded-lg text-sm"
         />
-        <p className="text-red-500 text-xs min-h-[16px]">{error.email}</p>
-        <label htmlFor="question" className="font-semibold text-sm">
-          Pregunta para recuperar contraseña:
-        </label>
-        <select
-          name="question"
-          id="question"
-          className="p-2 border  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          value={selectedQuestion}
-          onChange={handleChange}
-        >
-          {Object.values(SecurityQuestion)
-            .filter((value) => typeof value === "number")
-            .map((value) => (
-              <option key={value} value={value}>
-                {SecurityQuestionText[value as SecurityQuestion]}
-              </option>
-            ))}
-        </select>
-        <p className="text-red-500 text-xs min-h-[16px]"></p>
+        <p className="text-red-500 text-xs">{error.email}</p>
 
-        <label htmlFor="anser" className="font-semibold text-sm">
-          Respuesta
+        <label htmlFor="phone" className="font-semibold text-sm">
+          Teléfono:
         </label>
         <input
-          type="text"
-          id="answer"
-          name="answer"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          type="tel"
+          id="phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="p-2 border border-gray-300 rounded-lg text-sm"
         />
-        <p className="text-red-500 text-xs min-h-[16px]">{error.answer}</p>
+        <p className="text-red-500 text-xs">{error.phone}</p>
+
+        <div className="flex justify-between gap-3">
+          <div className="w-1/2">
+            <label className="font-semibold text-sm">Pregunta 1:</label>
+            <select
+              value={question1}
+              onChange={(e) =>
+                setQuestion1(Number(e.target.value) as SecurityQuestion)
+              }
+              className="p-2 border rounded-lg text-sm w-full"
+            >
+              <option value={-1}>Selecciona una pregunta</option>
+              {Object.values(SecurityQuestion)
+                .filter(
+                  (value) =>
+                    typeof value === "number" &&
+                    (value !== question2 || (value as number) === -1)
+                )
+                .map((value) => (
+                  <option key={value} value={value}>
+                    {SecurityQuestionText[value as SecurityQuestion]}
+                  </option>
+                ))}
+            </select>
+            <p className="text-red-500 text-xs">{error.answer1}</p>
+          </div>
+
+          <div className="w-1/2">
+            <label className="font-semibold text-sm">Pregunta 2:</label>
+            <select
+              value={question2}
+              onChange={(e) =>
+                setQuestion2(Number(e.target.value) as SecurityQuestion)
+              }
+              className="p-2 border rounded-lg text-sm w-full"
+            >
+              <option value={-1}>Selecciona una pregunta</option>
+              {Object.values(SecurityQuestion)
+                .filter(
+                  (value) =>
+                    typeof value === "number" &&
+                    (value !== question1 || (value as number) === -1)
+                )
+                .map((value) => (
+                  <option key={value} value={value}>
+                    {SecurityQuestionText[value as SecurityQuestion]}
+                  </option>
+                ))}
+            </select>
+            <p className="text-red-500 text-xs">{error.answer2}</p>
+          </div>
+        </div>
+
+        <label className="font-semibold text-sm">Respuestas:</label>
+        <input
+          type="text"
+          value={answer1}
+          onChange={(e) => setAnswer1(e.target.value)}
+          className="p-2 border border-gray-300 rounded-lg text-sm"
+          placeholder="Respuesta 1"
+        />
+        <input
+          type="text"
+          value={answer2}
+          onChange={(e) => setAnswer2(e.target.value)}
+          className="p-2 border border-gray-300 rounded-lg text-sm"
+          placeholder="Respuesta 2"
+        />
+
         <label htmlFor="password" className="font-semibold text-sm">
           Contraseña:
         </label>
@@ -181,9 +254,9 @@ export default function RegisterPage() {
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+          className="p-2 border border-gray-300 rounded-lg text-sm"
         />
-        <p className="text-red-500 text-xs min-h-[16px]">{error.password}</p>
+        <p className="text-red-500 text-xs">{error.password}</p>
 
         <label htmlFor="confirmPassword" className="font-semibold text-sm">
           Confirmar Contraseña:
@@ -214,16 +287,13 @@ export default function RegisterPage() {
             </a>
           </label>
         </div>
-
-        {/* Mostrar mensaje de error general */}
         {error.general && (
           <p className="text-red-500 text-xs text-center">{error.general}</p>
         )}
-
         <button
           type="submit"
           disabled={isLoading || !acceptTerms}
-          className={`p-2 rounded-lg font-semibold text-sm text-white ${
+          className={`p-2 rounded-lg text-sm text-white ${
             isLoading || !acceptTerms
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600"
