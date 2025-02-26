@@ -1,4 +1,7 @@
-import { getQuestionRecoverUserById } from "@/app/login/actions";
+import {
+  createQuestionRecoverUser,
+  getQuestionRecoverUserById,
+} from "@/app/login/actions";
 import { Profile } from "@/domain/models/profile";
 import {
   SecurityQuestion,
@@ -38,11 +41,11 @@ export default function EditQuestionRecover({
 
     const ans1 =
       answer1.trim() !== "" &&
-      answer1.trim().length >= 6 &&
+      answer1.trim().length >= 3 &&
       answer1.trim().length <= 100;
     const ans2 =
       answer2.trim() !== "" &&
-      answer2.trim().length >= 6 &&
+      answer2.trim().length >= 3 &&
       answer2.trim().length <= 100;
 
     return qt1 && qt2 && ans1 && ans2;
@@ -58,6 +61,30 @@ export default function EditQuestionRecover({
     if (!valid) {
       setError("Por favor ingresa un valor válido");
       return;
+    }
+
+    if (isEdit) {
+      console.log("editando");
+    } else {
+      console.log("agregando");
+
+      const answers = [
+        {
+          id: 0,
+          questionNum: question1 as number,
+          answer: answer1,
+          idUser: userProfile?.id ?? 0,
+        },
+        {
+          id: 0,
+          questionNum: question2 as number,
+          answer: answer2,
+          idUser: userProfile?.id ?? 0,
+        },
+      ];
+
+      await createQuestionRecoverUser(userProfile?.id ?? 0, answers);
+      setIsEdit(true)
     }
 
     setError("");
@@ -105,7 +132,7 @@ export default function EditQuestionRecover({
         <input
           type="text"
           id="answer1"
-          minLength={6}
+          minLength={3}
           maxLength={100}
           value={answer1}
           onChange={(value) => setAnswer1(value.target.value)}
@@ -143,7 +170,7 @@ export default function EditQuestionRecover({
         <input
           type="text"
           id="answer2"
-          minLength={6}
+          minLength={3}
           maxLength={100}
           value={answer2}
           onChange={(value) => setAnswer2(value.target.value)}

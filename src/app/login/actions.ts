@@ -41,3 +41,10 @@ export async function updateQuestionRecoverUser(
 ) {
   return await questionRecoverRepository.update(questionRecoverUser);
 }
+
+export async function createQuestionRecoverUser(
+  idUser: number,
+  questions: QuestionRecoverUser[]
+) {
+  return await questionRecoverRepository.create(idUser, questions);
+}
