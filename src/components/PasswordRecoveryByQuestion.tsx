@@ -1,5 +1,8 @@
 "use client";
-import { getQuestionRecoverUserByUser } from "@/app/login/actions";
+import {
+  getQuestionRecoverUserByUser,
+  isValidAnswer
+} from "@/app/login/actions";
 import {
   QuestionRecoverUser,
   SecurityQuestion,
@@ -10,7 +13,7 @@ import { useEffect, useState } from "react";
 export default function PasswordRecoveryByQuestion() {
   const [question, setQuestion] = useState<QuestionRecoverUser | null>(null);
   const [user, setUser] = useState("");
-  const [answer, setAnswer] = useState(null);
+  const [answer, setAnswer] = useState<string | null>(null);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,9 +44,20 @@ export default function PasswordRecoveryByQuestion() {
     setLoading(false);
   };
 
+  const handleSubmitValidAnswer = async () => {
+    setLoading(true);
+    const isValid = await isValidAnswer(answer ?? "", question?.idUser ?? 0);
+    if (isValid) {
+      setError("Respuesta correcta");
+    } else {
+      setError("Respuesta incorrecta");
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     console.log(question);
-    
+
     console.log("questionNum:", question?.questionNum);
     console.log("SecurityQuestionText:", SecurityQuestionText);
   }, [question]);
@@ -88,9 +102,14 @@ export default function PasswordRecoveryByQuestion() {
             maxLength={50}
             className="w-full p-3 border border-gray-300 rounded-lg mt-2"
             placeholder="Pregunta"
+            value={answer ?? ""}
+            onChange={(e) => setAnswer(e.target.value)}
           />
           <span className="text-red-500">{error}</span>
-          <button className="w-full p-3 mt-2 bg-blue-600 text-white rounded-lg">
+          <button
+            onClick={handleSubmitValidAnswer}
+            className="w-full p-3 mt-2 bg-blue-600 text-white rounded-lg"
+          >
             Buscar
           </button>
         </>

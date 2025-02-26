@@ -39,6 +39,18 @@ export class QuestionRecoverRepositoryImpl
       idUser: questionRecoverUser.id_user,
     };
   }
+
+  async isValidAnswer(answer: string, idUser: number): Promise<boolean> {
+    const qResult = await this.pool.execute(
+      `SELECT * FROM question_recover_user WHERE answer = ? AND id_user = ?`,
+      [answer, idUser]
+    );
+
+    const [rows] = qResult as any[];
+
+    return rows.length > 0;
+  }
+
   async update(questionRecoverUser: QuestionRecoverUser): Promise<void> {
     throw new Error("Method not implemented.");
   }

@@ -19,6 +19,10 @@ export async function getQuestionRecoverUserByUser(user: string) {
   return await questionRecoverRepository.getQuestionRecoverUserById(id);
 }
 
+export async function isValidAnswer(answer: string, idUser: number) {
+  return await questionRecoverRepository.isValidAnswer(answer, idUser);
+}
+
 export async function  updateQuestionRecoverUser(questionRecoverUser: QuestionRecoverUser) {
   return await questionRecoverRepository.update(questionRecoverUser);
 }
