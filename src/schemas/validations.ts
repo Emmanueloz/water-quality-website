@@ -109,8 +109,9 @@ export const profileSchema = z.object({
       confirmPassword: z.string().min(6, "La confirmación de la contraseña debe tener al menos 6 caracteres"),
     });
 
-export const emailSchema = z.object({
+export const useInfoSchema = z.object({
     email: z.string().email("El email debe ser válido"),
+    phone: z.string().min(10, "El teléfono debe tener al menos 10 caracteres").regex(/^\d{10}$/, "El teléfono debe tener al menos 10 caracteres"),
 });
 
 export const passwordSchema = z.object({

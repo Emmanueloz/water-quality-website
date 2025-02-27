@@ -1,6 +1,6 @@
 "use client";
 
-import EditEmail from "@/components/EditEmail";
+import EditUserInfo from "@/components/EditUserInfo";
 import EditPassword from "@/components/EditPassword";
 import { AuthContext } from "@/context/AuthProvider";
 import { Profile } from "@/domain/models/profile";
@@ -19,6 +19,8 @@ export default function ProfilePage() {
 
   const getProfile = async () => {
     const data = await getProfileById(userProfile?.id ?? 0);
+    console.log(data);
+    
     setUserData(data);
   };
 
@@ -38,7 +40,7 @@ export default function ProfilePage() {
           }`}
           onClick={() => setActiveTab("email")}
         >
-          Editar Email
+          Editar usuario
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-semibold text-sm ${
@@ -60,7 +62,7 @@ export default function ProfilePage() {
           Editar Preguntas
         </button>
       </div>
-      {activeTab === "email" && <EditEmail userProfile={userData} />}
+      {activeTab === "email" && <EditUserInfo userProfile={userData} />}
       {activeTab === "password" && <EditPassword userProfile={userData} />}
       {activeTab === "question-recover" && (
         <EditQuestionRecover userProfile={userData} />

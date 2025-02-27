@@ -28,6 +28,10 @@ export async function updateEmail(id: number, email: string) {
   await profileRepository.updateEmail(id, email);
 }
 
+export async function updateUserInfo(id: number, email: string, phone: string) {
+  await profileRepository.updateUserInfo(id, email, phone);
+}
+
 export async function updatePassword(id: number, password: string) {
   const hashedPassword = await hashPassword(password);
 
