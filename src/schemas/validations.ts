@@ -85,7 +85,22 @@ export const registerSchema = z
             .min(6, "La contraseña debe tener al menos 6 caracteres")
             .max(100, "La contraseña no puede tener más de 100 caracteres")
             .refine((val) => val.replace(/\s/g, "").length > 0, "La contraseña no puede ser solo espacios en blanco"),
+        
+        answer1: z
+            .string()
+            .trim()
+            .min(2, "La respuesta debe tener al menos 2 caracteres")
+            .max(100, "La respuesta no puede tener más de 100 caracteres")
+            .refine((val) => val.replace(/\s/g, "").length > 0, "La pregunta no puede ser solo espacios en blanco"),
+        answer2: z
+            .string()
+            .trim()
+            .min(2, "La respuesta debe tener al menos 2 caracteres")
+            .max(100, "La respuesta no puede tener más de 100 caracteres")
+            .refine((val) => val.replace(/\s/g, "").length > 0, "La pregunta no puede ser solo espacios en blanco"),
     })
+
+
 
 
 export const profileSchema = z.object({
@@ -93,6 +108,16 @@ export const profileSchema = z.object({
       password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
       confirmPassword: z.string().min(6, "La confirmación de la contraseña debe tener al menos 6 caracteres"),
     });
+
+export const useInfoSchema = z.object({
+    email: z.string().email("El email debe ser válido"),
+    phone: z.string().min(10, "El teléfono debe tener al menos 10 caracteres").regex(/^\d{10}$/, "El teléfono debe tener al menos 10 caracteres"),
+});
+
+export const passwordSchema = z.object({
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string().min(6, "La confirmación de la contraseña debe tener al menos 6 caracteres"),
+});
     
 
 export const createProjectSchema = projectSchema;
@@ -112,3 +137,13 @@ export function validateData<T>(schema: z.ZodSchema<T>, data: unknown): T {
         throw error;
     }
 }
+
+export const resetPasswordSchema = z
+  .object({
+    password: z.string().trim().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  });
