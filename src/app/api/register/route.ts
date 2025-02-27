@@ -3,16 +3,32 @@ import { db } from "../../../lib/db";
 import { hashPassword } from "../../../lib/auth";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 import { ResultSetHeader } from "mysql2";
+import { QuestionRecoverRepositoryImpl } from "@/infrastructure/repositories/QuestionRecoverRepositoryImpl";
+
+const questionRecoverRepository = new QuestionRecoverRepositoryImpl();
 
 export async function POST(req: NextRequest) {
-  const { Usuario, Contraseña, acceptTerms, Email }: LoginRequestBody & { Email: string } = await req.json(); // Añadimos Email
+  const data = await req.json();
+  const {
+    Usuario,
+    Contraseña,
+    acceptTerms,
+    Email,
+    phone,
+    answers,
+  }: LoginRequestBody & { Email: string } = data; // Añadimos Email
 
-  console.log(acceptTerms, Email);  // Comprobamos que el email se reciba correctamente
+  console.log(data);
+  console.log(phone, answers);
+  console.log(Usuario, Contraseña, acceptTerms, Email, phone, answers);
 
   // Validar que los campos sean requeridos
-  if (!Usuario || !Contraseña || !acceptTerms || !Email) {
+  if (!Usuario || !Contraseña || !acceptTerms || !Email || !phone || !answers) {
     return NextResponse.json(
-      { message: "Usuario, contraseña, email y aceptar los términos son requeridos" },
+      {
+        message:
+          "Usuario, contraseña, email y aceptar los términos son requeridos",
+      },
       { status: 400 }
     );
   }
@@ -21,6 +37,7 @@ export async function POST(req: NextRequest) {
 
   try {
     // Conexión a la base de datos
+
     connection = db.getPool();
 
     const [existingUserRows] = await connection.execute(
@@ -40,8 +57,8 @@ export async function POST(req: NextRequest) {
 
     // Insertar el usuario junto con el correo electrónico
     const [result] = await connection.execute<ResultSetHeader>(
-      `INSERT INTO Usuarios (Usuario, Contraseña, Roles, id_privilegio, Email) VALUES (?, ?, ?, ?, ?)`,
-      [Usuario, hashedPassword, userRoleId, 1, Email] // Incluimos el email
+      `INSERT INTO Usuarios (Usuario, Contraseña, Roles, id_privilegio, Email, phone_number) VALUES (?, ?, ?, ?, ?, ?)`,
+      [Usuario, hashedPassword, userRoleId, 1, Email,phone] // Incluimos el email
     );
 
     const newUser = {
@@ -49,6 +66,8 @@ export async function POST(req: NextRequest) {
       Usuario,
       Email, // Incluimos el email en la respuesta
     };
+
+    await questionRecoverRepository.create(newUser.id, answers);
 
     return NextResponse.json({
       message: "Registro exitoso",

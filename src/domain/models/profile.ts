@@ -3,4 +3,5 @@ export interface Profile {
     usuario: string;
     password: string;
     email: string;
+    phone: string;
 }

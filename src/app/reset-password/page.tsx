@@ -1,19 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { z } from "zod";
 import { useRouter, useSearchParams } from "next/navigation";
 import {  resetUserPassword } from "./actions";
+import { resetPasswordSchema } from "@/schemas/validations";
 
-const schema = z
-  .object({
-    password: z.string().trim().min(6, "La contraseña debe tener al menos 6 caracteres"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Las contraseñas no coinciden",
-    path: ["confirmPassword"],
-  });
+
 
 const ResetPass = () => {
   const [data, setData] = useState({ password: "", confirmPassword: "" });
@@ -29,7 +21,7 @@ const ResetPass = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = schema.safeParse(data);
+    const result = resetPasswordSchema.safeParse(data);
 
     if (!result.success) {
       const errors = result.error.format();

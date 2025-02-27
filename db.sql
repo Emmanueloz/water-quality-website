@@ -306,3 +306,15 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-02-24 14:07:05
+
+-- dwp3_db.question_recover_user definition
+
+CREATE TABLE `question_recover_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `question_num` int(11) NOT NULL,
+  `answer` varchar(100) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `question_recover_user_Usuarios_FK` (`id_user`),
+  CONSTRAINT `question_recover_user_Usuarios_FK` FOREIGN KEY (`id_user`) REFERENCES `Usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
