@@ -22,11 +22,11 @@ export class QuestionRecoverRepositoryImpl
 
     const [insertResult] = await this.pool.execute(query, values);
 
-    console.log(insertResult); 
+    console.log(insertResult);
   }
   async getQuestionRecoverUserById(
     idUser: number,
-    showAnswer: boolean=false
+    showAnswer: boolean = false
   ): Promise<QuestionRecoverUser[]> {
     const qResult = await this.pool.execute(
       `SELECT * FROM question_recover_user WHERE id_user = ?`,
@@ -60,8 +60,38 @@ export class QuestionRecoverRepositoryImpl
     return rows.length > 0;
   }
 
-  async update(questionRecoverUser: QuestionRecoverUser): Promise<void> {
-    throw new Error("Method not implemented.");
+  async update(
+    idUser: number,
+    questions: QuestionRecoverUser[]
+  ): Promise<void> {
+    const query = `
+     UPDATE question_recover_user
+      SET
+      question_num = CASE id
+        ${questions
+          .map(() => {
+            return `WHEN ? THEN ?`;
+          })
+          .join(" ")}
+      END,
+      answer = CASE ID
+        ${questions
+          .map(() => {
+            return `WHEN ? THEN ?`;
+          })
+          .join(" ")}
+      END
+      WHERE id IN (${questions.map(() => "?").join(",")})
+    `;
+
+    const questionNUmValues = questions.flatMap((q) => [q.id, q.questionNum]);
+    const answerValues = questions.flatMap((q) => [q.id, q.answer]);
+    const idValues = questions.map((q) => q.id);
+    const values = [...questionNUmValues, ...answerValues, ...idValues];
+
+    const [updateResult] = await this.pool.execute(query, values);
+
+    console.log(updateResult);
   }
 
   async getIdUser(user: string): Promise<number | null> {

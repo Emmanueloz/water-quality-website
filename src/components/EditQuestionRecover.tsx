@@ -1,9 +1,11 @@
 import {
   createQuestionRecoverUser,
   getQuestionRecoverUserById,
+  updateQuestionRecoverUser,
 } from "@/app/login/actions";
 import { Profile } from "@/domain/models/profile";
 import {
+  QuestionRecoverUser,
   SecurityQuestion,
   SecurityQuestionText,
 } from "@/domain/models/QuestionRecover";
@@ -18,8 +20,10 @@ export default function EditQuestionRecover({
   const [question2, setQuestion2] = useState<SecurityQuestion | "">("");
   const [answer1, setAnswer1] = useState("");
   const [answer2, setAnswer2] = useState("");
+  const [oldQuestions,setOldQuestions] = useState<QuestionRecoverUser[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const getQuestions = async (id: number) => {
     const questions = await getQuestionRecoverUserById(id, true);
@@ -30,6 +34,7 @@ export default function EditQuestionRecover({
       setQuestion2(questions[1].questionNum);
       setAnswer1(questions[0].answer);
       setAnswer2(questions[1].answer);
+      setOldQuestions(questions);
     } else {
       setIsEdit(false);
     }
@@ -65,6 +70,28 @@ export default function EditQuestionRecover({
 
     if (isEdit) {
       console.log("editando");
+      
+      const answers = oldQuestions.map((q, index) => {
+        if (index === 0) {
+          return {
+            id: q.id,
+            questionNum: question1 as number,
+            answer: answer1,
+            idUser: userProfile?.id ?? 0,
+          };
+        } else {
+          return {
+            id: q.id,
+            questionNum: question2 as number,
+            answer: answer2,
+            idUser: userProfile?.id ?? 0,
+          };
+        }
+      });
+
+      await updateQuestionRecoverUser(userProfile?.id ?? 0, answers);
+      setMessage("Cambios guardados");
+      
     } else {
       console.log("agregando");
 
@@ -101,6 +128,9 @@ export default function EditQuestionRecover({
       onSubmit={handleSubmit}
       className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg"
     >
+      <span className="text-green-500">
+        {message}
+      </span>
       <section className="flex flex-col gap-2">
         <label htmlFor="question1" className="font-semibold text-sm">
           Pregunta 1

@@ -37,9 +37,10 @@ export async function isValidAnswer(
 }
 
 export async function updateQuestionRecoverUser(
-  questionRecoverUser: QuestionRecoverUser
+  idUser: number,
+  questions: QuestionRecoverUser[]
 ) {
-  return await questionRecoverRepository.update(questionRecoverUser);
+  return await questionRecoverRepository.update(idUser, questions);
 }
 
 export async function createQuestionRecoverUser(
