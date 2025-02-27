@@ -26,13 +26,10 @@ export async function updateProfile(
 
 export async function updateEmail(id: number, email: string) {
   await profileRepository.updateEmail(id, email);
-  redirect("/");
 }
 
 export async function updatePassword(id: number, password: string) {
   const hashedPassword = await hashPassword(password);
 
   await profileRepository.updatePassword(id, hashedPassword);
-
-  redirect("/");
 }

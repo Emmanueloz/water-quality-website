@@ -14,6 +14,7 @@ export default function EditEmail({
   const [email, setEmail] = useState(userProfile?.email ?? "");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,10 +25,8 @@ export default function EditEmail({
       emailSchema.parse({ email });
 
       await updateEmail(userProfile?.id ?? 0, email);
-     
+      setMessage("Email actualizado");
     } catch (error) {
-      console.log(error);
-
       setError("Formato de email inválido");
     } finally {
       setIsLoading(false);
@@ -47,6 +46,9 @@ export default function EditEmail({
       onSubmit={handleSubmit}
       className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg"
     >
+      <span className="text-green-500">
+        {message}
+      </span>
       <label htmlFor="email" className="font-semibold text-sm">
         Nuevo Email:
       </label>

@@ -15,6 +15,7 @@ export default function EditPassword({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +33,7 @@ export default function EditPassword({
 
       await updatePassword(userProfile?.id ?? 0, password);
 
-      
+      setMessage("Contraseña actualizada");
     } catch (error) {
       setError("Formato de contraseña inválido");
     } finally {
@@ -45,6 +46,9 @@ export default function EditPassword({
       onSubmit={handleSubmit}
       className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg"
     >
+      <span className="text-green-500">
+        {message}
+      </span>
       <label htmlFor="password" className="font-semibold text-sm">
         Nueva Contraseña:
       </label>
