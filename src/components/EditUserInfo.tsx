@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useInfoSchema } from "@/schemas/validations";
 import { updateEmail, updateUserInfo } from "@/app/profile/actions";
 import { Profile } from "@/domain/models/profile";
-import {  set, z } from "zod";
+import { set, z } from "zod";
 
 export default function EditUserInfo({
   userProfile,

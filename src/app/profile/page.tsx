@@ -1,66 +1,74 @@
-"use client";
-
 import EditUserInfo from "@/components/EditUserInfo";
 import EditPassword from "@/components/EditPassword";
-import { AuthContext } from "@/context/AuthProvider";
-import { Profile } from "@/domain/models/profile";
-import { useContext, useEffect, useState } from "react";
+
 import { getProfileById } from "./actions";
 import EditQuestionRecover from "@/components/EditQuestionRecover";
+import Link from "next/link";
+import { decodificarToken } from "@/lib/jwt";
+import { getUserToken } from "@/utils/getUserToken";
 
-export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState<
-    "email" | "password" | "question-recover"
-  >("email");
+type SearchParams = { [key: string]: string | string[] | undefined };
 
-  const { userProfile } = useContext(AuthContext);
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { tab } = await searchParams;
 
-  const [userData, setUserData] = useState<Profile | null>(null);
+  const listTabs = ["email", "password", "question-recover"];
+
+  let activeTab = "email";
+
+  if (tab && typeof tab === "string" && listTabs.includes(tab)) {
+    activeTab = tab;
+  }
 
   const getProfile = async () => {
-    const data = await getProfileById(userProfile?.id ?? 0);
+    const user = await getUserToken();
+    const userID = user.id ?? 0;
+
+    const data = await getProfileById(userID);
     console.log(data);
-    
-    setUserData(data);
+
+    return data;
   };
 
-  useEffect(() => {
-    if (userProfile) {
-      getProfile();
-    }
-  }, [userProfile]);
+  console.log(activeTab, tab);
+
+  const userData = await getProfile();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
       <h1 className="mb-3 text-xl font-bold">Actualizar Perfil</h1>
       <div className="flex gap-4 mb-4">
-        <button
+        <Link
+          href="/profile/?tab=email"
           className={`px-4 py-2 rounded-lg font-semibold text-sm ${
             activeTab === "email" ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
-          onClick={() => setActiveTab("email")}
         >
           Editar usuario
-        </button>
-        <button
+        </Link>
+        <Link
+          href="/profile/?tab=password"
           className={`px-4 py-2 rounded-lg font-semibold text-sm ${
             activeTab === "password" ? "bg-blue-500 text-white" : "bg-gray-200"
           }`}
-          onClick={() => setActiveTab("password")}
         >
           Editar Contraseña
-        </button>
+        </Link>
 
-        <button
+        <Link
+          href="/profile/?tab=question-recover"
           className={`px-4 py-2 rounded-lg font-semibold text-sm ${
             activeTab === "question-recover"
               ? "bg-blue-500 text-white"
               : "bg-gray-200"
           }`}
-          onClick={() => setActiveTab("question-recover")}
         >
           Editar Preguntas
-        </button>
+        </Link>
       </div>
       {activeTab === "email" && <EditUserInfo userProfile={userData} />}
       {activeTab === "password" && <EditPassword userProfile={userData} />}

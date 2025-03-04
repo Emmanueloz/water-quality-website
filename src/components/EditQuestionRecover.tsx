@@ -1,3 +1,4 @@
+"use client";
 import {
   createQuestionRecoverUser,
   getQuestionRecoverUserById,
@@ -20,7 +21,7 @@ export default function EditQuestionRecover({
   const [question2, setQuestion2] = useState<SecurityQuestion | "">("");
   const [answer1, setAnswer1] = useState("");
   const [answer2, setAnswer2] = useState("");
-  const [oldQuestions,setOldQuestions] = useState<QuestionRecoverUser[]>([]);
+  const [oldQuestions, setOldQuestions] = useState<QuestionRecoverUser[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -70,7 +71,7 @@ export default function EditQuestionRecover({
 
     if (isEdit) {
       console.log("editando");
-      
+
       const answers = oldQuestions.map((q, index) => {
         if (index === 0) {
           return {
@@ -91,7 +92,6 @@ export default function EditQuestionRecover({
 
       await updateQuestionRecoverUser(userProfile?.id ?? 0, answers);
       setMessage("Cambios guardados");
-      
     } else {
       console.log("agregando");
 
@@ -111,7 +111,7 @@ export default function EditQuestionRecover({
       ];
 
       await createQuestionRecoverUser(userProfile?.id ?? 0, answers);
-      setIsEdit(true)
+      setIsEdit(true);
     }
 
     setError("");
@@ -128,9 +128,7 @@ export default function EditQuestionRecover({
       onSubmit={handleSubmit}
       className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg"
     >
-      <span className="text-green-500">
-        {message}
-      </span>
+      <span className="text-green-500">{message}</span>
       <section className="flex flex-col gap-2">
         <label htmlFor="question1" className="font-semibold text-sm">
           Pregunta 1
