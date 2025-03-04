@@ -4,8 +4,8 @@ import EditPassword from "@/components/EditPassword";
 import { getProfileById } from "./actions";
 import EditQuestionRecover from "@/components/EditQuestionRecover";
 import Link from "next/link";
-import { decodificarToken } from "@/lib/jwt";
 import { getUserToken } from "@/utils/getUserToken";
+import ManageMySessions from "@/components/ManageMySessions";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -16,7 +16,7 @@ export default async function ProfilePage({
 }) {
   const { tab } = await searchParams;
 
-  const listTabs = ["email", "password", "question-recover"];
+  const listTabs = ["email", "password", "question-recover", "sessions"];
 
   let activeTab = "email";
 
@@ -69,12 +69,21 @@ export default async function ProfilePage({
         >
           Editar Preguntas
         </Link>
+        <Link
+          href="/profile/?tab=sessions"
+          className={`px-4 py-2 rounded-lg font-semibold text-sm ${
+            activeTab === "sessions" ? "bg-blue-500 text-white" : "bg-gray-200"
+          }`}
+        >
+          Mis sesiones
+        </Link>
       </div>
       {activeTab === "email" && <EditUserInfo userProfile={userData} />}
       {activeTab === "password" && <EditPassword userProfile={userData} />}
       {activeTab === "question-recover" && (
         <EditQuestionRecover userProfile={userData} />
       )}
+      {activeTab === "sessions" && <ManageMySessions userProfile={userData} />}
     </div>
   );
 }

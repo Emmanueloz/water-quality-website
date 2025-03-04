@@ -1,9 +1,10 @@
 "use server";
 
+import { MultiSessionsRepositoryImpl } from "@/infrastructure/repositories/MultiSessionsRepositoryImpl";
 import { ProfileRepositoryImpl } from "@/infrastructure/repositories/ProfileRepositoryImpl";
 import { hashPassword } from "@/lib/auth";
-import { redirect } from "next/navigation";
 
+const multiSessionsRepository = new MultiSessionsRepositoryImpl();
 const profileRepository = new ProfileRepositoryImpl();
 
 export async function getProfileById(id: number) {
@@ -36,4 +37,8 @@ export async function updatePassword(id: number, password: string) {
   const hashedPassword = await hashPassword(password);
 
   await profileRepository.updatePassword(id, hashedPassword);
+}
+
+export async function getSessions(id: number) {
+  return multiSessionsRepository.getAllByUserId(id);
 }

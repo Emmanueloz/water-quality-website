@@ -32,7 +32,24 @@ export class MultiSessionsRepositoryImpl implements IMultiSessionsRepository {
     };
   }
   async getAllByUserId(userId: number): Promise<IMultiSessions[]> {
-    throw new Error("Method not implemented.");
+    const query = `
+      SELECT * FROM multi_sessions WHERE user_id = ?
+    `;
+
+    const qResult = await this.pool.query(query, userId);
+
+    const [rows] = qResult as any[];
+
+    console.log(qResult);
+
+    return rows.map((row: any) => ({
+      id: row.id,
+      userAgent: row.user_agent,
+      xForwardedFor: row.x_forwarded_for,
+      userId: row.user_id,
+      createdAt: row.created_at,
+      token: row.token,
+    }));
   }
 
   async deleteByToken(userId: number, token: string): Promise<boolean> {
