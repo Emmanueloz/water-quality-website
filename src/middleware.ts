@@ -9,6 +9,7 @@ const publicUrl = ["/reset-password"];
 
 export async function middleware(request: NextRequest) {
   let res = NextResponse.next();
+  
 
   // Si la ruta es pública, permitir el acceso
   if (publicUrl.includes(request.nextUrl.pathname.trim())) {
@@ -34,6 +35,10 @@ export async function middleware(request: NextRequest) {
       console.error("Token expirado. Cerrando sesión y redirigiendo a /login");
       return logoutAndRedirect(request);
     }
+
+    //console.log(request.headers);
+    console.log(request.headers.get("user-agent"));
+    console.log(request.headers.get("x-forwarded-for"));
 
     // Hacer la solicitud GET para verificar si existe un administrador
     const adminResponse = await fetch(`${request.nextUrl.origin}/api/admin`, {

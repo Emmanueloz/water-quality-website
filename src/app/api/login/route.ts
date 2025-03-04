@@ -3,8 +3,17 @@ import { db } from "../../../lib/db";
 import bcrypt from "bcryptjs";
 import { generarToken } from "../../../lib/jwt";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
+import { MultiSessionsRepositoryImpl } from "@/infrastructure/repositories/MultiSessionsRepositoryImpl";
 
-const modulesForAdmin = ["users", "materias", "privilegios", "proyectos", "games"];
+const modulesForAdmin = [
+  "users",
+  "materias",
+  "privilegios",
+  "proyectos",
+  "games",
+];
+
+const multiSessionsRepository = new MultiSessionsRepositoryImpl();
 
 export async function POST(req: NextRequest) {
   const { Usuario, Contraseña }: LoginRequestBody = await req.json();
@@ -61,7 +70,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Convertir 'modules' en un array
-    const modulesArray = typeof user.modules === 'string' ? user.modules.split(',') : [];
+    const modulesArray =
+      typeof user.modules === "string" ? user.modules.split(",") : [];
 
     // Generar un token JWT
     const token = generarToken(
@@ -69,12 +79,24 @@ export async function POST(req: NextRequest) {
         id: user.id,
         Usuario: user.Usuario,
         rol: user.rol,
-        modules: user.rol.toLowerCase() === "admin" ? modulesForAdmin : modulesArray,
+        modules:
+          user.rol.toLowerCase() === "admin" ? modulesForAdmin : modulesArray,
       },
-      '2m'
+      "2m"
     );
 
     console.log(user);
+
+    const multiSessions = await multiSessionsRepository.create({
+      id: 0,
+      userAgent: req.headers.get("user-agent") || "",
+      xForwardedFor: req.headers.get("x-forwarded-for") || "",
+      userId: user.id,
+      token,
+      createdAt: new Date(),
+    });
+
+    console.log(multiSessions);
 
     // Establecer la cookie del token
     const response = NextResponse.json({
