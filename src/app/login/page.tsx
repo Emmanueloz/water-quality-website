@@ -1,5 +1,5 @@
 "use client";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [resetPassword, setResetPassword] = useState(false);
   const router = useRouter();
 
-  const { setIsAuthenticated, setUserProfile } = useContext(AuthContext);
+  const { isAuthenticated,setIsAuthenticated, setUserProfile } = useContext(AuthContext);
 
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -69,6 +69,12 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsAuthenticated(false);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
