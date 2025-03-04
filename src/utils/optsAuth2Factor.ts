@@ -28,7 +28,7 @@ export function generateToken(): string {
 export async function saveAuth2Factor(userId: number): Promise<string> {
     const token = generateToken();
     const expiresAt = new Date(Date.now() + 2 * 60 * 1000); // 2 minutos
-    await deleteExpiredTokens();
+    // await deleteExpiredTokens();
     await createAuth2Factor(userId, token, expiresAt);
     return token;
 }

@@ -11,7 +11,7 @@ export default function VerifyPage() {
     const router = useRouter();
     const [status, setStatus] = useState("loading");
     const [message, setMessage] = useState("");
-    const { setIsAuthenticated, setUserProfile, isAuthenticated } = useContext(AuthContext);
+    const { setIsAuthenticated, setUserProfile } = useContext(AuthContext);
 
 
     useEffect(() => {
@@ -39,17 +39,12 @@ export default function VerifyPage() {
                     });
                     setTimeout(() => {
                         router.push("/");
-                    }, 1000);
+                    }, 2000);
                 } else {
                     setStatus("error");
                     setMessage("Token inválido o expirado. Redirigiendo al login...");
                     setTimeout(() => {
-                        if (isAuthenticated) {
-                            console.log("isAuthenticated", isAuthenticated);
-                            router.push("/");
-                        } else {
-                            router.push("/login");
-                        }
+                        router.push("/");
                     }, 2000);
                 }
             } catch (error) {
@@ -70,7 +65,7 @@ export default function VerifyPage() {
                 router.push("/login");
             }, 3000);
         }
-    }, [token, isAuthenticated]);
+    }, []);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">

@@ -37,3 +37,10 @@ export async function updatePassword(id: number, password: string) {
 
   await profileRepository.updatePassword(id, hashedPassword);
 }
+
+export async function updateTwoFactorEnabled(
+  id: number,
+  isTwoFactorEnabled: boolean
+) {
+  await profileRepository.updateTwoFactorEnabled(id, isTwoFactorEnabled);
+}
