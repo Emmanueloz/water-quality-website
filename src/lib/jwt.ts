@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta_super_segura";
  * @param expiresIn - Tiempo de expiración del token (por defecto "2h").
  * @returns Un string con el token generado.
  */
-export function generarToken(payload: object, expiresIn: string = "2h"): string {
+export function generarToken(payload: object, expiresIn: string | number = '2m' ): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn });
 }
 

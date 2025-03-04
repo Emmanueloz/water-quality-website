@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         rol: user.rol,
         modules: user.rol.toLowerCase() === "admin" ? modulesForAdmin : modulesArray,
       },
-      "2h"
+      '2m'
     );
 
     console.log(user);
