@@ -9,7 +9,6 @@ const publicUrl = ["/reset-password"];
 
 export async function middleware(request: NextRequest) {
   let res = NextResponse.next();
-  
 
   // Si la ruta es pública, permitir el acceso
   if (publicUrl.includes(request.nextUrl.pathname.trim())) {
@@ -22,7 +21,9 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get("auth_token")?.value;
 
     if (!token) {
-      console.error("Token no encontrado. Cerrando sesión y redirigiendo a /login");
+      console.error(
+        "Token no encontrado. Cerrando sesión y redirigiendo a /login"
+      );
       return logoutAndRedirect(request);
     }
 
@@ -33,6 +34,19 @@ export async function middleware(request: NextRequest) {
     // 🔹 Validar si el token ha expirado
     if (!decoded || (decoded.exp && Date.now() >= decoded.exp * 1000)) {
       console.error("Token expirado. Cerrando sesión y redirigiendo a /login");
+      const userId = decoded?.id;
+      console.log(userId);
+      console.log(token);
+
+      await fetch(new URL("/api/sessions", request.url), {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          token,
+        }),
+      });
+
       return logoutAndRedirect(request);
     }
 

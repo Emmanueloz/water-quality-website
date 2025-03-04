@@ -34,8 +34,21 @@ export class MultiSessionsRepositoryImpl implements IMultiSessionsRepository {
   async getAllByUserId(userId: number): Promise<IMultiSessions[]> {
     throw new Error("Method not implemented.");
   }
-  async deleteByToken(token: string): Promise<void> {
-    throw new Error("Method not implemented.");
+
+  async deleteByToken(userId: number, token: string): Promise<boolean> {
+    const query = `
+      DELETE FROM multi_sessions
+      WHERE user_id = ? AND token = ?
+    `;
+
+    const values = [userId, token];
+
+    const qResult = await this.pool.execute(query, values);
+    const [rows] = qResult as [ResultSetHeader, any];
+
+    console.log(qResult);
+
+    return rows.affectedRows === 1;
   }
   async deleteByUserId(userId: number, excludeToken: string): Promise<void> {
     throw new Error("Method not implemented.");
