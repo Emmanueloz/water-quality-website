@@ -30,8 +30,12 @@ export default function ButtonDeleteSession({
 
   return (
     <ButtonDialog
-      title={mode === "current" ? "Estas seguro de eliminar" : "Eliminar todas"}
-      label="Eliminar"
+      title={
+        mode === "current"
+          ? "Estas seguro de eliminar"
+          : "Cerrar todas las sesiones"
+      }
+      label="Cerrar sesión"
       message={`${
         mode === "current" ? "Esta sesión" : "Todas las sesiones"
       } será eliminada y tendrá que volver a iniciar sesión. ¿Estas seguro de eliminarla?`}

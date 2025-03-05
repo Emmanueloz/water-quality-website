@@ -39,11 +39,13 @@ export default async function ManageMySessions({
     <section className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg">
       <div>
         <h1>Mis sesiones</h1>
-        <ButtonDeleteSession
-          mode="all"
-          userId={userProfile?.id ?? 0}
-          currenToken={currentSessionToken}
-        />
+        {listSessions.length > 1 && (
+          <ButtonDeleteSession
+            mode="all"
+            userId={userProfile?.id ?? 0}
+            currenToken={currentSessionToken}
+          />
+        )}
       </div>
       <ul className="flex flex-col gap-2">
         {listSessions.map((session: IMultiSessions) => {
