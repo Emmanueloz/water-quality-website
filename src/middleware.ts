@@ -35,8 +35,6 @@ export async function middleware(request: NextRequest) {
     if (!decoded || (decoded.exp && Date.now() >= decoded.exp * 1000)) {
       console.error("Token expirado. Cerrando sesión y redirigiendo a /login");
       const userId = decoded?.id;
-      console.log(userId);
-      console.log(token);
 
       await fetch(new URL("/api/sessions", request.url), {
         method: "DELETE",
@@ -50,9 +48,24 @@ export async function middleware(request: NextRequest) {
       return logoutAndRedirect(request);
     }
 
-    //console.log(request.headers);
-    console.log(request.headers.get("user-agent"));
-    console.log(request.headers.get("x-forwarded-for"));
+    const userId = decoded?.id;
+
+    const session = await fetch(
+      new URL(`/api/sessions?userId=${userId}&token=${token}`, request.url),
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+
+    if (!session.ok) {
+      console.error(
+        "Sesión no encontrada. Cerrando sesión y redirigiendo a /login"
+      );
+      return logoutAndRedirect(request);
+    } else {
+      console.log("Sesión activa");
+    }
 
     // Hacer la solicitud GET para verificar si existe un administrador
     const adminResponse = await fetch(`${request.nextUrl.origin}/api/admin`, {

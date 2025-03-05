@@ -29,6 +29,33 @@ export class MultiSessionsRepositoryImpl implements IMultiSessionsRepository {
       id: rows.insertId,
     };
   }
+
+  async getByToken(
+    userId: number,
+    token: string
+  ): Promise<IMultiSessions | null> {
+    const query = `
+      SELECT * FROM multi_sessions WHERE user_id = ? AND token = ?
+    `;
+
+    const qResult = await this.pool.query(query, [userId, token]);
+
+    const [rows] = qResult as any[];
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    return {
+      id: rows[0].id,
+      userAgent: rows[0].user_agent,
+      xForwardedFor: rows[0].x_forwarded_for,
+      userId: rows[0].user_id,
+      createdAt: rows[0].created_at,
+      token: rows[0].token,
+    };
+  }
+
   async getAllByUserId(userId: number): Promise<IMultiSessions[]> {
     const query = `
       SELECT * FROM multi_sessions WHERE user_id = ?
@@ -65,6 +92,7 @@ export class MultiSessionsRepositoryImpl implements IMultiSessionsRepository {
 
     return rows.affectedRows === 1;
   }
+
   async deleteByUserId(userId: number, excludeToken: string): Promise<void> {
     const query = `
       DELETE FROM multi_sessions

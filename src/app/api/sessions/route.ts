@@ -28,3 +28,36 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+
+  const userId = searchParams.get("userId") ?? "1";
+  const token = searchParams.get("token") ?? "";
+
+  if (!userId || !token) {
+    return NextResponse.json({ message: "Falta parámetros" }, { status: 400 });
+  }
+
+  try {
+    const sessions = await multiSessionsRepository.getByToken(
+      parseInt(userId),
+      token
+    );
+
+    if (!sessions) {
+      return NextResponse.json(
+        { message: "No se encontró ninguna sesión" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(sessions);
+  } catch (error) {
+    console.error("Error al obtener sesiones:", error);
+    return NextResponse.json(
+      { message: "Error al obtener sesiones" },
+      { status: 500 }
+    );
+  }
+}
