@@ -40,7 +40,7 @@ export default async function ProfilePage({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
-      <h1 className="mb-3 text-xl font-bold">Actualizar Perfil</h1>
+      <h1 className="mb-3 text-xl font-bold">Perfil</h1>
       <div className="flex gap-4 mb-4">
         <Link
           href="/profile/?tab=email"

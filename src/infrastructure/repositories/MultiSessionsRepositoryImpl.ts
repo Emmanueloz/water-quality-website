@@ -24,8 +24,6 @@ export class MultiSessionsRepositoryImpl implements IMultiSessionsRepository {
 
     const [rows] = qResult as [ResultSetHeader, any];
 
-    console.log(qResult);
-
     return {
       ...multiSessions,
       id: rows.insertId,
@@ -40,7 +38,7 @@ export class MultiSessionsRepositoryImpl implements IMultiSessionsRepository {
 
     const [rows] = qResult as any[];
 
-    console.log(qResult);
+    //console.log(qResult);
 
     return rows.map((row: any) => ({
       id: row.id,
