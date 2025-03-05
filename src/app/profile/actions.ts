@@ -42,3 +42,11 @@ export async function updatePassword(id: number, password: string) {
 export async function getSessions(id: number) {
   return multiSessionsRepository.getAllByUserId(id);
 }
+
+export async function deleteSession(id: number, token: string) {
+  return await multiSessionsRepository.deleteByToken(id, token);
+}
+
+export async function deleteAllSessions(id: number, excludeToken: string) {
+  await multiSessionsRepository.deleteByUserId(id, excludeToken);
+}

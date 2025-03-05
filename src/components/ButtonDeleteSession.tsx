@@ -1,5 +1,6 @@
 "use client";
 
+import { deleteSession } from "@/app/profile/actions";
 import { ButtonDialog } from "./ButtonDialog";
 
 export default function ButtonDeleteSession({
@@ -13,6 +14,15 @@ export default function ButtonDeleteSession({
   token?: string;
   currenToken?: string;
 }) {
+  const handleAccept = async () => {
+    if (mode === "current") {
+      console.log("deleteSession", userId, token);
+      await deleteSession(userId, token ?? "");
+    } else {
+      console.log("deleteAllSessions", userId, currenToken);
+    }
+  };
+
   return (
     <ButtonDialog
       title={mode === "current" ? "Estas seguro de eliminar" : "Eliminar todas"}
@@ -21,9 +31,7 @@ export default function ButtonDeleteSession({
         mode === "current" ? "Esta sesión" : "Todas las sesiones"
       } será eliminada y tendrá que volver a iniciar sesión. ¿Estas seguro de eliminarla?`}
       accentColor="red-500"
-      handleAccept={() => {
-        console.log("Eliminar sesión");
-      }}
+      handleAccept={handleAccept}
     />
   );
 }
