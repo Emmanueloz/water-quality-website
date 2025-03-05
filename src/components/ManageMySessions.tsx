@@ -4,6 +4,7 @@ import { Profile } from "@/domain/models/profile";
 import { parseUserAgent } from "@/tipos/parseUserAgent";
 import { getToken } from "@/utils/getUserToken";
 import ButtonDeleteSession from "./ButtonDeleteSession";
+import MessageSession from "./MessageSession";
 
 export default async function ManageMySessions({
   userProfile,
@@ -38,6 +39,10 @@ export default async function ManageMySessions({
   return (
     <section className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg">
       <div>
+        {listSessions.length >= 2 && (
+          <MessageSession message="Nueva sesión iniciada" type="success" />
+        )}
+
         <h1>Mis sesiones</h1>
         {listSessions.length > 1 && (
           <ButtonDeleteSession

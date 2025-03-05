@@ -16,8 +16,12 @@ export default function LoginPage() {
   const [resetPassword, setResetPassword] = useState(false);
   const router = useRouter();
 
-  const { isAuthenticated, setIsAuthenticated, setUserProfile } =
-    useContext(AuthContext);
+  const {
+    isAuthenticated,
+    setIsCountNewSession,
+    setIsAuthenticated,
+    setUserProfile,
+  } = useContext(AuthContext);
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -77,6 +81,7 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
+    setIsCountNewSession(0);
     if (isAuthenticated) {
       setIsAuthenticated(false);
     }
