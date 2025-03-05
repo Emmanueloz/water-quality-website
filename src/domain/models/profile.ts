@@ -4,4 +4,5 @@ export interface Profile {
     password: string;
     email: string;
     phone: string;
+    isTwoFactorEnabled: boolean;
 }
