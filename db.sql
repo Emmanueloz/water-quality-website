@@ -327,3 +327,15 @@ CREATE TABLE TwoFactorTokens (
     expiresAt DATETIME NOT NULL,
     FOREIGN KEY (userId) REFERENCES Usuarios(id) ON DELETE CASCADE
 );
+
+CREATE TABLE `multi_sessions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_agent` varchar(200) DEFAULT NULL,
+  `x_forwarded_for` varchar(60) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `token` varchar(340) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sessions_Usuarios_FK` (`user_id`),
+  CONSTRAINT `sessions_Usuarios_FK` FOREIGN KEY (`user_id`) REFERENCES `Usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
