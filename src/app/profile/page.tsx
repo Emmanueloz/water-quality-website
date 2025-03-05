@@ -17,7 +17,13 @@ export default async function ProfilePage({
 }) {
   const { tab } = await searchParams;
 
-  const listTabs = ["email", "password", "question-recover", "sessions"];
+  const listTabs = [
+    "email",
+    "password",
+    "question-recover",
+    "sessions",
+    "enable-2fa",
+  ];
 
   let activeTab = "email";
 
@@ -71,6 +77,16 @@ export default async function ProfilePage({
           Editar Preguntas
         </Link>
         <Link
+          href="/profile/?tab=enable-2fa"
+          className={`px-4 py-2 rounded-lg font-semibold text-sm ${
+            activeTab === "enable-2fa"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          }`}
+        >
+          Doble Factor
+        </Link>
+        <Link
           href="/profile/?tab=sessions"
           className={`px-4 py-2 rounded-lg font-semibold text-sm ${
             activeTab === "sessions" ? "bg-blue-500 text-white" : "bg-gray-200"
@@ -86,10 +102,7 @@ export default async function ProfilePage({
       )}
       {activeTab === "sessions" && <ManageMySessions userProfile={userData} />}
       {activeTab === "enable-2fa" && (
-        <EnableAuth2Factor
-          userProfile={userData}
-          setUserProfile={setUserData}
-        />
+        <EnableAuth2Factor userProfile={userData} />
       )}
     </div>
   );
