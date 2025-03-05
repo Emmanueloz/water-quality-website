@@ -1,7 +1,8 @@
 "use client";
 
-import { deleteSession } from "@/app/profile/actions";
+import { deleteAllSessions, deleteSession } from "@/app/profile/actions";
 import { ButtonDialog } from "./ButtonDialog";
+import { useRouter } from "next/navigation";
 
 export default function ButtonDeleteSession({
   mode,
@@ -14,13 +15,17 @@ export default function ButtonDeleteSession({
   token?: string;
   currenToken?: string;
 }) {
+  const router = useRouter();
+
   const handleAccept = async () => {
     if (mode === "current") {
       console.log("deleteSession", userId, token);
       await deleteSession(userId, token ?? "");
     } else {
       console.log("deleteAllSessions", userId, currenToken);
+      deleteAllSessions(userId, currenToken ?? "");
     }
+    router.push("/profile?tab=sessions");
   };
 
   return (

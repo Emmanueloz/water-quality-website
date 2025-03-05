@@ -66,6 +66,16 @@ export class MultiSessionsRepositoryImpl implements IMultiSessionsRepository {
     return rows.affectedRows === 1;
   }
   async deleteByUserId(userId: number, excludeToken: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    const query = `
+      DELETE FROM multi_sessions
+      WHERE user_id = ? AND token != ?
+    `;
+
+    const values = [userId, excludeToken];
+
+    const qResult = await this.pool.execute(query, values);
+    const [rows] = qResult as [ResultSetHeader, any];
+
+    console.log(qResult);
   }
 }
