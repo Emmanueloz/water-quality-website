@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/ua-parser-js": "^0.7.39",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
@@ -23,6 +24,7 @@
     "react-dom": "^19.0.0",
     "swiper": "^11.2.4",
     "twilio": "^5.4.5",
+    "ua-parser-js": "^2.0.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {

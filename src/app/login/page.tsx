@@ -18,10 +18,14 @@ export default function LoginPage() {
   const [isTwoFactorEnabled, setIsTwoFactorEnabled] = useState(false);
   const router = useRouter();
 
-  const { isAuthenticated,setIsAuthenticated, setUserProfile } = useContext(AuthContext);
+  const {
+    isAuthenticated,
+    setIsCountNewSession,
+    setIsAuthenticated,
+    setUserProfile,
+  } = useContext(AuthContext);
 
-
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setIsLoading(true);
     setError({ user: "", password: "", general: "" });
@@ -65,18 +69,25 @@ export default function LoginPage() {
           iat: data.usuario.iat,
           modules: data.usuario.modules,
         });
-        router.push("/");
+        router.push("/profile?tab=sessions");
       } else {
-        setError((prev) => ({ ...prev, general: data.message || "Error al iniciar sesión" }));
+        setError((prev) => ({
+          ...prev,
+          general: data.message || "Error al iniciar sesión",
+        }));
       }
     } catch {
-      setError((prev) => ({ ...prev, general: "Error de conexión con el servidor." }));
+      setError((prev) => ({
+        ...prev,
+        general: "Error de conexión con el servidor.",
+      }));
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    setIsCountNewSession(0);
     if (isAuthenticated) {
       setIsAuthenticated(false);
     }
@@ -95,7 +106,9 @@ export default function LoginPage() {
             onSubmit={handleSubmit}
             className="flex flex-col w-full max-w-md gap-4 border-2 border-gray-300 p-6 rounded-lg"
           >
-            <label htmlFor="user" className="font-semibold">Usuario:</label>
+            <label htmlFor="user" className="font-semibold">
+              Usuario:
+            </label>
             <input
               type="text"
               id="user"
@@ -105,7 +118,9 @@ export default function LoginPage() {
             />
             <p className="text-red-500 text-sm min-h-[20px]">{error.user}</p>
 
-            <label htmlFor="password" className="font-semibold">Contraseña:</label>
+            <label htmlFor="password" className="font-semibold">
+              Contraseña:
+            </label>
             <input
               type="password"
               id="password"
@@ -113,20 +128,31 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="p-3 border border-gray-300 rounded-lg"
             />
-            <p className="text-red-500 text-sm min-h-[20px]">{error.password}</p>
+            <p className="text-red-500 text-sm min-h-[20px]">
+              {error.password}
+            </p>
 
             <button
               type="submit"
               disabled={isLoading}
-              className={`p-3 text-white font-bold rounded-lg ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}`}
+              className={`p-3 text-white font-bold rounded-lg ${
+                isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
             >
               {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </button>
           </form>
-          <p className="mt-4 text-red-500 text-sm font-semibold min-h-[20px]">{error.general}</p>
+          <p className="mt-4 text-red-500 text-sm font-semibold min-h-[20px]">
+            {error.general}
+          </p>
           <div className="mt-6">
             <span>¿No tienes cuenta? </span>
-            <Link href="/register" className="text-blue-500 font-semibold hover:underline">
+            <Link
+              href="/register"
+              className="text-blue-500 font-semibold hover:underline"
+            >
               Regístrate aquí
             </Link>
           </div>
@@ -140,5 +166,4 @@ export default function LoginPage() {
       )}
     </div>
   );
-
 }
