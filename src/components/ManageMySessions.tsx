@@ -3,6 +3,7 @@ import { IMultiSessions } from "@/domain/models/MultiSessions";
 import { Profile } from "@/domain/models/profile";
 import { parseUserAgent } from "@/tipos/parseUserAgent";
 import { getToken } from "@/utils/getUserToken";
+import ButtonDeleteSession from "./ButtonDeleteSession";
 
 export default async function ManageMySessions({
   userProfile,
@@ -36,16 +37,25 @@ export default async function ManageMySessions({
 
   return (
     <section className="flex flex-col w-full max-w-md gap-3 border-2 border-gray-300 p-4 rounded-lg">
-      <h1>Manage my sessions</h1>
+      <div>
+        <h1>Mis sesiones</h1>
+        <ButtonDeleteSession
+          mode="all"
+          userId={userProfile?.id ?? 0}
+          currenToken={currentSessionToken}
+        />
+      </div>
       <ul className="flex flex-col gap-2">
         {listSessions.map((session: IMultiSessions) => {
           const userAgentInfo = parseUserAgent(session.userAgent);
+
+          const isTokenCurrent = isCurrentSession(session.token);
           return (
             <li
               key={session.id}
               className={`
                   p-2 rounded-lg
-                  ${isCurrentSession(session.token) && "bg-cyan-300"}
+                  ${isTokenCurrent && "bg-cyan-300"}
                   ${
                     isSessionExpired(session.createdAt, 2) &&
                     " border border-red-500"
@@ -67,6 +77,13 @@ export default async function ManageMySessions({
                   hour12: false,
                 })}
               </p>
+              {!isTokenCurrent && (
+                <ButtonDeleteSession
+                  mode="current"
+                  userId={userProfile?.id ?? 0}
+                  token={session.token}
+                />
+              )}
             </li>
           );
         })}
