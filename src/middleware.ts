@@ -5,8 +5,7 @@ import { decodificarToken } from "./lib/jwt";
 
 // lista con todos los módulos permitidos aun cuando el usuario no tenga el módulo correspondiente
 const allowedModules = ["", "david", "angel", "daniel", "raul", "profile"];
-const publicUrl = ["/reset-password"];
-
+const publicUrl = ["/reset-password", "/verify"];
 export async function middleware(request: NextRequest) {
   let res = NextResponse.next();
 
@@ -21,7 +20,9 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get("auth_token")?.value;
 
     if (!token) {
-      console.error("Token no encontrado. Cerrando sesión y redirigiendo a /login");
+      console.error(
+        "Token no encontrado. Cerrando sesión y redirigiendo a /login"
+      );
       return logoutAndRedirect(request);
     }
 

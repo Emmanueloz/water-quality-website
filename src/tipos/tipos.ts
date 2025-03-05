@@ -6,7 +6,7 @@ import { strict } from "assert";
 export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
-  acceptTerms:boolean;
+  acceptTerms: boolean;
   phone: string;
   Email: string;
   question: number;
@@ -21,7 +21,8 @@ export interface Usuario {
   rol: string;
   Contraseña: string;
   privilegio?: string;
-  modules:[] | string
+  modules: [] | string;
+  isTwoFactorEnabled?: boolean;
 }
 
 export interface Project {
