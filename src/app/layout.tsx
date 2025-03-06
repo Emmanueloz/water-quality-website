@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthProvider";
 import { MateriaProvider } from "@/context/MateriaContext";
 import { RootProvider } from "@/context/RootProvider";
+import AuthChecker from "@/components/AuthChecker"; // Nuevo componente
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,15 +37,20 @@ export default function RootLayout({
       >
         <div className="flex flex-col min-h-screen">
           <RootProvider>
-            <div className="flex flex-1">
-              <HamburgerMenu />
-              <div className="flex flex-col w-full">
-                <Navbar />
-                <Breadcrumb />
-                {children}
+            <AuthProvider> {/* Asegúrate de que AuthProvider esté aquí */}
+              <AuthChecker /> {/* Componente de verificación */}
+              <div className="flex flex-1">
+                <HamburgerMenu />
+                <div className="flex flex-col w-full">
+                  <Navbar />
+                  <Breadcrumb />
+                  <MateriaProvider>
+                    {children}
+                  </MateriaProvider>
+                </div>
               </div>
-            </div>
-            <Footer />
+              <Footer />
+            </AuthProvider>
           </RootProvider>
         </div>
       </body>

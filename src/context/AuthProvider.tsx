@@ -17,15 +17,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
+  setIsAuthenticated: () => { },
   userProfile: null,
-  setUserProfile: () => {},
+  setUserProfile: () => { },
   projects: [],
-  setProjects: () => {},
+  setProjects: () => { },
   games: [],
-  setGames: () => {},
+  setGames: () => { },
   isCountNewSession: 0,
-  setIsCountNewSession: () => {},
+  setIsCountNewSession: () => { },
 });
 
 interface AuthProviderProps {
