@@ -1,6 +1,8 @@
 "use server";
 import { QuestionRecoverUser } from "@/domain/models/QuestionRecover";
 import { QuestionRecoverRepositoryImpl } from "@/infrastructure/repositories/QuestionRecoverRepositoryImpl";
+import { getToken } from "@/utils/getUserToken";
+
 
 const questionRecoverRepository = new QuestionRecoverRepositoryImpl();
 
@@ -48,4 +50,8 @@ export async function createQuestionRecoverUser(
   questions: QuestionRecoverUser[]
 ) {
   return await questionRecoverRepository.create(idUser, questions);
+}
+
+export async function getTokenUser() {
+  return await getToken();
 }
