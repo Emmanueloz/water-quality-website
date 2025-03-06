@@ -44,6 +44,7 @@ export default function Navbar() {
         console.log("Sesión cerrada exitosamente");
         setIsAuthenticated(false); // Actualizar estado local
         //window.location.href = "/"; // Redirigir si es necesario
+
         router.push("/");
       } else {
         const errorData = await response.json();

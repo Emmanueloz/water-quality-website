@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { Usuario } from "@/tipos/tipos";
 
 export async function resetPassword(id: number, password: string) {
     const connection = db.getPool();
@@ -33,4 +34,28 @@ export async function findByPhoneNumber(phoneNumber: string): Promise<number | n
         return null;
     }
     return rows[0].id;
+}
+
+export async function findById(id: number): Promise<Usuario> {
+    const connection = db.getPool();
+    const [rows] = await connection.execute(
+        `SELECT 
+          u.id, 
+          u.Usuario, 
+          u.Contraseña,
+          r.Rol AS rol, 
+          COALESCE(GROUP_CONCAT(m.name SEPARATOR ','), '') AS modules
+        FROM Usuarios u
+        INNER JOIN Rol r ON u.Roles = r.id
+        LEFT JOIN privilegios p ON u.id_privilegio = p.id
+        LEFT JOIN priv_mod pm ON p.id = pm.id_privilegio
+        LEFT JOIN modulos m ON pm.id_module = m.id
+        WHERE u.id = ?
+        GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;
+        `,
+        [id]
+    );
+    const usuarios = rows as Usuario[];
+
+    return usuarios[0];
 }

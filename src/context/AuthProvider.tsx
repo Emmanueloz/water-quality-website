@@ -11,17 +11,21 @@ interface AuthContextType {
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
   games: Game[];
   setGames: React.Dispatch<React.SetStateAction<Game[]>>;
+  isCountNewSession: number;
+  setIsCountNewSession: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
-  setIsAuthenticated: () => { },
+  setIsAuthenticated: () => {},
   userProfile: null,
-  setUserProfile: () => { },
+  setUserProfile: () => {},
   projects: [],
-  setProjects: () => { },
+  setProjects: () => {},
   games: [],
-  setGames: () => { },
+  setGames: () => {},
+  isCountNewSession: 0,
+  setIsCountNewSession: () => {},
 });
 
 interface AuthProviderProps {
@@ -33,9 +37,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [games, setGames] = useState<Game[]>([]);
-
-
-
+  const [isCountNewSession, setIsCountNewSession] = useState(0);
 
   return (
     <AuthContext.Provider
@@ -48,6 +50,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setProjects,
         games,
         setGames,
+        isCountNewSession,
+        setIsCountNewSession,
       }}
     >
       {children}

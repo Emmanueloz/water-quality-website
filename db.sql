@@ -55,6 +55,7 @@ CREATE TABLE `Usuarios` (
   `id_privilegio` int(11) DEFAULT NULL,
   `Email` varchar(200) DEFAULT NULL,
   `phone_number` varchar(10) DEFAULT NULL,
+  `is_two_factor_enabled` BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (`id`),
   KEY `Rol` (`Roles`),
   KEY `Usuarios_privilegios_FK` (`id_privilegio`),
@@ -318,3 +319,23 @@ CREATE TABLE `question_recover_user` (
   KEY `question_recover_user_Usuarios_FK` (`id_user`),
   CONSTRAINT `question_recover_user_Usuarios_FK` FOREIGN KEY (`id_user`) REFERENCES `Usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE TwoFactorTokens (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    userId INT NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    expiresAt DATETIME NOT NULL,
+    FOREIGN KEY (userId) REFERENCES Usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE `multi_sessions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_agent` varchar(200) DEFAULT NULL,
+  `x_forwarded_for` varchar(60) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `token` varchar(340) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sessions_Usuarios_FK` (`user_id`),
+  CONSTRAINT `sessions_Usuarios_FK` FOREIGN KEY (`user_id`) REFERENCES `Usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

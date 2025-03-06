@@ -7,7 +7,7 @@ export class ProfileRepositoryImpl implements ProfileRepository {
 
   async getProfileById(profileId: number): Promise<Profile | null> {
     const [rows]: any = await this.pool.execute(
-      `SELECT id, Usuario, Email as email, Contraseña AS password, phone_number as phone
+      `SELECT id, Usuario, Email as email, Contraseña AS password, phone_number as phone, is_two_factor_enabled as isTwoFactorEnabled
             FROM Usuarios 
             WHERE id = ?`,
       [profileId]
@@ -61,6 +61,18 @@ export class ProfileRepositoryImpl implements ProfileRepository {
             SET Contraseña = ? 
             WHERE id = ?`,
       [password, profileId]
+    );
+  }
+
+  async updateTwoFactorEnabled(
+    profileId: number,
+    isTwoFactorEnabled: boolean
+  ): Promise<void> {
+    await this.pool.execute(
+      `UPDATE Usuarios 
+            SET is_two_factor_enabled = ? 
+            WHERE id = ?`,
+      [isTwoFactorEnabled, profileId]
     );
   }
 }
