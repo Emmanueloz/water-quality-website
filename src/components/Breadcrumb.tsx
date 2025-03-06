@@ -46,28 +46,29 @@ export default function Breadcrumb() {
       let lastModule: string | undefined;
 
       const newItemsPath = await Promise.all(
-        pathParts.map(async (item) => {
+        pathParts.map(async (item, index) => {
           const name = isNaN(parseInt(item))
             ? getDisplayName(item)
             : parseInt(item);
+          // Construir el path incremental
+          const path: string = `/${pathParts.slice(0, index + 1).join("/")}`;
+          console.log(path);
 
           lastModule =
             moduleList.find((module) => module === item) ?? lastModule;
 
           if (typeof name === "number") {
-
-            let newName = await getDisplayNameByModule(lastModule ?? "", name, userProfile.id) ?? "Error 404";
-
+            let newName =
+              (await getDisplayNameByModule(
+                lastModule ?? "",
+                name,
+                userProfile.id
+              )) ?? "Error 404";
             newName = textCapitalized(newName);
-
-            return {
-              path: item,
-              name: newName,
-              module: lastModule,
-            };
+            return { path: path, name: newName, module: lastModule };
           }
 
-          return { path: item, name, module: lastModule };
+          return { path: path, name, module: lastModule };
         })
       );
 
@@ -96,7 +97,7 @@ export default function Breadcrumb() {
           {itemPath.map((item, index) => (
             <li key={index}>
               <Link
-                href={`/${item.path}`}
+                href={`${item.path}`}
                 className="text-cyan-700 hover:underline"
               >
                 {item.name}

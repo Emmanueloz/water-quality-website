@@ -1,12 +1,17 @@
 // components/AuthChecker.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import { decodificarToken } from "../lib/jwt";
+import { getTokenUser } from "@/app/login/actions";
+import { AuthContext } from "@/context/AuthProvider";
+// import {}
 
 const AuthChecker = () => {
     const router = useRouter();
+    const { isAuthenticated } = useContext(AuthContext);
+    // let interval = null;
 
     useEffect(() => {
         const handleLogout = async () => {
@@ -19,14 +24,12 @@ const AuthChecker = () => {
             } catch (error) {
                 console.error('Error al cerrar sesión:', error);
             } finally {
-                // Limpiar siempre el cliente
-                localStorage.removeItem("token");
                 router.push("/login");
             }
         };
 
-        const checkAuth = () => {
-            const token = localStorage.getItem("token");
+        const checkAuth = async () => {
+            const token = await getTokenUser();
 
             if (!token) {
                 handleLogout();
@@ -40,11 +43,15 @@ const AuthChecker = () => {
                 handleLogout();
             }
         };
+        if (isAuthenticated) {
+            checkAuth();
+            setTimeout(checkAuth, 125000);
+        }
 
-        checkAuth();
-        const interval = setInterval(checkAuth, 125000);
-        return () => clearInterval(interval);
-    }, [router]);
+        // checkAuth();
+        // const interval = setInterval(checkAuth, 125000);
+        // return () => clearInterval(interval);
+    }, [router, isAuthenticated]);
 
     return null;
 };
