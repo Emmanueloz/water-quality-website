@@ -25,6 +25,7 @@ export default function Navbar() {
         exp: user?.exp,
         iat: user?.iat,
         modules: user?.modules,
+        modulesPermissions: user?.modulesPermissions,
       });
     } catch (error) {
       console.error("Error verificando la sesión:", error);

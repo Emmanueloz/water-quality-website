@@ -42,7 +42,10 @@ export async function POST(req: NextRequest) {
         u.is_two_factor_enabled AS isTwoFactorEnabled,
         u.Email AS email,
         r.Rol AS rol, 
-        COALESCE(GROUP_CONCAT(m.name SEPARATOR ','), '') AS modules
+        COALESCE(GROUP_CONCAT(m.name SEPARATOR ','), '') AS modules,
+        JSON_ARRAYAGG(
+                JSON_OBJECT('idRoute', pm.id_module, 'permissions',  pm.permissions)
+                ) AS modulesPermissions
       FROM Usuarios u
       INNER JOIN Rol r ON u.Roles = r.id
       LEFT JOIN privilegios p ON u.id_privilegio = p.id
@@ -92,6 +95,22 @@ export async function POST(req: NextRequest) {
     const modulesArray =
       typeof user.modules === "string" ? user.modules.split(",") : [];
 
+    const permissions =
+      typeof user.modulesPermissions === "string"
+        ? JSON.parse(user.modulesPermissions)
+        : user.modulesPermissions;
+
+    const modulesPermissions = permissions.map((permission: any) => {
+      return {
+        idRoute: permission.idRoute,
+        permissions: permission.permissions
+          ? permission.permissions.split(",")
+          : [],
+      };
+    });
+
+    console.log(modulesPermissions);
+
     // Generar un token JWT
     const token = generarToken(
       {
@@ -100,13 +119,12 @@ export async function POST(req: NextRequest) {
         rol: user.rol,
         modules:
           user.rol.toLowerCase() === "admin" ? modulesForAdmin : modulesArray,
+        modulesPermissions: modulesPermissions,
       },
       "2m"
     );
 
-    console.log(user);
-
-    const multiSessions = await multiSessionsRepository.create({
+    await multiSessionsRepository.create({
       id: 0,
       userAgent: req.headers.get("user-agent") || "",
       xForwardedFor: req.headers.get("x-forwarded-for") || "",
@@ -114,8 +132,6 @@ export async function POST(req: NextRequest) {
       token,
       createdAt: new Date(),
     });
-
-    console.log(multiSessions);
 
     // Establecer la cookie del token
     const response = NextResponse.json({
@@ -127,6 +143,7 @@ export async function POST(req: NextRequest) {
         Usuario: user.Usuario,
         rol: user.rol,
         modules: modulesArray,
+        modulesPermissions: modulesPermissions,
       },
     });
 

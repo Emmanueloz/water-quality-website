@@ -1,8 +1,6 @@
 import { QuestionRecoverUser } from "@/domain/models/QuestionRecover";
 import { strict } from "assert";
 
-
-
 export interface LoginRequestBody {
   Usuario: string;
   Contraseña: string;
@@ -23,6 +21,7 @@ export interface Usuario {
   privilegio?: string;
   modules: [] | string;
   isTwoFactorEnabled?: boolean;
+  modulesPermissions: IModulesPermissions[] | string;
 }
 
 export interface Project {

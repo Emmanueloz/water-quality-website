@@ -5,5 +5,6 @@ interface UserProfile {
   rol: string;
   iat: number;
   exp: number;
-  modules:[] | string
+  modules: [] | string;
+  modulesPermissions: IModulesPermissions[];
 }

@@ -1,8 +1,6 @@
 import FormMaterias from "@/components/FormMaterias";
-import { getMaterias } from "@/app/materias/actions";
 import Link from "next/link";
 import { getUserToken } from "@/utils/getUserToken";
-import TableMateria from "@/components/TableMateria";
 import GridMaterias from "@/components/GridMaterias";
 
 export default async function MateriasPage() {

@@ -5,8 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import { MateriaContext } from "@/context/MateriaContext";
 import { idGenerate } from "@/utils/idGenerate";
 import { MateriaValidator } from "@/utils/materiasValidator";
-import { date } from "zod";
 import { redirect } from "next/navigation";
+import { AuthContext } from "@/context/AuthProvider";
 
 export default function FormMaterias({
   id_usuario,
@@ -16,6 +16,7 @@ export default function FormMaterias({
   materia?: IMateria | null;
 }) {
   const { createMateria, editMateria } = useContext(MateriaContext);
+  const { userProfile } = useContext(AuthContext);
 
   const [materiaForm, setMateriaForm] = useState<IMateria>(
     materia ?? {
@@ -171,6 +172,10 @@ export default function FormMaterias({
     }
   }, [isEditUnidades]);
 
+  useEffect(() => {
+    console.log(userProfile);
+  }, [userProfile]);
+
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <label htmlFor="nombre" className="flex flex-col ">
@@ -232,7 +237,7 @@ export default function FormMaterias({
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-cyan-400">
               <thead>
-                <tr >
+                <tr>
                   <th className="border border-cyan-400 p-2 text-left">
                     Nombre
                   </th>
@@ -302,7 +307,6 @@ export default function FormMaterias({
         <div className="flex flex-col">
           <div className="flex justify-between mb-2">
             <span className="font-semibold">Unidades</span>
-           
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-cyan-400">
