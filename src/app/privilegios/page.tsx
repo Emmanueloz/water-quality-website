@@ -89,6 +89,15 @@ const Page = () => {
       idRoutes: prev.idRoutes.includes(routeId)
         ? prev.idRoutes.filter((r) => r !== routeId)
         : [...prev.idRoutes, routeId],
+      modulesPermissions: prev.idRoutes.includes(routeId)
+        ? prev.modulesPermissions?.filter((r) => r.idRoute !== routeId)
+        : [
+            ...(prev.modulesPermissions ?? []),
+            {
+              idRoute: routeId,
+              permissions: ["create", "read", "update", "delete"],
+            },
+          ],
     }));
   };
 
@@ -114,7 +123,6 @@ const Page = () => {
     } else {
       setNuevoPrivilegio((prev) => {
         if (!checked) {
-          // si es falso del idRoute, entonces se borra el permission no todo el objeto con el idRoute
           return {
             ...prev,
             modulesPermissions: prev.modulesPermissions?.map((m) =>
@@ -177,6 +185,10 @@ const Page = () => {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    console.log(nuevoPrivilegio);
+  }, [nuevoPrivilegio]);
 
   return (
     <div className="p-4">
