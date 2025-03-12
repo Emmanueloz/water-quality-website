@@ -8,6 +8,7 @@ import {
 } from "./action";
 import { getAllModules } from "@/app/modulos/action";
 import { AuthContext } from "@/context/AuthProvider";
+import { FormPermissionsModule } from "@/components/FormPermissionsModule";
 
 // interface Module {
 //     id: number;
@@ -40,6 +41,8 @@ const Page = () => {
   const fetchPrivilegios = async () => {
     try {
       const data = await getAllPrivilegios();
+      console.log(data);
+
       setPrivilegios(data);
     } catch (error) {
       console.error("Error cargando privilegios:", error);
@@ -67,6 +70,7 @@ const Page = () => {
         id: privilegio.id,
         name: privilegio.name,
         idRoutes: privilegio.idRoutes,
+        modulesPermissions: privilegio.modulesPermissions,
       });
       setEditingId(privilegio.id ?? null);
     } else {
@@ -86,6 +90,13 @@ const Page = () => {
         ? prev.idRoutes.filter((r) => r !== routeId)
         : [...prev.idRoutes, routeId],
     }));
+  };
+
+  const handleCheckboxChangePermissions = (
+    routeId: number,
+    permission: string
+  ) => {
+    console.log(routeId, permission);
   };
 
   const handleSubmit = async () => {
@@ -185,20 +196,12 @@ const Page = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block mb-2">Módulos:</label>
-              <div className="space-y-2">
-                {modules.map((module) => (
-                  <label key={module.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={nuevoPrivilegio.idRoutes.includes(module.id)}
-                      onChange={() => handleCheckboxChange(module.id)}
-                      className="mr-2"
-                    />
-                    {module.name}
-                  </label>
-                ))}
-              </div>
+              <FormPermissionsModule
+                modules={modules}
+                privilegio={nuevoPrivilegio}
+                onChange={handleCheckboxChange}
+                onChangePermissions={handleCheckboxChangePermissions}
+              />
               {errors.idRoutes && (
                 <p className="text-red-500 text-sm mt-1">{errors.idRoutes}</p>
               )}
