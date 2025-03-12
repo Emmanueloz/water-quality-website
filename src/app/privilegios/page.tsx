@@ -94,9 +94,52 @@ const Page = () => {
 
   const handleCheckboxChangePermissions = (
     routeId: number,
-    permission: string
+    permission: string,
+    checked: boolean
   ) => {
     console.log(routeId, permission);
+
+    const module = nuevoPrivilegio.modulesPermissions?.find(
+      (m) => m.idRoute === routeId
+    );
+
+    if (!module) {
+      setNuevoPrivilegio((prev) => ({
+        ...prev,
+        modulesPermissions: [
+          ...(prev.modulesPermissions ?? []),
+          { idRoute: routeId, permissions: [permission] },
+        ],
+      }));
+    } else {
+      setNuevoPrivilegio((prev) => {
+        if (!checked) {
+          // si es falso del idRoute, entonces se borra el permission no todo el objeto con el idRoute
+          return {
+            ...prev,
+            modulesPermissions: prev.modulesPermissions?.map((m) =>
+              m.idRoute === routeId
+                ? {
+                    ...m,
+                    permissions: Array.isArray(m.permissions)
+                      ? m.permissions.filter((p) => p !== permission)
+                      : [],
+                  }
+                : m
+            ),
+          };
+        }
+
+        return {
+          ...prev,
+          modulesPermissions: prev.modulesPermissions?.map((m) =>
+            m.idRoute === routeId
+              ? { ...m, permissions: [...m.permissions, permission] }
+              : m
+          ),
+        };
+      });
+    }
   };
 
   const handleSubmit = async () => {

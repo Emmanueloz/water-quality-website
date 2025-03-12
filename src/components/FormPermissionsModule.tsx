@@ -11,7 +11,11 @@ export const FormPermissionsModule = ({
   modules: IModule[];
   privilegio: IPrivilegio;
   onChange: (routeId: number) => void;
-  onChangePermissions: (routeId: number, permission: string) => void;
+  onChangePermissions: (
+    routeId: number,
+    permission: string,
+    checked: boolean
+  ) => void;
 }) => {
   useEffect(() => {
     console.log(privilegio);
@@ -29,6 +33,13 @@ export const FormPermissionsModule = ({
       return false;
     }
     return module.permissions.includes(permission);
+  };
+
+  const handleCheckboxChange = (
+    routeId: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    onChangePermissions(routeId, e.target.value, e.target.checked);
   };
 
   return (
@@ -53,9 +64,7 @@ export const FormPermissionsModule = ({
                 <input
                   type="checkbox"
                   checked={isPermissionChecked(module.id, "create")}
-                  onChange={(e) =>
-                    onChangePermissions(module.id, e.target.value)
-                  }
+                  onChange={(e) => handleCheckboxChange(module.id, e)}
                   name="permissions"
                   value="create"
                 />
@@ -65,9 +74,7 @@ export const FormPermissionsModule = ({
                 <input
                   type="checkbox"
                   checked={isPermissionChecked(module.id, "read")}
-                  onChange={(e) =>
-                    onChangePermissions(module.id, e.target.value)
-                  }
+                  onChange={(e) => handleCheckboxChange(module.id, e)}
                   name="permissions"
                   value="read"
                 />
@@ -77,9 +84,7 @@ export const FormPermissionsModule = ({
                 <input
                   type="checkbox"
                   checked={isPermissionChecked(module.id, "update")}
-                  onChange={(e) =>
-                    onChangePermissions(module.id, e.target.value)
-                  }
+                  onChange={(e) => handleCheckboxChange(module.id, e)}
                   name="permissions"
                   value="update"
                 />
@@ -89,9 +94,7 @@ export const FormPermissionsModule = ({
                 <input
                   type="checkbox"
                   checked={isPermissionChecked(module.id, "delete")}
-                  onChange={(e) =>
-                    onChangePermissions(module.id, e.target.value)
-                  }
+                  onChange={(e) => handleCheckboxChange(module.id, e)}
                   name="permissions"
                   value="delete"
                 />
