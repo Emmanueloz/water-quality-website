@@ -114,15 +114,24 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
       await this.deletePrivilegioOnIntermediateTable(privilegio.id!);
 
       for (const idModule of privilegio.idRoutes) {
+        const module = privilegio.modulesPermissions?.find(
+          (m) => m.idRoute === idModule
+        );
+
+        const permissions = Array.isArray(module?.permissions)
+          ? module?.permissions.join(",")
+          : [];
+
         await PrivilegioRepositoryImpl.pool.execute(
-          `INSERT INTO priv_mod (id_privilegio, id_module) VALUES (?, ?)`,
-          [privilegio.id, idModule]
+          `INSERT INTO priv_mod (id_privilegio, id_module, permissions) VALUES (?, ?, ?)`,
+          [privilegio.id, idModule, permissions]
         );
       }
       return {
         id: privilegio.id,
         name: privilegio.name,
         idRoutes: privilegio.idRoutes,
+        modulesPermissions: privilegio.modulesPermissions,
       };
     } catch (error) {
       console.error("Error updating privilegio:", error);
