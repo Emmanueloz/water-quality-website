@@ -2,12 +2,20 @@
 
 import { AuthContext } from "@/context/AuthProvider";
 import { MateriaContext } from "@/context/MateriaContext";
-import { use, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect } from "react";
 import CardItem from "./CardItem";
 
 export default function GridMaterias() {
-  const { paginatedList, hasMore, isLoading, lastItemRef, setIsMounted,cleanState } =
-    useContext(MateriaContext);
+  const {
+    paginatedList,
+    hasMore,
+    isLoading,
+    lastItemRef,
+    setIsMounted,
+    cleanState,
+  } = useContext(MateriaContext);
+
+  const { userProfile } = useContext(AuthContext);
 
   useEffect(() => {
     setIsMounted(true);
