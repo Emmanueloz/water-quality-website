@@ -1,12 +1,21 @@
 import ProjectCard from "@/components/ProjectCard";
+import { isHavePermissionInToken } from "@/utils/getUserToken";
+import { notFound } from "next/navigation";
 type PageProps = {
-    params: {
-        id: number
-    }
-}
+  params: {
+    id: number;
+  };
+};
 const Page = async ({ params }: PageProps) => {
-    const { id } = await params;
-    return <ProjectCard id={id} />;
-}
+  const { id } = await params;
 
-export default Page
+  const isHavePermission = await isHavePermissionInToken(3, "read");
+
+  if (!isHavePermission) {
+    notFound();
+  }
+
+  return <ProjectCard id={id} />;
+};
+
+export default Page;

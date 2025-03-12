@@ -1,11 +1,12 @@
 "use server";
 
 import { MateriaRepositoryImpl } from "@/infrastructure/repositories/MateriaRepositoryImpl";
+import { isHavePermissionInToken } from "@/utils/getUserToken";
 
 const materiaRepository = new MateriaRepositoryImpl();
 
 export const addMateria = async (materia: IMateria) => {
- return await materiaRepository.addMateria(materia);
+  return await materiaRepository.addMateria(materia);
 };
 
 export const getMaterias = async (id_usuario: number) => {
@@ -17,6 +18,11 @@ export const getMateria = async (id: number, id_usuario: number) => {
 };
 
 export const getNameMateria = async (id: number, idUsuario: number) => {
+  const isHavePermission = await isHavePermissionInToken(1, "read");
+
+  if (!isHavePermission) {
+    return null;
+  }
   return materiaRepository.getNameMateria(id, idUsuario);
 };
 
