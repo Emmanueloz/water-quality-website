@@ -40,18 +40,23 @@ export async function findById(id: number): Promise<Usuario> {
     const connection = db.getPool();
     const [rows] = await connection.execute(
         `SELECT 
-          u.id, 
-          u.Usuario, 
-          u.Contraseña,
-          r.Rol AS rol, 
-          COALESCE(GROUP_CONCAT(m.name SEPARATOR ','), '') AS modules
-        FROM Usuarios u
-        INNER JOIN Rol r ON u.Roles = r.id
-        LEFT JOIN privilegios p ON u.id_privilegio = p.id
-        LEFT JOIN priv_mod pm ON p.id = pm.id_privilegio
-        LEFT JOIN modulos m ON pm.id_module = m.id
-        WHERE u.id = ?
-        GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;
+        u.id, 
+        u.Usuario, 
+        u.Contraseña,
+        u.is_two_factor_enabled AS isTwoFactorEnabled,
+        u.Email AS email,
+        r.Rol AS rol, 
+        COALESCE(GROUP_CONCAT(m.name SEPARATOR ','), '') AS modules,
+        JSON_ARRAYAGG(
+                JSON_OBJECT('idRoute', pm.id_module, 'permissions',  pm.permissions)
+                ) AS modulesPermissions
+      FROM Usuarios u
+      INNER JOIN Rol r ON u.Roles = r.id
+      LEFT JOIN privilegios p ON u.id_privilegio = p.id
+      LEFT JOIN priv_mod pm ON p.id = pm.id_privilegio
+      LEFT JOIN modulos m ON pm.id_module = m.id
+      WHERE u.id = ?
+      GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;
         `,
         [id]
     );
