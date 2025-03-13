@@ -196,12 +196,13 @@ CREATE TABLE `priv_mod` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_privilegio` int(11) NOT NULL,
   `id_module` int(11) NOT NULL,
+  `permissions` varchar(100) DEFAULT 'create,read,update,delete',
   PRIMARY KEY (`id`),
   KEY `id_privilegio` (`id_privilegio`),
   KEY `id_module` (`id_module`),
   CONSTRAINT `priv_mod_ibfk_1` FOREIGN KEY (`id_privilegio`) REFERENCES `privilegios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `priv_mod_ibfk_2` FOREIGN KEY (`id_module`) REFERENCES `modulos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -334,8 +335,8 @@ CREATE TABLE `multi_sessions` (
   `x_forwarded_for` varchar(60) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `token` varchar(340) DEFAULT NULL,
+  `token` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `sessions_Usuarios_FK` (`user_id`),
   CONSTRAINT `sessions_Usuarios_FK` FOREIGN KEY (`user_id`) REFERENCES `Usuarios` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

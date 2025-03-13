@@ -14,6 +14,7 @@ import { set } from "zod";
 
 interface MateriaContextType {
   listMaterias: IMateria[];
+  setListMaterias: React.Dispatch<React.SetStateAction<IMateria[]>>;
   listSearchMaterias: IMateria[];
   paginatedList: IMateria[];
   setPaginatedList: React.Dispatch<React.SetStateAction<IMateria[]>>;
@@ -37,6 +38,7 @@ interface MateriaContextType {
 
 const MateriaContext = createContext<MateriaContextType>({
   listMaterias: [],
+  setListMaterias: () => {},
   listSearchMaterias: [],
   paginatedList: [],
   setPaginatedList: () => {},
@@ -116,6 +118,7 @@ const MateriaProvider = ({ children }: { children: any }) => {
     <MateriaContext.Provider
       value={{
         listMaterias,
+        setListMaterias,
         listSearchMaterias,
         paginatedList: items,
         setPaginatedList: setItems,

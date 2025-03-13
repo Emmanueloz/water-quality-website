@@ -68,6 +68,7 @@ export default function LoginPage() {
           exp: data.usuario.exp,
           iat: data.usuario.iat,
           modules: data.usuario.modules,
+          modulesPermissions: data.usuario.modulesPermissions,
         });
         router.push("/profile?tab=sessions");
       } else {
