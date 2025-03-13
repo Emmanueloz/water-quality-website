@@ -25,6 +25,20 @@ export async function POST(req: NextRequest) {
   const user = await findById(auth2Factor.userId);
   const modulesArray =
     typeof user.modules === "string" ? user.modules.split(",") : [];
+
+  const permissions =
+    typeof user.modulesPermissions === "string"
+      ? JSON.parse(user.modulesPermissions)
+      : user.modulesPermissions;
+
+  const modulesPermissions = permissions.map((permission: any) => {
+    return {
+      idRoute: permission.idRoute,
+      permissions: permission.permissions
+        ? permission.permissions.split(",")
+        : [],
+    };
+  });
   const tokenForCookie = generarToken(
     {
       id: user.id,
@@ -32,8 +46,9 @@ export async function POST(req: NextRequest) {
       rol: user.rol,
       modules:
         user.rol.toLowerCase() === "admin" ? modulesForAdmin : modulesArray,
+      modulesPermissions: modulesPermissions,
     },
-    "2h"
+    "2m"
   );
 
   const response = NextResponse.json({
@@ -45,6 +60,7 @@ export async function POST(req: NextRequest) {
       Usuario: user.Usuario,
       rol: user.rol,
       modules: modulesArray,
+      modulesPermissions: modulesPermissions,
     },
   });
 

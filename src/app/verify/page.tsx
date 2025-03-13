@@ -34,6 +34,7 @@ export default function VerifyPage() {
             exp: result.usuario.exp,
             iat: result.usuario.iat,
             modules: result.usuario.modules,
+            modulesPermissions: result.usuario.modulesPermissions,
           });
           setTimeout(() => {
             router.push("/");
