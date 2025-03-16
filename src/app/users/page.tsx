@@ -1,16 +1,22 @@
 "use client";
 import { Usuario } from "@/tipos/tipos";
 import { useState, useEffect, useContext } from "react";
-import { getAllPrivilegios } from "../privilegios/action";
 import { AuthContext } from "@/context/AuthProvider";
+import { FormPermissionsModule } from "@/components/FormPermissionsModule";
+import { getAllModules } from "../modulos/action";
+import { updatePrivilegio } from "../privilegios/action";
 
 const Page = () => {
     const { isAuthenticated } = useContext(AuthContext);
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [selectedUsuario, setSelectedUsuario] = useState<Usuario | null>(null);
     const [showModal, setShowModal] = useState(false);
-    const [privilegios, setPrivilegios] = useState<IPrivilegio[]>([]);
-    const [privilegio, setPrivilegio] = useState<string>("");
+    const [modules, setModules] = useState<IModule[]>([]);
+    const [nuevoPrivilegio, setNuevoPrivilegio] = useState<IPrivilegio>({
+        name: "",
+        idRoutes: [] as number[],
+    });
+
     const loadUsers = async () => {
         try {
             const response = await fetch("/api/usuarios");
@@ -22,52 +28,109 @@ const Page = () => {
         }
     };
 
-    const loadPrivilegios = async () => {
-        try {
-            const data = await getAllPrivilegios();
-            setPrivilegios(data);
-        } catch (error) {
-            console.error("Error cargando privilegios:", error);
-        }
-    };
 
     useEffect(() => {
         if (isAuthenticated) {
             loadUsers();
-            loadPrivilegios();
+            fetchModules();
         }
     }, [isAuthenticated]);
 
     const handleEditarUsuario = (usuario: Usuario) => {
         setSelectedUsuario(usuario);
-        setPrivilegio(usuario.privilegio);
+        if (usuario.modulesPermissions.length > 0) {
+            const idRoutes = usuario.modulesPermissions?.map((m) => m.idRoute) ?? [];
+            setNuevoPrivilegio({ idRoutes, modulesPermissions: usuario.modulesPermissions });
+        }
         setShowModal(true);
+    };
+    const handleCheckboxChange = (routeId: number) => {
+        setNuevoPrivilegio((prev) => ({
+            ...prev,
+            idRoutes: prev.idRoutes.includes(routeId)
+                ? prev.idRoutes.filter((r) => r !== routeId)
+                : [...prev.idRoutes, routeId],
+            modulesPermissions: prev.idRoutes.includes(routeId)
+                ? prev.modulesPermissions?.filter((r) => r.idRoute !== routeId)
+                : [
+                    ...(prev.modulesPermissions ?? []),
+                    {
+                        idRoute: routeId,
+                        permissions: ["create", "read", "update", "delete"],
+                    },
+                ],
+        }));
+    };
+    const handleCheckboxChangePermissions = (
+        routeId: number,
+        permission: string,
+        checked: boolean
+    ) => {
+        console.log(routeId, permission);
+
+        const module = nuevoPrivilegio.modulesPermissions?.find(
+            (m) => m.idRoute === routeId
+        );
+
+        if (!module) {
+            setNuevoPrivilegio((prev) => ({
+                ...prev,
+                modulesPermissions: [
+                    ...(prev.modulesPermissions ?? []),
+                    { idRoute: routeId, permissions: [permission] },
+                ],
+            }));
+        } else {
+            setNuevoPrivilegio((prev) => {
+                if (!checked) {
+                    return {
+                        ...prev,
+                        modulesPermissions: prev.modulesPermissions?.map((m) =>
+                            m.idRoute === routeId
+                                ? {
+                                    ...m,
+                                    permissions: Array.isArray(m.permissions)
+                                        ? m.permissions.filter((p) => p !== permission)
+                                        : [],
+                                }
+                                : m
+                        ),
+                    };
+                }
+
+                return {
+                    ...prev,
+                    modulesPermissions: prev.modulesPermissions?.map((m) =>
+                        m.idRoute === routeId
+                            ? { ...m, permissions: [...m.permissions, permission] }
+                            : m
+                    ),
+                };
+            });
+        }
+    };
+    const fetchModules = async () => {
+        try {
+            const data = await getAllModules();
+            setModules(data);
+        } catch (error) {
+            console.error("Error cargando privilegios:", error);
+        }
     };
 
     const saveChanges = async () => {
         if (!selectedUsuario) return;
 
         try {
-            const response = await fetch(`/api/usuarios`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id: selectedUsuario.id, privilegio: privilegio }),
+            const data = await updatePrivilegio({
+                userId: selectedUsuario.id,
+                ...nuevoPrivilegio,
             });
-
-            if (!response.ok) throw new Error("Error al actualizar");
-
-            const data = await response.json();
-            const usuarioActualizado = data.usuario;
-            
-            setUsuarios(prev => 
-                prev.map(u => u.id === usuarioActualizado.id ? usuarioActualizado : u)
-            );
-            
+            console.log(data);
+            loadUsers();
             setShowModal(false);
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error actualizando usuario:");
         }
     };
 
@@ -86,7 +149,6 @@ const Page = () => {
                             onClick={() => handleEditarUsuario(usuario)}
                         >
                             <h3 className="text-lg font-semibold">{usuario.Usuario}</h3>
-                            <p className="text-gray-600">{usuario.privilegio}</p>
                         </div>
                     </div>
                 ))}
@@ -96,7 +158,7 @@ const Page = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg w-96">
                         <h2 className="text-xl font-bold mb-4">Editar Usuario</h2>
-                        
+
                         <div className="mb-4">
                             <label className="block mb-2">Nombre:</label>
                             <input
@@ -108,18 +170,12 @@ const Page = () => {
                         </div>
 
                         <div className="mb-4">
-                            <label className="block mb-2">Privilegio:</label>
-                            <select
-                                value={privilegio}
-                                onChange={(e) => setPrivilegio(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                            >
-                                {privilegios.map((privilegio) => (
-                                    <option key={privilegio.id} value={privilegio.name}>
-                                        {privilegio.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <FormPermissionsModule
+                                modules={modules}
+                                privilegio={nuevoPrivilegio}
+                                onChange={handleCheckboxChange}
+                                onChangePermissions={handleCheckboxChangePermissions}
+                            />
                         </div>
 
                         <div className="flex justify-end gap-2">
