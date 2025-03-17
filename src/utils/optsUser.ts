@@ -54,7 +54,7 @@ export async function findById(id: number): Promise<Usuario> {
       INNER JOIN Rol r ON u.Roles = r.id
       LEFT JOIN user_permissions up ON u.id = up.user_id
       LEFT JOIN modulos m ON up.module_id = m.id
-      WHERE u.Usuario = ?
+      WHERE u.id = ?
       GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;
         `,
         [id]
