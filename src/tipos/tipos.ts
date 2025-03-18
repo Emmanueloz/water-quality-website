@@ -21,7 +21,7 @@ export interface Usuario {
   privilegio?: string;
   modules: [] | string;
   isTwoFactorEnabled?: boolean;
-  modulesPermissions: IModulesPermissions[] | string;
+  modulesPermissions: IModulesPermissions[];
 }
 
 export interface Project {

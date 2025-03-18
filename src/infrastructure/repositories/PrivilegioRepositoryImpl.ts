@@ -62,74 +62,36 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
   async createPrivilegio(
     privilegio: Omit<IPrivilegio, "id">
   ): Promise<IPrivilegio> {
-    if (await PrivilegioRepositoryImpl.getPrivilegioByName(privilegio.name)) {
-      throw new Error("Privilegio already exists");
-    }
-
-    if (
-      !(await ModuleRepositoryImpl.checkIfListModulesExist(privilegio.idRoutes))
-    ) {
-      throw new Error("Some modules do not exist");
-    }
-    const [result] =
-      await PrivilegioRepositoryImpl.pool.execute<ResultSetHeader>(
-        `INSERT INTO privilegios (name) VALUES (?)`,
-        [privilegio.name]
-      );
 
     for (const idModule of privilegio.idRoutes) {
       await PrivilegioRepositoryImpl.pool.execute(
-        `INSERT INTO priv_mod (id_privilegio, id_module) VALUES (?, ?)`,
-        [result.insertId, idModule]
+        `INSERT INTO user_permissions (user_id, module_id) VALUES (?, ?)`,
+        [privilegio.userId, idModule]
       );
     }
     return {
-      id: result.insertId,
-      name: privilegio.name,
       idRoutes: privilegio.idRoutes,
     };
   }
 
   async updatePrivilegio(privilegio: IPrivilegio): Promise<IPrivilegio> {
     try {
-      const existingPrivilegio =
-        await PrivilegioRepositoryImpl.getPrivilegioByName(privilegio.name);
-      if (existingPrivilegio && existingPrivilegio.id !== privilegio.id) {
-        throw new Error("Privilegio already exists");
-      }
-
-      if (
-        !(await ModuleRepositoryImpl.checkIfListModulesExist(
-          privilegio.idRoutes
-        ))
-      ) {
-        throw new Error("Some modules do not exist");
-      }
-
-      await PrivilegioRepositoryImpl.pool.execute(
-        `UPDATE privilegios SET name = ? WHERE id = ?`,
-        [privilegio.name, privilegio.id]
-      );
-
-      await this.deletePrivilegioOnIntermediateTable(privilegio.id!);
-
+      await this.deletePrivilegioOnIntermediateTable(privilegio.userId!);
       for (const idModule of privilegio.idRoutes) {
-        const module = privilegio.modulesPermissions?.find(
-          (m) => m.idRoute === idModule
-        );
-
-        const permissions = Array.isArray(module?.permissions)
-          ? module?.permissions.join(",")
-          : [];
-
-        await PrivilegioRepositoryImpl.pool.execute(
-          `INSERT INTO priv_mod (id_privilegio, id_module, permissions) VALUES (?, ?, ?)`,
-          [privilegio.id, idModule, permissions]
-        );
+        if (idModule) {
+          const module = privilegio.modulesPermissions?.find(
+            (m) => m.idRoute === idModule
+          );
+          const permissions = Array.isArray(module?.permissions)
+            ? module?.permissions.join(",")
+            : [];
+          await PrivilegioRepositoryImpl.pool.execute(
+            `INSERT INTO user_permissions (user_id, module_id, permissions) VALUES (?, ?, ?)`,
+            [privilegio.userId, idModule, permissions]
+          );
+        }
       }
       return {
-        id: privilegio.id,
-        name: privilegio.name,
         idRoutes: privilegio.idRoutes,
         modulesPermissions: privilegio.modulesPermissions,
       };
@@ -141,7 +103,7 @@ export class PrivilegioRepositoryImpl implements PrivilegioRepository {
 
   async deletePrivilegioOnIntermediateTable(id: number): Promise<void> {
     await PrivilegioRepositoryImpl.pool.execute(
-      `DELETE FROM priv_mod WHERE id_privilegio = ?`,
+      `DELETE FROM user_permissions WHERE user_id = ?`,
       [id]
     );
   }

@@ -340,3 +340,12 @@ CREATE TABLE `multi_sessions` (
   KEY `sessions_Usuarios_FK` (`user_id`),
   CONSTRAINT `sessions_Usuarios_FK` FOREIGN KEY (`user_id`) REFERENCES `Usuarios` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE user_permissions (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL
+  module_id INT NOT NULL
+  permissions varchar(100) DEFAULT 'create,read,update,delete',
+  FOREIGN KEY (user_id) REFERENCES Usuarios(id) ON DELETE CASCADE,
+  FOREIGN KEY (module_id) REFERENCES modulos(id) ON DELETE CASCADE
+);

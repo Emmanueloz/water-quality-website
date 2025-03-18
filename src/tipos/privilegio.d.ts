@@ -1,6 +1,7 @@
 interface IPrivilegio {
   id?: number;
-  name: string;
+  name?: string;
+  userId?: number;
   idRoutes: number[];
   modulesPermissions?: IModulesPermissions[];
 }

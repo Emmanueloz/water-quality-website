@@ -48,13 +48,12 @@ export async function findById(id: number): Promise<Usuario> {
         r.Rol AS rol, 
         COALESCE(GROUP_CONCAT(m.name SEPARATOR ','), '') AS modules,
         JSON_ARRAYAGG(
-                JSON_OBJECT('idRoute', pm.id_module, 'permissions',  pm.permissions)
+                JSON_OBJECT('idRoute', up.module_id, 'permissions',  up.permissions)
                 ) AS modulesPermissions
       FROM Usuarios u
       INNER JOIN Rol r ON u.Roles = r.id
-      LEFT JOIN privilegios p ON u.id_privilegio = p.id
-      LEFT JOIN priv_mod pm ON p.id = pm.id_privilegio
-      LEFT JOIN modulos m ON pm.id_module = m.id
+      LEFT JOIN user_permissions up ON u.id = up.user_id
+      LEFT JOIN modulos m ON up.module_id = m.id
       WHERE u.id = ?
       GROUP BY u.id, u.Usuario, u.Contraseña, r.Rol;
         `,
