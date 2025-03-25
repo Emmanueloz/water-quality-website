@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "clave_secreta_super_segura";

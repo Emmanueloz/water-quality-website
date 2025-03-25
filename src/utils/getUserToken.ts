@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { isHavePermission } from "./isHavePermission";

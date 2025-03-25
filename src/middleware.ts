@@ -1,4 +1,4 @@
-// middleware.ts
+export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { decodificarToken } from "./lib/jwt";

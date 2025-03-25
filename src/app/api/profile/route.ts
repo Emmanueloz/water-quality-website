@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { ProfileRepositoryImpl } from "@/infrastructure/repositories/ProfileRepositoryImpl";
 import { hashPassword } from "@/lib/auth";
