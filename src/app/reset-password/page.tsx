@@ -1,13 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import {  resetUserPassword } from "./actions";
+import { resetUserPassword } from "./actions";
 import { resetPasswordSchema } from "@/schemas/validations";
 
 
 
 const ResetPass = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPassContent />
+    </Suspense>
+  );
+};
+
+function ResetPassContent() {
   const [data, setData] = useState({ password: "", confirmPassword: "" });
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -15,7 +23,7 @@ const ResetPass = () => {
   const [error, setError] = useState<{ password?: string; confirmPassword?: string }>({});
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-    const router = useRouter();
+  const router = useRouter();
 
 
 
@@ -57,9 +65,8 @@ const ResetPass = () => {
               name="password"
               value={data.password}
               onChange={(e) => setData({ ...data, password: e.target.value })}
-              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                error.password ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${error.password ? "border-red-500" : "border-gray-300"
+                }`}
             />
             {error.password && <p className="text-sm text-red-500 mt-1">{error.password}</p>}
           </div>
@@ -74,13 +81,12 @@ const ResetPass = () => {
               name="confirmPassword"
               value={data.confirmPassword}
               onChange={(e) => setData({ ...data, confirmPassword: e.target.value })}
-              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                error.confirmPassword ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${error.confirmPassword ? "border-red-500" : "border-gray-300"
+                }`}
             />
             {error.confirmPassword && <p className="text-sm text-red-500 mt-1">{error.confirmPassword}</p>}
           </div>
-            
+
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
@@ -105,7 +111,8 @@ const ResetPass = () => {
         {message && <p className="mt-4 text-center">{message}</p>}
       </div>
     </div>
+
   );
-};
+}
 
 export default ResetPass;

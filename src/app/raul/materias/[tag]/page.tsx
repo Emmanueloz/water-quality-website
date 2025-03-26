@@ -6,7 +6,7 @@ type Props = {
   };
 };
 
-export default async function MateriaPage({ params }: Props) {
+export default async function MateriaPage({ params }: any) {
   const { tag } = await params;
   return <Materias tag={tag} />;
 }

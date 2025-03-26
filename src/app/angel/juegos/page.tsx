@@ -1,11 +1,11 @@
 const Page = () => {
-  throw new Error("Not implemented");
-    return (
-        <div>
-            <main className="flex-1 p-4">
-            <h2 className="text-2xl font-bold mb-4">Juegos</h2>
-            <p>
-            <ul className="space-y-2">
+  // throw new Error("Not implemented");
+  return (
+    <div>
+      <main className="flex-1 p-4">
+        <h2 className="text-2xl font-bold mb-4">Juegos</h2>
+        <p>
+          <ul className="space-y-2">
             <li>
               <a
                 href="#"
@@ -19,12 +19,12 @@ const Page = () => {
                 Banana Kong
               </a>
             </li>
-            
+
           </ul>
-            </p>
-        </main>
-        </div>
-    );
+        </p>
+      </main>
+    </div>
+  );
 }
 
 

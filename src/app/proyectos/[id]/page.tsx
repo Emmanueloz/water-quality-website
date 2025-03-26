@@ -6,7 +6,7 @@ type PageProps = {
     id: number;
   };
 };
-const Page = async ({ params }: PageProps) => {
+const Page = async ({ params }: any) => {
   const { id } = await params;
 
   const isHavePermission = await isHavePermissionInToken(3, "read");

@@ -1,10 +1,18 @@
 "use client";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { AuthContext } from "@/context/AuthProvider";
 
 export default function VerifyPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyContent />
+    </Suspense>
+  )
+}
+
+function VerifyContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
@@ -136,5 +144,6 @@ export default function VerifyPage() {
         )}
       </div>
     </div>
+
   );
 }

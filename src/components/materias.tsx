@@ -1,4 +1,4 @@
-import { IMateria } from "@/tipos/materia";
+// import { IMateria } from "@/tipos/materia";
 
 const Materias = ({ materia, tag }: { materia?: IMateria; tag: any }) => {
   return (

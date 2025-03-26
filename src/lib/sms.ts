@@ -75,7 +75,7 @@ export const sendSMS = async (to: string, message: string) => {
         console.log('Mensaje enviado:', response.data);
         return { success: true, data: response.data };
     } catch (error) {
-        console.error('Error enviando mensaje:', error.response?.data || error.message);
-        return { success: false, error: error.message };
+        // console.error('Error enviando mensaje:', error.response?.data || error.message);
+        return { success: false, };
     }
 };
