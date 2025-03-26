@@ -3,6 +3,8 @@ export const isHavePermission = (
   p: string,
   userProfile?: UserProfile | null
 ) => {
+  if (userProfile?.rol.toLowerCase() === 'admin') return true
+
   const module = userProfile?.modulesPermissions.find(
     (m) => m.idRoute === idRoute
   );
