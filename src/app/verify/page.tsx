@@ -45,7 +45,7 @@ function VerifyContent() {
             modulesPermissions: result.usuario.modulesPermissions,
           });
           setTimeout(() => {
-            router.push("/");
+            router.push("/profile?tab=sessions");
           }, 2000);
         } else {
           setStatus("error");

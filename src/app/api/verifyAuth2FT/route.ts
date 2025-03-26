@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         user.rol.toLowerCase() === "admin" ? modulesForAdmin : modulesArray,
       modulesPermissions: modulesPermissions,
     },
-    "2m"
+    "2h"
   );
 
   const response = NextResponse.json({
