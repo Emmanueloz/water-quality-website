@@ -1,9 +1,10 @@
 "use client";
-
 import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
+import LogoutButton from "./LogoutButton";
+import WelcomeMessage from "./WelcomeMessage"; // Importamos el nuevo componente
 
 export default function Navbar() {
   const { isAuthenticated, setIsAuthenticated, userProfile, setUserProfile } =
@@ -11,7 +12,6 @@ export default function Navbar() {
 
   const router = useRouter();
 
-  // Verificar la sesión al cargar la página
   const checkSession = async () => {
     try {
       const response = await fetch("/api/session");
@@ -33,7 +33,6 @@ export default function Navbar() {
     }
   };
 
-  // Llamar a la función de cierre de sesión
   const handleLogout = async () => {
     try {
       const response = await fetch("/api/logout", {
@@ -43,9 +42,7 @@ export default function Navbar() {
 
       if (response.ok) {
         console.log("Sesión cerrada exitosamente");
-        setIsAuthenticated(false); // Actualizar estado local
-        //window.location.href = "/"; // Redirigir si es necesario
-
+        setIsAuthenticated(false);
         router.push("/");
       } else {
         const errorData = await response.json();
@@ -60,7 +57,6 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      // Verificar la sesión al cargar el componente
       checkSession();
     }
   }, []);
@@ -81,19 +77,9 @@ export default function Navbar() {
           <a href="#" className="hover:underline">
             Contacto
           </a>
-          {isAuthenticated && (
-            <Link href="/profile" className="ml-4 hover:underline">
-              Bienvenido {userProfile?.userName}
-            </Link>
-          )}
-          {isAuthenticated && (
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold  px-2 rounded"
-            >
-              Cerrar Sesión
-            </button>
-          )}
+          {isAuthenticated && <WelcomeMessage />}{" "}
+          {/* Añadido el mensaje de bienvenida */}
+          {isAuthenticated && <LogoutButton />}
         </nav>
       </div>
     </header>
