@@ -77,8 +77,7 @@ export default function Navbar() {
           <a href="#" className="hover:underline">
             Contacto
           </a>
-          {isAuthenticated && <WelcomeMessage />}{" "}
-          {/* Añadido el mensaje de bienvenida */}
+          <WelcomeMessage />
           {isAuthenticated && <LogoutButton />}
         </nav>
       </div>
