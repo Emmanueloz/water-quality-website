@@ -11,18 +11,15 @@ export default async function MateriasPage() {
 
   return (
     <main>
-      <section className="flex flex-col lg:flex-row lg:justify-center pt-2 px-4 gap-16">
+      <section className="container mx-auto flex flex-col items-center justify-center p-4">
         {(user.rol.toLowerCase() === "admin" ||
           permissions?.permissions.includes("create")) && (
-          <article className=" lg:w-1/2 xl:w-2/5">
-            <h2 className="text-xl font-semibold">Crear materia</h2>
-            <ModalFormMaterias id_usuario={user.id} />
-          </article>
+          <ModalFormMaterias id_usuario={user.id} />
         )}
 
         {(user.rol.toLowerCase() === "admin" ||
           permissions?.permissions.includes("read")) && (
-          <article className="lg:w-1/2">
+          <article className="w-full ">
             <div className="flex justify-between mb-2">
               <h2 className="text-xl font-semibold">Lista materias</h2>
               <Link href="/materias/search">

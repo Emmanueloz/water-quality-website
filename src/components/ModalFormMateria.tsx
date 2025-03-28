@@ -16,7 +16,7 @@ export default function ModalFormMaterias({
   };
 
   return (
-    <div>
+    <>
       <button
         className="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-lg hover:bg-cyan-500 transition-all duration-300"
         type="button"
@@ -66,6 +66,6 @@ export default function ModalFormMaterias({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
