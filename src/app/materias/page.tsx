@@ -19,7 +19,7 @@ export default async function MateriasPage() {
 
         {(user.rol.toLowerCase() === "admin" ||
           permissions?.permissions.includes("read")) && (
-          <article className="w-full ">
+          <article className="w-full">
             <div className="flex justify-between mb-2">
               <h2 className="text-xl font-semibold">Lista materias</h2>
               <Link href="/materias/search">

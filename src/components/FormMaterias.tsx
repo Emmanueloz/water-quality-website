@@ -154,14 +154,24 @@ export default function FormMaterias({
   };
 
   const handleFormReset = () => {
-    setListUnidades([
-      {
-        id: idGenerate(),
-        nombre: "",
-        horas_totales: 10,
-        id_materia: 1,
-      },
-    ]);
+    setMateriaForm({
+      id: materiaForm.id ?? 0,
+      nombre: "",
+      maestro: "",
+      id_usuario: id_usuario,
+      unidades: [],
+    });
+
+    if (isEditUnidades || !materia) {
+      setListUnidades([
+        {
+          id: idGenerate(),
+          nombre: "",
+          horas_totales: 10,
+          id_materia: 1,
+        },
+      ]);
+    }
   };
 
   useEffect(() => {
@@ -338,7 +348,7 @@ export default function FormMaterias({
       <div className="flex  gap-4">
         <button
           className="p-2 rounded-lg bg-gray-400 hover:bg-gray-300 "
-          type="reset"
+          type="button"
           onClick={handleFormReset}
         >
           Limpiar
