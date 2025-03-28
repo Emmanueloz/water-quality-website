@@ -1,6 +1,7 @@
 // components/WelcomeMessage.tsx
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthProvider";
+import Link from "next/link";
 
 interface WelcomeMessageProps {
   className?: string; // Acepta className como prop
@@ -15,7 +16,9 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ className }) => {
 
   return (
     <div className={className ? className : "text-white"}>
-      Bienvenido, {userProfile?.userName}
+      <Link href="/profile" className=" hover:underline">
+        Bienvenido, {userProfile?.userName}
+      </Link>
     </div>
   );
 };

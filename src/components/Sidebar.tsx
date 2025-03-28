@@ -99,17 +99,23 @@ const Sidebar: React.FC<SidebarProps> = ({ menuItems }) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-col justify-between h-[90%]">
       <nav className="p-4 space-y-2">
         {menuItems.map((item, index) => (
           <MenuItem key={`${item.name}-${index}`} item={item} />
         ))}
       </nav>
 
-      {/* Mostrar el LogoutButton solo en pantallas pequeñas */}
       <div className="md:hidden block px-4 py-2">
-        <WelcomeMessage className="text-black" />
-        <LogoutButton />
+        <div className="mb-2">
+          <button className="bg-blue-500 text-white font-bold px-2 rounded">
+            <WelcomeMessage className="text-white" />
+          </button>
+        </div>
+
+        <div>
+          <LogoutButton />
+        </div>
       </div>
     </div>
   );
