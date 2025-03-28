@@ -11,9 +11,11 @@ import { AuthContext } from "@/context/AuthProvider";
 export default function FormMaterias({
   id_usuario,
   materia,
+  onCloseModal,
 }: {
   id_usuario: number;
   materia?: IMateria | null;
+  onCloseModal?: () => void;
 }) {
   const { createMateria, editMateria } = useContext(MateriaContext);
   const { userProfile } = useContext(AuthContext);
@@ -108,6 +110,8 @@ export default function FormMaterias({
       console.log("crear");
 
       await createMateria(data);
+      handleFormReset();
+      onCloseModal?.();
     }
   };
 

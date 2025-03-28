@@ -61,7 +61,11 @@ export default function ModalFormMaterias({
             </div>
             <div className="px-4 py-6">
               {/* Aquí se carga el formulario FormMaterias */}
-              <FormMaterias id_usuario={id_usuario} materia={materia} />
+              <FormMaterias
+                id_usuario={id_usuario}
+                materia={materia}
+                onCloseModal={handleModalToggle}
+              />
             </div>
           </div>
         </div>
