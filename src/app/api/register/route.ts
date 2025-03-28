@@ -4,8 +4,10 @@ import { hashPassword } from "../../../lib/auth";
 import { LoginRequestBody, Usuario } from "../../../tipos/tipos";
 import { ResultSetHeader } from "mysql2";
 import { QuestionRecoverRepositoryImpl } from "@/infrastructure/repositories/QuestionRecoverRepositoryImpl";
+import { PrivilegioRepositoryImpl } from "@/infrastructure/repositories/PrivilegioRepositoryImpl";
 
 const questionRecoverRepository = new QuestionRecoverRepositoryImpl();
+const privilegioRepo = new PrivilegioRepositoryImpl();
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
@@ -58,8 +60,27 @@ export async function POST(req: NextRequest) {
     // Insertar el usuario junto con el correo electrónico
     const [result] = await connection.execute<ResultSetHeader>(
       `INSERT INTO Usuarios (Usuario, Contraseña, Roles, id_privilegio, Email, phone_number) VALUES (?, ?, ?, ?, ?, ?)`,
-      [Usuario, hashedPassword, userRoleId, 1, Email,phone] // Incluimos el email
+      [Usuario, hashedPassword, userRoleId, 1, Email, phone] // Incluimos el email
     );
+
+    privilegioRepo.createPrivilegio({
+      idRoutes: [1, 2, 3],
+      userId: result.insertId,
+      modulesPermissions: [
+        {
+          idRoute: 1,
+          permissions: ["create", "read", "update", "delete"],
+        },
+        {
+          idRoute: 2,
+          permissions: ["create", "read", "update", "delete"],
+        },
+        {
+          idRoute: 3,
+          permissions: ["create", "read", "update", "delete"],
+        },
+      ],
+    });
 
     const newUser = {
       id: result.insertId,
