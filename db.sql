@@ -335,7 +335,7 @@ CREATE TABLE `multi_sessions` (
   `x_forwarded_for` varchar(60) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `token` varchar(500) DEFAULT NULL,
+  `token` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `sessions_Usuarios_FK` (`user_id`),
   CONSTRAINT `sessions_Usuarios_FK` FOREIGN KEY (`user_id`) REFERENCES `Usuarios` (`id`) ON DELETE CASCADE

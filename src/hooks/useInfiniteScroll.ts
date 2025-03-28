@@ -37,7 +37,7 @@ export function useInfiniteScroll<T>(
     if (!userProfile || !isMounted) return;
 
     loadMoreData();
-  }, [userProfile, lastItemRef]); // Se ejecuta una vez cuando el usuario está definido
+  }, [userProfile, isMounted]); // Se ejecuta una vez cuando el usuario está definido
 
   function cleanState() {
     setItems([]);
@@ -67,7 +67,7 @@ export function useInfiniteScroll<T>(
     if (lastItemRef.current) observer.current.observe(lastItemRef.current);
 
     return () => observer.current?.disconnect();
-  }, [items, hasMore, isLoading, lastItemRef]); // Se reactiva cada vez que cambia la cantidad de elementos
+  }, [items, hasMore, isLoading]); // Se reactiva cada vez que cambia la cantidad de elementos
 
   return {
     items,
