@@ -8,7 +8,7 @@ const Materias = ({ materia, tag }: { materia?: IMateria; tag: any }) => {
           {materia?.nombre}
         </div>
         <div className="text-slate-600">
-          <span className="font-medium">{materia?.maestro}</span>
+          <span className="font-medium">Maestro: {materia?.maestro}</span>
         </div>
       </div>
 

@@ -96,8 +96,8 @@ const MateriaProvider = ({ children }: { children: any }) => {
 
   const delMateria = async (materia: IMateria) => {
     await deleteMateria(materia);
-    getListMaterias(materia.id_usuario);
     setItems((prev) => prev.filter((m) => m.id !== materia.id));
+    getListMaterias(materia.id_usuario);
   };
 
   const editMateria = async (
@@ -110,8 +110,8 @@ const MateriaProvider = ({ children }: { children: any }) => {
       console.log("Editar Materias");
       await updateUnidades(materia, oldMateria);
     }
-    getListMaterias(materia.id_usuario);
     setItems((prev) => prev.map((m) => (m.id === oldMateria.id ? materia : m)));
+    getListMaterias(materia.id_usuario);
   };
 
   return (

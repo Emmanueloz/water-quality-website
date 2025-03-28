@@ -126,7 +126,6 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
     limit: number,
     id_usuario: number
   ): Promise<IMateria[]> {
-
     const offset = (page - 1) * limit;
 
     const qResult = await this.pool.execute(
@@ -134,7 +133,8 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
       SELECT 
         materias.id AS materia_id,
         materias.nombre AS materia_nombre,
-        materias.maestro AS materia_maestro
+        materias.maestro AS materia_maestro,
+        materias.id_usuario AS id_usuario
       FROM materias
       WHERE materias.id_usuario = ?
       LIMIT ?, ?
@@ -149,6 +149,7 @@ export class MateriaRepositoryImpl implements IMateriaRepository {
       nombre: row.materia_nombre,
       maestro: row.materia_maestro,
       unidades: [],
+      id_usuario: row.id_usuario,
     }));
 
     return materias as IMateria[];

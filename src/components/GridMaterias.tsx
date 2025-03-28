@@ -4,6 +4,8 @@ import { AuthContext } from "@/context/AuthProvider";
 import { MateriaContext } from "@/context/MateriaContext";
 import { useContext, useEffect } from "react";
 import CardItem from "./CardItem";
+import { redirect } from "next/navigation";
+import { isHavePermission } from "@/utils/isHavePermission";
 
 export default function GridMaterias() {
   const {
@@ -13,9 +15,19 @@ export default function GridMaterias() {
     lastItemRef,
     setIsMounted,
     cleanState,
+    delMateria,
   } = useContext(MateriaContext);
 
   const { userProfile } = useContext(AuthContext);
+
+  const isUpdatePermission = isHavePermission(1, "update", userProfile);
+  const isDeletePermission = isHavePermission(1, "delete", userProfile);
+
+  const handledDelete = async (materia: IMateria) => {
+    if (global.confirm("¿Estas seguro de eliminar?")) {
+      await delMateria(materia);
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -34,6 +46,16 @@ export default function GridMaterias() {
           id={materia.id ?? 0}
           title={materia.nombre}
           subtitle={materia.maestro}
+          handleDelete={
+            isDeletePermission ? () => handledDelete(materia) : undefined
+          }
+          openModal={
+            isUpdatePermission
+              ? () => {
+                  redirect(`/materias/${materia.id}`);
+                }
+              : undefined
+          }
         />
       ))}
       {hasMore && <div ref={lastItemRef}></div>}
