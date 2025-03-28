@@ -29,7 +29,7 @@ export default async function ManageMySessions({
       return "Sesión actual";
     }
 
-    if (isSessionExpired(session.createdAt, 2)) {
+    if (isSessionExpired(session.createdAt, 120)) {
       return "Expirado";
     }
 
@@ -64,7 +64,7 @@ export default async function ManageMySessions({
                   p-2 rounded-lg
                   ${isTokenCurrent && "bg-cyan-300"}
                   ${
-                    isSessionExpired(session.createdAt, 2) &&
+                    isSessionExpired(session.createdAt, 120) &&
                     " border border-red-500"
                   }
               `}
