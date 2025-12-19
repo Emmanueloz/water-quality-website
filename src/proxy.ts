@@ -6,7 +6,7 @@ import { decodificarToken } from "./lib/jwt";
 // lista con todos los módulos permitidos aun cuando el usuario no tenga el módulo correspondiente
 const allowedModules = ["", "david", "angel", "daniel", "raul", "profile"];
 const publicUrl = ["/reset-password", "/verify"];
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let res = NextResponse.next();
 
   // Si la ruta es pública, permitir el acceso

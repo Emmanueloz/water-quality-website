@@ -34,10 +34,11 @@ export default function LoginPage() {
       loginSchema.parse({ user, password });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errors = error.flatten().fieldErrors;
+        const errors = error;
+        console.log(errors);
         setError({
-          user: errors.user?.[0] || "",
-          password: errors.password?.[0] || "",
+          user: "",
+          password: "",
           general: "",
         });
         setIsLoading(false);

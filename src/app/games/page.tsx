@@ -90,11 +90,12 @@ const Page = () => {
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errors = error.flatten().fieldErrors;
+        const errors = error;
+        console.log(errors);
         setFormErrors({
-          name: errors.name?.[0],
-          description: errors.description?.[0],
-          category: errors.category?.[0],
+          name: "",
+          description: "",
+          category: "",
         });
       }
       return false;

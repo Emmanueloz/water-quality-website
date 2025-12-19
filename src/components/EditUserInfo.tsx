@@ -35,13 +35,8 @@ export default function EditUserInfo({
 
       setMessage("");
       if (error instanceof z.ZodError) {
-        const formattedErrors = error.flatten().fieldErrors;
-        console.log(formattedErrors);
-        if (formattedErrors.email) {
-          setError(formattedErrors.email.toString());
-        } else if (formattedErrors.phone) {
-          setErrorPhone(formattedErrors.phone.toString());
-        }
+        const errors = error;
+        console.log(errors);
       }
     } finally {
       setIsLoading(false);

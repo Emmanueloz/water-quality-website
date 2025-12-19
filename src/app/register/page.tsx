@@ -74,16 +74,17 @@ export default function RegisterPage() {
       console.log("error de validacion");
       console.log(error);
       if (error instanceof z.ZodError) {
-        const errors = error.flatten().fieldErrors;
+        const errors = error;
+        console.log(errors);
         setError({
-          user: errors.user?.[0] || "",
-          password: errors.password?.[0] || "",
-          confirmPassword: errors.confirmPassword?.[0] || "",
-          email: errors.email?.[0] || "",
-          phone: errors.phone?.[0] || "",
+          user: "",
+          password: "",
+          confirmPassword: "",
+          email: "",
+          phone: "",
           general: "",
-          answer1: errors.answer1?.[0] || "",
-          answer2: errors.answer2?.[0] || "",
+          answer1: "",
+          answer2: "",
         });
         setIsLoading(false);
         return;
@@ -114,8 +115,6 @@ export default function RegisterPage() {
       });
 
       const data = await response.json();
-
-     
 
       if (response.ok) {
         router.push("/login");

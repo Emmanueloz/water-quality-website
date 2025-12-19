@@ -98,13 +98,14 @@ const Page = () => {
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errors = error.flatten().fieldErrors;
+        const errors = error;
+        console.log(errors);
         setFormErrors({
-          name: errors.name?.[0],
-          description: errors.description?.[0],
-          category: errors.category?.[0],
-          status: errors.status?.[0],
-          technologies: errors.technologies?.[0],
+          name: "",
+          description: "",
+          category: "",
+          status: "",
+          technologies: "",
         });
       }
       return false;
