@@ -37,16 +37,16 @@ export default function RootLayout({
       >
         <div className="flex flex-col min-h-screen">
           <RootProvider>
-            <AuthProvider> {/* Asegúrate de que AuthProvider esté aquí */}
+            <AuthProvider>
+              {" "}
+              {/* Asegúrate de que AuthProvider esté aquí */}
               <AuthChecker /> {/* Componente de verificación */}
               <div className="flex flex-1">
                 <HamburgerMenu />
                 <div className="flex flex-col w-full">
                   <Navbar />
                   <Breadcrumb />
-                  <MateriaProvider>
-                    {children}
-                  </MateriaProvider>
+                  <MateriaProvider>{children}</MateriaProvider>
                 </div>
               </div>
               <Footer />
